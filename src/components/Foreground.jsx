@@ -14,13 +14,13 @@ function Foreground() {
                 <img
                     className="logo-sword"
                     src={swordImage}
-                    alt="BladeWatch"
+                    alt="Keystone"
                 />
             </div>
 
             <a className="enter-link" href="#database">
                 <span>[</span>
-                <span>ENTER BLADEWATCH</span>
+                <span>ENTER KEYSTONE</span>
                 <span>]</span>
             </a>
         </main>
