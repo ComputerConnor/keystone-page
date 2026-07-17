@@ -14,7 +14,7 @@ function Navbar() {
             to="/"
             onClick={returnHome}
         >
-            Keystone
+            Main Page
         </Link>
     );
 }
