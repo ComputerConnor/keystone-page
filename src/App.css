@@ -1,6 +1,4 @@
-
-
-.landing-page {
+.app {
     position: relative;
     width: 100%;
     height: 100vh;
@@ -9,90 +7,189 @@
 }
 
 
+/* Global animated background */
 .mesh-background {
-    position: absolute;
+    position: fixed;
+
     inset: 0;
+
+    width: 100%;
+    height: 100%;
+
     z-index: 0;
-    display: block;
+
+    pointer-events: none;
 }
 
 
+/* Everything rendered by Routes */
+.page-layer {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 1;
+}
+
+
+/* Pages */
+.landing-page,
+.home-page {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    background: transparent;
+}
+
+
+/* Home elements */
+.home-content,
+.keystone-logo {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+/* Landing foreground */
 .foreground {
+
     position: absolute;
+
     inset: 0;
+
     z-index: 2;
 
     display: flex;
+
     flex-direction: column;
+
     justify-content: center;
+
     align-items: center;
+
     gap: 32px;
 
     color: white;
+
 }
 
 
+/* Logo container */
 .logo-stage {
+
     position: relative;
+
     width: 220px;
+
     height: 220px;
+
 }
 
-.mesh-eye {
-    z-index: 1;
-    color: lime;
-}
-
-.enter-link {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    padding: 12px 18px;
-
-    color: rgba(229, 202, 255, 0.9);
-    text-decoration: none;
-    font: 500 11px/1 Arial, sans-serif;
-    letter-spacing: 0.34em;
-
-    transition:
-        color 0.25s ease,
-        text-shadow 0.25s ease,
-        letter-spacing 0.25s ease;
-}
-
-.enter-link:hover {
-    color: white;
-    letter-spacing: 0.38em;
-    text-shadow: 0 0 15px rgba(190, 103, 255, 0.82);
-}
-
-.enter-link span:first-child,
-.enter-link span:last-child {
-    color: rgba(181, 104, 243, 0.66);
-}
 
 .mesh-eye,
 .logo-emblem,
 .logo-sword {
+
     position: absolute;
+
     left: 50%;
+
     top: 50%;
+
     transform: translate(-50%, -50%);
+
 }
 
+
 .logo-emblem {
+
     z-index: 2;
+
     width: 100%;
+
     height: 100%;
+
     object-fit: contain;
 
     opacity: 0;
-    filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.7));
+
+    filter:
+        drop-shadow(
+            0 14px 20px rgba(0,0,0,0.7)
+        );
+
 }
 
+
 .logo-sword {
+
     z-index: 3;
+
     width: 100%;
+
     height: 100%;
+
     object-fit: contain;
+
+}
+
+
+/* Enter button */
+.enter-link {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 12px 18px;
+
+    color: rgba(229,202,255,0.9);
+
+    text-decoration: none;
+
+    font:
+        500 11px/1 Arial, sans-serif;
+
+    letter-spacing: .34em;
+
+    background: none;
+
+    border: none;
+
+    cursor: pointer;
+
+    transition:
+        color .25s ease,
+        text-shadow .25s ease,
+        letter-spacing .25s ease;
+
+}
+
+
+.enter-link:hover {
+
+    color:white;
+
+    letter-spacing:.38em;
+
+    text-shadow:
+        0 0 15px rgba(190,103,255,.82);
+
+}
+
+
+.enter-link span:first-child,
+.enter-link span:last-child {
+
+    color: rgba(181,104,243,.66);
+
 }

@@ -1,7 +1,9 @@
 import { useRef, useEffect } from "react";
+import { onGateOpen } from "../utils/gate";
 import emblemImage from "../assets/bladewatchemblem.png";
 
 function MeshBackground() {
+    console.log("MeshBackground loaded");
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -47,6 +49,8 @@ function MeshBackground() {
         const img = new Image();
         let formationStart = null;
         let targets = [];
+        let gateOpening = false;
+        let gateStart = null;
 
         img.onload = () => {
 
@@ -74,6 +78,11 @@ function MeshBackground() {
 
         img.src = emblemImage;
 
+        const removeGateListener = onGateOpen(() => {
+            gateOpening = true;
+            gateStart = performance.now();
+        })
+
         function draw(time) {
 
             pointerX += (targetX - pointerX) * 0.195;
@@ -82,13 +91,17 @@ function MeshBackground() {
             const spacing = width < 640 ? 34 : 28; //mobile
             const maxShadowBlur = width < 640 ? 9 : 16; //mobile
             const breath = 1 + Math.sin(time * 0.0005) * 0.028; //RETURN to this later and change fixed variables for mouse-over
-            const scale = 220 / img.width;
+            const scale = img.width > 0
+                ? 220 / img.width
+                : 1;
             const duration = 1400;
             const elapsed = formationStart === null ? 0 : time - formationStart;
             const formation = Math.min(1, elapsed / duration);
             const zoneRadius = 400;
             const zoneDots = (Math.PI * zoneRadius * zoneRadius) / (spacing * spacing);
-            const stride = Math.max(1, Math.floor(zoneDots / targets.length));
+            const stride = targets.length > 0
+                ? Math.max(1, Math.floor(zoneDots / targets.length))
+                : 1;
             let recruitIndex = 0;
 
 
@@ -143,7 +156,18 @@ function MeshBackground() {
                     let drawX = x;
                     let drawY = y;
 
-                    if (target) {
+                    if(gateOpening){
+                        const elapsed = time - gateStart;
+                        const gateProgress = Math.min(1, elapsed / 1200);
+                        if (target){
+                            const tx = width / 2 + (target.x - img.width / 2) * scale;
+                            const ty = height / 2 + (target.y - img.height / 2) * scale;
+                            drawX = tx + (tx - width/2) * gateProgress * 4;
+                            drawY = ty + (ty - height/2) * gateProgress * 4;
+                        }
+                    }
+
+                    if (target && !gateOpening) {
                         const tx = width / 2 + (target.x - img.width / 2) * scale;
                         const ty = height / 2 + (target.y - img.height / 2) * scale;
                         drawX = x + (tx - x) * formation;
@@ -171,6 +195,7 @@ function MeshBackground() {
             cancelAnimationFrame(animationFrameId);
             window.removeEventListener("pointermove", pointerEventHandler)
             window.removeEventListener("resize", resizeCanvas)
+            removeGateListener();
         }
 
     }, []);
