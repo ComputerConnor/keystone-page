@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { onGateOpen } from "../utils/gate";
+import { onGateState } from "../utils/gate";
 import emblemImage from "../assets/bladewatchemblem.png";
 
 function MeshBackground() {
@@ -49,8 +49,10 @@ function MeshBackground() {
         const img = new Image();
         let formationStart = null;
         let targets = [];
-        let gateOpening = false;
-        let gateStart = null;
+        let gateState = "closed";
+        let expanded = false;
+        let transitionStart = null;
+        let rewinding = false;
 
         img.onload = () => {
 
@@ -78,10 +80,22 @@ function MeshBackground() {
 
         img.src = emblemImage;
 
-        const removeGateListener = onGateOpen(() => {
-            gateOpening = true;
-            gateStart = performance.now();
-        })
+        const removeGateListener = onGateState((state)=>{
+
+            gateState = state;
+            transitionStart = performance.now();
+
+            if(state === "opening" || state === "open"){
+                expanded = true;
+                rewinding = false;
+            }
+
+            if(state === "closing"){
+                expanded = true;
+                rewinding = true;
+            }
+
+        });
 
         function draw(time) {
 
@@ -96,7 +110,30 @@ function MeshBackground() {
                 : 1;
             const duration = 1400;
             const elapsed = formationStart === null ? 0 : time - formationStart;
-            const formation = Math.min(1, elapsed / duration);
+            const formation = formationStart === null ? 1 : Math.min(1, elapsed / duration);
+            const transitionElapsed =
+                transitionStart === null ? 0 : time - transitionStart;
+
+            let gateProgress = 0;
+
+            if (gateState === "opening") {
+                gateProgress = Math.min(1, transitionElapsed / 1200);
+            }
+
+            if (gateState === "open") {
+                gateProgress = 1;
+            }
+
+            if (gateState === "closing") {
+                gateProgress = 1 - Math.min(1, transitionElapsed / 1200);
+            
+            }
+            if (gateState === "closing" && transitionElapsed > 1200) {
+                gateState = "closed";
+                expanded = false;
+                rewinding = false;
+                formationStart = null;
+            }
             const zoneRadius = 400;
             const zoneDots = (Math.PI * zoneRadius * zoneRadius) / (spacing * spacing);
             const stride = targets.length > 0
@@ -156,18 +193,17 @@ function MeshBackground() {
                     let drawX = x;
                     let drawY = y;
 
-                    if(gateOpening){
-                        const elapsed = time - gateStart;
-                        const gateProgress = Math.min(1, elapsed / 1200);
-                        if (target){
+                    if (gateState === "opening" || gateState === "closing" || expanded) {
+                        if (target) {
                             const tx = width / 2 + (target.x - img.width / 2) * scale;
                             const ty = height / 2 + (target.y - img.height / 2) * scale;
-                            drawX = tx + (tx - width/2) * gateProgress * 4;
-                            drawY = ty + (ty - height/2) * gateProgress * 4;
+
+                            drawX = tx + (tx - width / 2) * gateProgress * 4;
+                            drawY = ty + (ty - height / 2) * gateProgress * 4;
                         }
                     }
 
-                    if (target && !gateOpening) {
+                    if(target && gateState !== "opening" && gateState !== "closing" && !expanded && !rewinding){
                         const tx = width / 2 + (target.x - img.width / 2) * scale;
                         const ty = height / 2 + (target.y - img.height / 2) * scale;
                         drawX = x + (tx - x) * formation;

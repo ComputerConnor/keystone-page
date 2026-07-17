@@ -1,14 +1,23 @@
 let listeners = [];
 
-export function openGate(){
-    listeners.forEach(
-        callback => callback()
-    );
+let currentState = "closed";
+
+export function setGateState(state) {
+    currentState = state;
+
+    listeners.forEach(listener => listener(state));
 }
 
-export function onGateOpen(callback){
+export function getGateState() {
+    return currentState;
+}
+
+export function onGateState(callback) {
     listeners.push(callback);
+
+    callback(currentState);
+
     return () => {
-        listeners = listeners.filter( item => item !== callback)
+        listeners = listeners.filter(l => l !== callback);
     };
 }

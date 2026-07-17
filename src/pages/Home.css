@@ -18,10 +18,10 @@
 
 .home-content h1 {
     margin: 0;
-    left:15px;
+    left:5px;
     position:relative;
     font-size: 45px;
-    letter-spacing: .6em;
+    letter-spacing: .3em;
     font-weight: 500;
     opacity: .85;
     text-shadow: 0 0 20px rgba(190, 103, 255, .8);

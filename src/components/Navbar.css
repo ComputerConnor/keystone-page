@@ -3,16 +3,23 @@
     z-index:3;
     top:28px;
     left:35px;
+
+    background:none;
+    border:none;
+    padding:0;
+    cursor:pointer;
+
     color:white;
     text-decoration:none;
     font-family:Arial, sans-serif;
     font-size:18px;
     letter-spacing:.35em;
-    text-shadow: 0 0 12px rgba(190, 103, 255, .8);
-    transition: .25s ease;
+
+    text-shadow:0 0 12px rgba(190, 103, 255, .8);
+    transition:.25s ease;
 }
 
 .keystone-logo:hover{
     color:#d8b4ff;
-    text-shadow: 0 0 25px rgba(190, 103, 255, 1);
+    text-shadow:0 0 25px rgba(190, 103, 255, 1);
 }
