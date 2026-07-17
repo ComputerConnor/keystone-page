@@ -1,4 +1,4 @@
-In support of Bladewatch, future of Sword Clanning.
+In support of Keystone, future of Sword Clanning.
 
 # React + Vite
 
