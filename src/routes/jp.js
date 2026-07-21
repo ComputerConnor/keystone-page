@@ -34,6 +34,7 @@ router.post("/login", async (req, res) => {
                 is_active
             FROM jp_users
             WHERE username = $1
+            LIMIT 1
             `,
             [username]
         );
@@ -80,14 +81,23 @@ router.post("/login", async (req, res) => {
 
         res.cookie(COOKIE_NAME, token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
+
+            // Cross-site frontend and API require HTTPS
+            secure: true,
+
+            // Required because keystone-swords.com and Railway
+            // are different sites
+            sameSite: "none",
+
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+
+            path: "/"
         });
 
         return res.json({
             success: true,
             user: {
+                id: user.id,
                 username: user.username,
                 category: user.category
             }
@@ -183,7 +193,12 @@ router.get("/me", requireJpAuth, async (req, res) => {
 // ============================================================
 
 router.post("/logout", (req, res) => {
-    res.clearCookie(COOKIE_NAME);
+    res.clearCookie(COOKIE_NAME, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/"
+    });
 
     return res.json({
         success: true
