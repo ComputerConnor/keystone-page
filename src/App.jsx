@@ -4,6 +4,7 @@ import MeshBackground from "./components/MeshBackground";
 
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
+import JPLogin from "./pages/JPLogin";
 
 function App() {
     return (
@@ -16,8 +17,22 @@ function App() {
                 <div className="page-layer">
 
                     <Routes>
-                        <Route path="/" element={<Landing />} />
-                        <Route path="/home" element={<Home />} />
+
+                        <Route
+                            path="/"
+                            element={<Landing />}
+                        />
+
+                        <Route
+                            path="/home"
+                            element={<Home />}
+                        />
+
+                        <Route
+                            path="/jp"
+                            element={<JPLogin />}
+                        />
+
                     </Routes>
 
                 </div>

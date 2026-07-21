@@ -194,3 +194,283 @@
     color: rgba(181,104,243,.66);
 
 }
+
+/* ============================================================
+   JP AUTHENTICATION
+   ============================================================ */
+
+.jp-login-page {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+
+}
+
+
+.jp-login-card {
+
+    position: relative;
+
+    width: min(420px, calc(100% - 40px));
+
+    padding: 42px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(14, 17, 22, 0.94),
+            rgba(4, 6, 8, 0.97)
+        );
+
+    border: 1px solid rgba(181, 104, 243, 0.22);
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.025),
+        0 25px 80px rgba(0,0,0,0.65),
+        0 0 45px rgba(120, 50, 180, 0.08);
+
+    backdrop-filter: blur(18px);
+
+}
+
+
+.jp-login-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(181,104,243,.8),
+            transparent
+        );
+
+}
+
+
+.jp-login-header {
+
+    margin-bottom: 34px;
+
+}
+
+
+.jp-login-label {
+
+    display: block;
+
+    margin-bottom: 14px;
+
+    color: rgba(181,104,243,.72);
+
+    font:
+        500 10px/1 Arial, sans-serif;
+
+    letter-spacing: .32em;
+
+}
+
+
+.jp-login-header h1 {
+
+    margin: 0 0 10px;
+
+    font:
+        400 30px/1.1 Arial, sans-serif;
+
+    letter-spacing: -.02em;
+
+}
+
+
+.jp-login-header p {
+
+    margin: 0;
+
+    color: rgba(255,255,255,.42);
+
+    font:
+        400 12px/1.5 Arial, sans-serif;
+
+    letter-spacing: .05em;
+
+}
+
+
+/* Inputs */
+
+.jp-input-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.jp-input-group label {
+
+    color: rgba(255,255,255,.52);
+
+    font:
+        500 10px/1 Arial, sans-serif;
+
+    letter-spacing: .18em;
+
+    text-transform: uppercase;
+
+}
+
+
+.jp-input-group input {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 14px 15px;
+
+    color: white;
+
+    background: rgba(0,0,0,.32);
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    outline: none;
+
+    font:
+        400 13px Arial, sans-serif;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+
+}
+
+
+.jp-input-group input::placeholder {
+
+    color: rgba(255,255,255,.22);
+
+}
+
+
+.jp-input-group input:focus {
+
+    background: rgba(0,0,0,.48);
+
+    border-color: rgba(181,104,243,.65);
+
+    box-shadow:
+        0 0 0 3px rgba(181,104,243,.08),
+        0 0 20px rgba(181,104,243,.08);
+
+}
+
+
+/* Login button */
+
+.jp-login-card button {
+
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 15px;
+
+    color: rgba(255,255,255,.88);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(135,65,190,.55),
+            rgba(75,35,115,.55)
+        );
+
+    border: 1px solid rgba(181,104,243,.42);
+
+    cursor: pointer;
+
+    font:
+        500 10px/1 Arial, sans-serif;
+
+    letter-spacing: .28em;
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease,
+        letter-spacing .25s ease;
+
+}
+
+
+.jp-login-card button:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(155,78,220,.72),
+            rgba(85,40,130,.72)
+        );
+
+    border-color: rgba(210,160,255,.72);
+
+    box-shadow:
+        0 0 24px rgba(181,104,243,.20);
+
+    letter-spacing: .34em;
+
+}
+
+
+.jp-login-card button:disabled {
+
+    opacity: .45;
+
+    cursor: wait;
+
+}
+
+
+/* Error */
+
+.jp-login-error {
+
+    margin: 8px 0 12px;
+
+    padding: 11px 13px;
+
+    color: rgba(255,150,150,.9);
+
+    background: rgba(120,20,30,.12);
+
+    border: 1px solid rgba(200,70,80,.22);
+
+    font:
+        400 11px/1.4 Arial, sans-serif;
+
+}
