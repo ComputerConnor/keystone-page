@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API_BASE from "../utils/api";
 
 function JPLogin() {
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -45,8 +48,16 @@ function JPLogin() {
                 data
             );
 
-            // Temporary success behavior.
-            // We can redirect to the JP dashboard next.
+            /*
+             * Login succeeded.
+             *
+             * The backend has created the HTTP-only
+             * JP session cookie.
+             *
+             * Now send the user to the JP dashboard.
+             */
+
+            navigate("/jp/dashboard");
 
         } catch (error) {
             setError(

@@ -9,6 +9,7 @@ import MeshBackground from "./components/MeshBackground";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import JPLogin from "./pages/JPLogin";
+import JPDashboard from "./pages/JPDashboard";
 
 function App() {
     return (
@@ -35,6 +36,11 @@ function App() {
                         <Route
                             path="/jp"
                             element={<JPLogin />}
+                        />
+
+                        <Route
+                            path="/jp/dashboard"
+                            element={<JPDashboard />}
                         />
 
                     </Routes>
