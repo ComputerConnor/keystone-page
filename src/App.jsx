@@ -1,4 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+    HashRouter,
+    Routes,
+    Route
+} from "react-router-dom";
 
 import MeshBackground from "./components/MeshBackground";
 
@@ -8,7 +12,7 @@ import JPLogin from "./pages/JPLogin";
 
 function App() {
     return (
-        <BrowserRouter>
+        <HashRouter>
 
             <div className="app">
 
@@ -39,7 +43,7 @@ function App() {
 
             </div>
 
-        </BrowserRouter>
+        </HashRouter>
     );
 }
 
