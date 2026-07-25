@@ -46,12 +46,12 @@ function App() {
                         />
 
                         <Route
-                            path="/degen"
+                            path="/jp/chat/degen"
                             element={<DegenChat />}
                         />
 
                         <Route
-                            path="/exploiter"
+                            path="/jp/chat/exploiter"
                             element={<ExploitChat />}
                         />
 
