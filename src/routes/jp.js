@@ -1,190 +1,243 @@
 import express from "express";
+
 import {
     verifyPassword,
     createJpToken,
     verifyJpToken
 } from "../utils/jpAuth.js";
+
+import {
+    containsIdentitySharing
+} from "../utils/jpIdentityFilter.js";
+
 import { query } from "../utils/db.js";
 
-const router = express.Router();
 
-const COOKIE_NAME = "jp_session";
+const router =
+    express.Router();
+
+
+const COOKIE_NAME =
+    "jp_session";
+
 
 // ============================================================
 // LOGIN
 // ============================================================
 
-router.post("/login", async (req, res) => {
+router.post(
+    "/login",
+    async (
+        req,
+        res
+    ) => {
 
-    try {
+        try {
 
-        const {
-            username,
-            password
-        } = req.body;
+            const {
+                username,
+                password
+            } =
+                req.body;
 
-        if (
-            !username ||
-            !password
-        ) {
 
-            return res.status(400).json({
+            if (
+                !username ||
+                !password
+            ) {
 
-                error:
-                    "Username and password are required."
+                return res.status(400).json({
 
-            });
-        }
+                    error:
+                        "Username and password are required."
 
-        const result =
+                });
+
+            }
+
+
+            const result =
+                await query(
+
+                    `
+                    SELECT
+                        id,
+                        username,
+                        password_hash,
+                        category,
+                        is_active
+                    FROM jp_users
+                    WHERE username = $1
+                    LIMIT 1
+                    `,
+
+                    [
+                        username
+                    ]
+
+                );
+
+
+            if (
+                result.rows.length === 0
+            ) {
+
+                return res.status(401).json({
+
+                    error:
+                        "Invalid credentials."
+
+                });
+
+            }
+
+
+            const user =
+                result.rows[0];
+
+
+            if (
+                !user.is_active
+            ) {
+
+                return res.status(403).json({
+
+                    error:
+                        "This account has been disabled."
+
+                });
+
+            }
+
+
+            const validPassword =
+                await verifyPassword(
+
+                    password,
+
+                    user.password_hash
+
+                );
+
+
+            if (
+                !validPassword
+            ) {
+
+                return res.status(401).json({
+
+                    error:
+                        "Invalid credentials."
+
+                });
+
+            }
+
+
             await query(
 
                 `
-                SELECT
-                    id,
-                    username,
-                    password_hash,
-                    category,
-                    is_active
-                FROM jp_users
-                WHERE username = $1
-                LIMIT 1
+                UPDATE jp_users
+                SET last_login_at = NOW()
+                WHERE id = $1
                 `,
 
-                [username]
+                [
+                    user.id
+                ]
+
             );
 
-        if (
-            result.rows.length === 0
-        ) {
 
-            return res.status(401).json({
+            const token =
+                createJpToken({
 
-                error:
-                    "Invalid credentials."
+                    id:
+                        user.id,
 
-            });
-        }
+                    username:
+                        user.username,
 
-        const user =
-            result.rows[0];
+                    category:
+                        user.category
 
-        if (
-            !user.is_active
-        ) {
+                });
 
-            return res.status(403).json({
 
-                error:
-                    "This account has been disabled."
+            res.cookie(
 
-            });
-        }
+                COOKIE_NAME,
 
-        const validPassword =
-            await verifyPassword(
+                token,
 
-                password,
-                user.password_hash
+                {
+
+                    httpOnly:
+                        true,
+
+                    secure:
+                        true,
+
+                    sameSite:
+                        "none",
+
+                    maxAge:
+                        7 *
+                        24 *
+                        60 *
+                        60 *
+                        1000,
+
+                    path:
+                        "/"
+
+                }
+
             );
 
-        if (
-            !validPassword
-        ) {
 
-            return res.status(401).json({
+            return res.json({
 
-                error:
-                    "Invalid credentials."
-
-            });
-        }
-
-        await query(
-
-            `
-            UPDATE jp_users
-            SET last_login_at = NOW()
-            WHERE id = $1
-            `,
-
-            [user.id]
-        );
-
-        const token =
-            createJpToken({
-
-                id:
-                    user.id,
-
-                username:
-                    user.username,
-
-                category:
-                    user.category
-            });
-
-        res.cookie(
-
-            COOKIE_NAME,
-
-            token,
-
-            {
-
-                httpOnly:
+                success:
                     true,
 
-                secure:
-                    true,
+                user: {
 
-                sameSite:
-                    "none",
+                    id:
+                        user.id,
 
-                maxAge:
-                    7 *
-                    24 *
-                    60 *
-                    60 *
-                    1000,
+                    username:
+                        user.username,
 
-                path:
-                    "/"
-            }
-        );
+                    category:
+                        user.category
 
-        return res.json({
+                }
 
-            success:
-                true,
+            });
 
-            user: {
-
-                id:
-                    user.id,
-
-                username:
-                    user.username,
-
-                category:
-                    user.category
-            }
-        });
-
-    } catch (error) {
-
-        console.error(
-            "JP LOGIN ERROR:",
+        } catch (
             error
-        );
+        ) {
 
-        return res.status(500).json({
+            console.error(
+                "JP LOGIN ERROR:",
+                error
+            );
 
-            error:
-                "Internal server error."
-        });
+
+            return res.status(500).json({
+
+                error:
+                    "Internal server error."
+
+            });
+
+        }
+
     }
-});
+
+);
 
 
 // ============================================================
@@ -192,15 +245,20 @@ router.post("/login", async (req, res) => {
 // ============================================================
 
 export function requireJpAuth(
+
     req,
     res,
     next
+
 ) {
 
     const token =
         req.cookies?.[
+
             COOKIE_NAME
+
         ];
+
 
     if (
         !token
@@ -210,13 +268,19 @@ export function requireJpAuth(
 
             error:
                 "Not authenticated."
+
         });
+
     }
+
 
     const user =
         verifyJpToken(
+
             token
+
         );
+
 
     if (
         !user
@@ -226,13 +290,18 @@ export function requireJpAuth(
 
             error:
                 "Invalid or expired session."
+
         });
+
     }
+
 
     req.jpUser =
         user;
 
+
     next();
+
 }
 
 
@@ -250,6 +319,7 @@ router.get(
 
         req,
         res
+
     ) => {
 
         try {
@@ -268,9 +338,13 @@ router.get(
                     `,
 
                     [
+
                         req.jpUser.userId
+
                     ]
+
                 );
+
 
             if (
                 result.rows.length === 0
@@ -280,11 +354,15 @@ router.get(
 
                     error:
                         "User no longer exists."
+
                 });
+
             }
+
 
             const user =
                 result.rows[0];
+
 
             if (
                 !user.is_active
@@ -294,8 +372,11 @@ router.get(
 
                     error:
                         "Account disabled."
+
                 });
+
             }
+
 
             return res.json({
 
@@ -309,23 +390,35 @@ router.get(
 
                     category:
                         user.category
+
                 }
+
             });
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
+
                 "JP ME ERROR:",
+
                 error
+
             );
+
 
             return res.status(500).json({
 
                 error:
                     "Internal server error."
+
             });
+
         }
+
     }
+
 );
 
 
@@ -333,9 +426,48 @@ router.get(
 // JP CHAT ROOM ACCESS
 // ============================================================
 
+function normalizeRoom(
+    room
+) {
+
+    const normalizedRoom =
+        String(
+            room
+        )
+        .toLowerCase()
+        .trim();
+
+
+    if (
+        normalizedRoom ===
+        "degen"
+    ) {
+
+        return "degen";
+
+    }
+
+
+    if (
+        normalizedRoom ===
+        "exploit"
+    ) {
+
+        return "exploit";
+
+    }
+
+
+    return null;
+
+}
+
+
 function canAccessRoom(
+
     category,
     room
+
 ) {
 
     if (
@@ -344,7 +476,9 @@ function canAccessRoom(
     ) {
 
         return true;
+
     }
+
 
     if (
         room ===
@@ -353,7 +487,9 @@ function canAccessRoom(
 
         return category ===
             "degen";
+
     }
+
 
     if (
         room ===
@@ -362,26 +498,40 @@ function canAccessRoom(
 
         return category ===
             "exploiter";
+
     }
 
+
     return false;
+
 }
 
 
 // ============================================================
-// RANDOMIZED EXPLOIT IDENTITIES
+// RANDOMIZED CHAT IDENTITIES
 // ============================================================
 //
-// The same user gets the same alias within the room.
-// This means their identity is hidden, but their messages
-// can still be recognized as coming from the same person.
+// The alias is deterministic.
 //
-// Admins bypass this and see the real username.
+// That means:
 //
+// User 15 in DEGEN:
+// "Ghost Node 7924"
+//
+// User 15 in EXPLOIT:
+// "Ciphered Entity 4321"
+//
+// The same user keeps the same alias in that room.
+//
+// Admins see the actual username instead.
+//
+// ============================================================
 
 function generateChatAlias(
+
     userId,
     room
+
 ) {
 
     const adjectives = [
@@ -399,6 +549,7 @@ function generateChatAlias(
 
     ];
 
+
     const nouns = [
 
         "Node",
@@ -414,48 +565,83 @@ function generateChatAlias(
 
     ];
 
+
     const numericId =
-        Number(userId);
+        Number(
+            userId
+        );
+
 
     let seed =
         numericId;
 
-    // Make the same user have a different
-    // identity in each private room.
+
     if (
-        room === "degen"
+        room ===
+        "degen"
     ) {
 
-        seed += 7919;
+        seed +=
+            7919;
 
     } else {
 
-        seed += 15485863;
+        seed +=
+            15485863;
+
     }
+
 
     const adjective =
         adjectives[
-            seed %
+
+            Math.abs(
+                seed
+            )
+            %
             adjectives.length
+
         ];
+
 
     const noun =
         nouns[
+
             Math.floor(
-                seed /
+
+                Math.abs(
+                    seed
+                )
+                /
                 adjectives.length
-            ) %
+
+            )
+            %
             nouns.length
+
         ];
+
 
     const number =
         (
-            seed %
+
+            Math.abs(
+                seed
+            )
+            %
             9000
-        ) +
+
+        )
+        +
         1000;
 
-    return `${adjective} ${noun} ${number}`;
+
+    return (
+
+        `${adjective} ${noun} ${number}`
+
+    );
+
 }
 
 
@@ -473,31 +659,58 @@ router.get(
 
         req,
         res
+
     ) => {
 
         try {
 
             const room =
-                String(
+                normalizeRoom(
+
                     req.params.room
-                ).toLowerCase();
+
+                );
+
+
+            if (
+                !room
+            ) {
+
+                return res.status(404).json({
+
+                    error:
+                        "Chat room not found."
+
+                });
+
+            }
+
 
             const user =
                 req.jpUser;
 
+
             if (
+
                 !canAccessRoom(
+
                     user.category,
+
                     room
+
                 )
+
             ) {
 
                 return res.status(403).json({
 
                     error:
                         "You do not have access to this room."
+
                 });
+
             }
+
 
             const result =
                 await query(
@@ -519,36 +732,37 @@ router.get(
                     `,
 
                     [
+
                         room
+
                     ]
+
                 );
+
 
             const isAdmin =
                 user.category ===
                 "admin";
+
 
             const messages =
                 result.rows.map(
 
                     message => {
 
-                        let displayName;
-
-                        if (
+                        const displayName =
                             isAdmin
-                        ) {
 
-                            displayName =
-                                message.username;
+                                ? message.username
 
-                        } else {
+                                : generateChatAlias(
 
-                            displayName =
-                                generateChatAlias(
                                     message.user_id,
+
                                     room
+
                                 );
-                        }
+
 
                         return {
 
@@ -564,43 +778,61 @@ router.get(
                             createdAt:
                                 message.created_at,
 
-                            // Only admins get the actual identity.
                             realUsername:
+
                                 isAdmin
+
                                     ? message.username
+
                                     : undefined,
 
                             userId:
+
                                 isAdmin
+
                                     ? message.user_id
+
                                     : undefined
+
                         };
+
                     }
+
                 );
+
 
             return res.json({
 
                 room,
 
                 messages
+
             });
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
 
                 "JP CHAT FETCH ERROR:",
 
                 error
+
             );
+
 
             return res.status(500).json({
 
                 error:
                     "Unable to load chat messages."
+
             });
+
         }
+
     }
+
 );
 
 
@@ -618,37 +850,68 @@ router.post(
 
         req,
         res
+
     ) => {
 
         try {
 
             const room =
-                String(
+                normalizeRoom(
+
                     req.params.room
-                ).toLowerCase();
+
+                );
+
+
+            if (
+                !room
+            ) {
+
+                return res.status(404).json({
+
+                    error:
+                        "Chat room not found."
+
+                });
+
+            }
+
 
             const user =
                 req.jpUser;
 
+
             if (
+
                 !canAccessRoom(
+
                     user.category,
+
                     room
+
                 )
+
             ) {
 
                 return res.status(403).json({
 
                     error:
                         "You do not have access to this room."
+
                 });
+
             }
+
 
             const message =
                 String(
+
                     req.body?.message ||
                     ""
-                ).trim();
+
+                )
+                .trim();
+
 
             if (
                 !message
@@ -658,37 +921,89 @@ router.post(
 
                     error:
                         "Message cannot be empty."
+
                 });
+
             }
 
+
             if (
+
                 message.length >
                 2000
+
             ) {
 
                 return res.status(400).json({
 
                     error:
                         "Message is too long."
+
                 });
+
             }
+
+
+            // ====================================================
+            // IDENTITY PROTECTION
+            // ====================================================
+            //
+            // Block messages that appear to reveal:
+            //
+            // - Real names
+            // - Discord usernames
+            // - Social media accounts
+            // - Phone numbers
+            // - Emails
+            // - Addresses
+            // - IP addresses
+            // - Direct contact information
+            //
+            // Admins are intentionally exempt.
+            //
+            // ====================================================
+
+            if (
+
+                user.category !==
+                "admin"
+
+                &&
+
+                containsIdentitySharing(
+
+                    message
+
+                )
+
+            ) {
+
+                return res.status(400).json({
+
+                    error:
+                        "Message blocked. Identity-sharing content is not permitted in this room."
+
+                });
+
+            }
+
 
             const result =
                 await query(
 
                     `
                     INSERT INTO jp_chat_messages
-                        (
-                            room,
-                            user_id,
-                            message
-                        )
+                    (
+                        room,
+                        user_id,
+                        message
+                    )
                     VALUES
-                        (
-                            $1,
-                            $2,
-                            $3
-                        )
+                    (
+                        $1,
+                        $2,
+                        $3
+                    )
                     RETURNING
                         id,
                         user_id,
@@ -703,33 +1018,34 @@ router.post(
                         user.userId,
 
                         message
+
                     ]
+
                 );
+
 
             const created =
                 result.rows[0];
+
 
             const isAdmin =
                 user.category ===
                 "admin";
 
-            let displayName;
 
-            if (
+            const displayName =
                 isAdmin
-            ) {
 
-                displayName =
-                    user.username;
+                    ? user.username
 
-            } else {
+                    : generateChatAlias(
 
-                displayName =
-                    generateChatAlias(
                         user.userId,
+
                         room
+
                     );
-            }
+
 
             return res.status(201).json({
 
@@ -748,33 +1064,49 @@ router.post(
                         created.created_at,
 
                     realUsername:
+
                         isAdmin
+
                             ? user.username
+
                             : undefined,
 
                     userId:
+
                         isAdmin
+
                             ? user.userId
+
                             : undefined
+
                 }
+
             });
 
-        } catch (error) {
+        } catch (
+            error
+        ) {
 
             console.error(
 
                 "JP CHAT SEND ERROR:",
 
                 error
+
             );
+
 
             return res.status(500).json({
 
                 error:
                     "Unable to send message."
+
             });
+
         }
+
     }
+
 );
 
 
@@ -790,6 +1122,7 @@ router.post(
 
         req,
         res
+
     ) => {
 
         res.clearCookie(
@@ -809,15 +1142,21 @@ router.post(
 
                 path:
                     "/"
+
             }
+
         );
+
 
         return res.json({
 
             success:
                 true
+
         });
+
     }
+
 );
 
 
