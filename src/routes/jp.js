@@ -1,24 +1,125 @@
 import express from "express";
-
-import {
-    verifyPassword,
-    createJpToken,
-    verifyJpToken
-} from "../utils/jpAuth.js";
-
-import {
-    containsIdentitySharing
-} from "../utils/jpIdentityFilter.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import { query } from "../utils/db.js";
 
+const router = express.Router();
 
-const router =
-    express.Router();
+const COOKIE_NAME = "jp_session";
+
+const JWT_SECRET = process.env.JP_JWT_SECRET;
+
+if (!JWT_SECRET) {
+    throw new Error(
+        "JP_JWT_SECRET is missing from environment variables."
+    );
+}
 
 
-const COOKIE_NAME =
-    "jp_session";
+// ============================================================
+// AUTHENTICATION HELPERS
+// ============================================================
+
+async function verifyPassword(password, passwordHash) {
+
+    return bcrypt.compare(
+        password,
+        passwordHash
+    );
+
+}
+
+
+function createJpToken(user) {
+
+    return jwt.sign(
+
+        {
+            userId: user.id,
+            username: user.username,
+            category: user.category
+        },
+
+        JWT_SECRET,
+
+        {
+            expiresIn: "7d"
+        }
+
+    );
+
+}
+
+
+function verifyJpToken(token) {
+
+    try {
+
+        return jwt.verify(
+            token,
+            JWT_SECRET
+        );
+
+    } catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+// ============================================================
+// IDENTITY-SHARING FILTER
+// ============================================================
+
+function containsIdentitySharing(message) {
+
+    const text =
+        String(
+            message || ""
+        );
+
+
+    const patterns = [
+
+        // Email addresses
+        /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
+
+        // IPv4 addresses
+        /\b(?:\d{1,3}\.){3}\d{1,3}\b/,
+
+        // Phone numbers
+        /\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/,
+
+        // Discord links / identity references
+        /discord(?:\.gg|app\.com|\.com)/i,
+        /discord\s*(?:username|tag|user|id)/i,
+
+        // Social media URLs
+        /(?:https?:\/\/)?(?:www\.)?(?:instagram|twitter|x|facebook|tiktok|snapchat|telegram)\.com/i,
+
+        // Generic URLs
+        /https?:\/\/\S+/i,
+
+        // Street address patterns
+        /\b\d{1,6}\s+[A-Z0-9][A-Z0-9\s.-]{2,}\s+(?:street|st|road|rd|avenue|ave|lane|ln|drive|dr|boulevard|blvd|court|ct|way)\b/i,
+
+        // Explicit contact-sharing language
+        /\b(?:my|my personal|contact me at|reach me at|message me at)\s+(?:email|phone|number|address|discord|instagram|twitter|telegram)\b/i
+
+    ];
+
+
+    return patterns.some(
+
+        pattern =>
+            pattern.test(text)
+
+    );
+
+}
 
 
 // ============================================================
@@ -26,10 +127,14 @@ const COOKIE_NAME =
 // ============================================================
 
 router.post(
+
     "/login",
+
     async (
+
         req,
         res
+
     ) => {
 
         try {
@@ -42,8 +147,10 @@ router.post(
 
 
             if (
+
                 !username ||
                 !password
+
             ) {
 
                 return res.status(400).json({
@@ -79,7 +186,9 @@ router.post(
 
 
             if (
+
                 result.rows.length === 0
+
             ) {
 
                 return res.status(401).json({
@@ -97,7 +206,9 @@ router.post(
 
 
             if (
+
                 !user.is_active
+
             ) {
 
                 return res.status(403).json({
@@ -114,14 +225,15 @@ router.post(
                 await verifyPassword(
 
                     password,
-
                     user.password_hash
 
                 );
 
 
             if (
+
                 !validPassword
+
             ) {
 
                 return res.status(401).json({
@@ -216,13 +328,14 @@ router.post(
 
             });
 
-        } catch (
-            error
-        ) {
+        } catch (error) {
 
             console.error(
+
                 "JP LOGIN ERROR:",
+
                 error
+
             );
 
 
@@ -260,9 +373,7 @@ export function requireJpAuth(
         ];
 
 
-    if (
-        !token
-    ) {
+    if (!token) {
 
         return res.status(401).json({
 
@@ -282,9 +393,7 @@ export function requireJpAuth(
         );
 
 
-    if (
-        !user
-    ) {
+    if (!user) {
 
         return res.status(401).json({
 
@@ -347,7 +456,9 @@ router.get(
 
 
             if (
+
                 result.rows.length === 0
+
             ) {
 
                 return res.status(401).json({
@@ -364,9 +475,7 @@ router.get(
                 result.rows[0];
 
 
-            if (
-                !user.is_active
-            ) {
+            if (!user.is_active) {
 
                 return res.status(403).json({
 
@@ -395,9 +504,7 @@ router.get(
 
             });
 
-        } catch (
-            error
-        ) {
+        } catch (error) {
 
             console.error(
 
@@ -426,21 +533,23 @@ router.get(
 // JP CHAT ROOM ACCESS
 // ============================================================
 
-function normalizeRoom(
-    room
-) {
+function normalizeRoom(room) {
 
     const normalizedRoom =
         String(
-            room
+
+            room || ""
+
         )
         .toLowerCase()
         .trim();
 
 
     if (
+
         normalizedRoom ===
         "degen"
+
     ) {
 
         return "degen";
@@ -449,8 +558,10 @@ function normalizeRoom(
 
 
     if (
+
         normalizedRoom ===
         "exploit"
+
     ) {
 
         return "exploit";
@@ -471,8 +582,10 @@ function canAccessRoom(
 ) {
 
     if (
+
         category ===
         "admin"
+
     ) {
 
         return true;
@@ -481,8 +594,10 @@ function canAccessRoom(
 
 
     if (
+
         room ===
         "degen"
+
     ) {
 
         return category ===
@@ -492,12 +607,25 @@ function canAccessRoom(
 
 
     if (
+
         room ===
         "exploit"
+
     ) {
 
-        return category ===
-            "exploiter";
+        return (
+
+            category ===
+            "exploit"
+
+        ) ||
+
+        (
+
+            category ===
+            "exploiter"
+
+        );
 
     }
 
@@ -509,22 +637,6 @@ function canAccessRoom(
 
 // ============================================================
 // RANDOMIZED CHAT IDENTITIES
-// ============================================================
-//
-// The alias is deterministic.
-//
-// That means:
-//
-// User 15 in DEGEN:
-// "Ghost Node 7924"
-//
-// User 15 in EXPLOIT:
-// "Ciphered Entity 4321"
-//
-// The same user keeps the same alias in that room.
-//
-// Admins see the actual username instead.
-//
 // ============================================================
 
 function generateChatAlias(
@@ -568,7 +680,9 @@ function generateChatAlias(
 
     const numericId =
         Number(
+
             userId
+
         );
 
 
@@ -577,8 +691,10 @@ function generateChatAlias(
 
 
     if (
+
         room ===
         "degen"
+
     ) {
 
         seed +=
@@ -596,7 +712,9 @@ function generateChatAlias(
         adjectives[
 
             Math.abs(
+
                 seed
+
             )
             %
             adjectives.length
@@ -610,7 +728,9 @@ function generateChatAlias(
             Math.floor(
 
                 Math.abs(
+
                     seed
+
                 )
                 /
                 adjectives.length
@@ -626,7 +746,9 @@ function generateChatAlias(
         (
 
             Math.abs(
+
                 seed
+
             )
             %
             9000
@@ -672,9 +794,7 @@ router.get(
                 );
 
 
-            if (
-                !room
-            ) {
+            if (!room) {
 
                 return res.status(404).json({
 
@@ -695,7 +815,6 @@ router.get(
                 !canAccessRoom(
 
                     user.category,
-
                     room
 
                 )
@@ -724,7 +843,7 @@ router.get(
                         u.username,
                         u.category
                     FROM jp_chat_messages m
-                    JOIN jp_users u
+                    INNER JOIN jp_users u
                         ON u.id = m.user_id
                     WHERE m.room = $1
                     ORDER BY m.created_at ASC
@@ -758,13 +877,12 @@ router.get(
                                 : generateChatAlias(
 
                                     message.user_id,
-
                                     room
 
                                 );
 
 
-                        return {
+                        const formattedMessage = {
 
                             id:
                                 message.id,
@@ -776,25 +894,23 @@ router.get(
                                 message.message,
 
                             createdAt:
-                                message.created_at,
-
-                            realUsername:
-
-                                isAdmin
-
-                                    ? message.username
-
-                                    : undefined,
-
-                            userId:
-
-                                isAdmin
-
-                                    ? message.user_id
-
-                                    : undefined
+                                message.created_at
 
                         };
+
+
+                        if (isAdmin) {
+
+                            formattedMessage.realUsername =
+                                message.username;
+
+                            formattedMessage.userId =
+                                message.user_id;
+
+                        }
+
+
+                        return formattedMessage;
 
                     }
 
@@ -809,9 +925,7 @@ router.get(
 
             });
 
-        } catch (
-            error
-        ) {
+        } catch (error) {
 
             console.error(
 
@@ -863,9 +977,7 @@ router.post(
                 );
 
 
-            if (
-                !room
-            ) {
+            if (!room) {
 
                 return res.status(404).json({
 
@@ -886,7 +998,6 @@ router.post(
                 !canAccessRoom(
 
                     user.category,
-
                     room
 
                 )
@@ -913,9 +1024,7 @@ router.post(
                 .trim();
 
 
-            if (
-                !message
-            ) {
+            if (!message) {
 
                 return res.status(400).json({
 
@@ -943,25 +1052,6 @@ router.post(
 
             }
 
-
-            // ====================================================
-            // IDENTITY PROTECTION
-            // ====================================================
-            //
-            // Block messages that appear to reveal:
-            //
-            // - Real names
-            // - Discord usernames
-            // - Social media accounts
-            // - Phone numbers
-            // - Emails
-            // - Addresses
-            // - IP addresses
-            // - Direct contact information
-            //
-            // Admins are intentionally exempt.
-            //
-            // ====================================================
 
             if (
 
@@ -1041,51 +1131,47 @@ router.post(
                     : generateChatAlias(
 
                         user.userId,
-
                         room
 
                     );
 
 
+            const responseMessage = {
+
+                id:
+                    created.id,
+
+                username:
+                    displayName,
+
+                message:
+                    created.message,
+
+                createdAt:
+                    created.created_at
+
+            };
+
+
+            if (isAdmin) {
+
+                responseMessage.realUsername =
+                    user.username;
+
+                responseMessage.userId =
+                    user.userId;
+
+            }
+
+
             return res.status(201).json({
 
-                message: {
-
-                    id:
-                        created.id,
-
-                    username:
-                        displayName,
-
-                    message:
-                        created.message,
-
-                    createdAt:
-                        created.created_at,
-
-                    realUsername:
-
-                        isAdmin
-
-                            ? user.username
-
-                            : undefined,
-
-                    userId:
-
-                        isAdmin
-
-                            ? user.userId
-
-                            : undefined
-
-                }
+                message:
+                    responseMessage
 
             });
 
-        } catch (
-            error
-        ) {
+        } catch (error) {
 
             console.error(
 
