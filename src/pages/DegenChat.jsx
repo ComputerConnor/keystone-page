@@ -426,7 +426,7 @@ return (
                                 event.target.value
                             )
                     }
-                    placeholder="Transmit message..."
+                    placeholder="Send message..."
                     maxLength={2000}
                 />
 
