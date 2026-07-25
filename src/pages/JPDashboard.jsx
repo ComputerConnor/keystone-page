@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_BASE from "../utils/api";
 
+import "./JPChat.css";
+
 function JPDashboard() {
 
     const navigate = useNavigate();
@@ -95,11 +97,21 @@ function JPDashboard() {
 
         return (
 
-            <main className="jp-login-page">
+            <main className="jp-dashboard-page">
 
-                <div className="jp-login-card">
+                <div className="jp-dashboard-shell">
 
-                    AUTHENTICATING SESSION...
+                    <span className="jp-login-label">
+
+                        KEYSTONE // JP
+
+                    </span>
+
+                    <h1>
+
+                        AUTHENTICATING SESSION...
+
+                    </h1>
 
                 </div>
 
@@ -138,13 +150,13 @@ function JPDashboard() {
 
                         <span className="jp-login-label">
 
-                            KEYSTONE // JP
+                            KEYSTONE // JP // INTERNAL
 
                         </span>
 
                         <h1>
 
-                            JP Dashboard
+                            JP DASHBOARD
 
                         </h1>
 
@@ -173,7 +185,7 @@ function JPDashboard() {
 
                         <small>
 
-                            {user.category}
+                            {user.category.toUpperCase()}
 
                         </small>
 
@@ -182,105 +194,38 @@ function JPDashboard() {
                 </header>
 
 
-                <section className="jp-room-grid">
+                <div className="jp-dashboard-divider" />
 
 
-                    {isDegen && (
+                <section className="jp-room-section">
 
-                        <button
-                            className="jp-room-card jp-room-degen"
-                            onClick={() =>
-                                openRoom("degen")
+                    <div className="jp-section-heading">
+
+                        <span>
+
+                            AVAILABLE CHANNELS
+
+                        </span>
+
+                        <small>
+
+                            {isAdmin
+                                ? "ADMINISTRATIVE ACCESS ENABLED"
+                                : "RESTRICTED ACCESS"
                             }
-                        >
 
-                            <span className="jp-room-index">
+                        </small>
 
-                                01
-
-                            </span>
-
-                            <div className="jp-room-icon">
-
-                                ◈
-
-                            </div>
-
-                            <h2>
-
-                                DEGEN WORKROOM
-
-                            </h2>
-
-                            <p>
-
-                                Private communications between
-                                verified degen workers.
-
-                            </p>
-
-                            <span className="jp-room-access">
-
-                                ACCESS GRANTED
-
-                            </span>
-
-                        </button>
-
-                    )}
+                    </div>
 
 
-                    {isExploiter && (
-
-                        <button
-                            className="jp-room-card jp-room-exploit"
-                            onClick={() =>
-                                openRoom("exploiter")
-                            }
-                        >
-
-                            <span className="jp-room-index">
-
-                                02
-
-                            </span>
-
-                            <div className="jp-room-icon">
-
-                                ◇
-
-                            </div>
-
-                            <h2>
-
-                                EXPLOIT WORKROOM
-
-                            </h2>
-
-                            <p>
-
-                                Private communications between
-                                verified exploit workers.
-
-                            </p>
-
-                            <span className="jp-room-access">
-
-                                IDENTITY MASKING ACTIVE
-
-                            </span>
-
-                        </button>
-
-                    )}
+                    <div className="jp-room-grid">
 
 
-                    {isAdmin && (
-
-                        <>
+                        {isDegen && (
 
                             <button
-                                className="jp-room-card jp-room-admin"
+                                className="jp-room-card jp-room-degen"
                                 onClick={() =>
                                     openRoom("degen")
                                 }
@@ -306,22 +251,26 @@ function JPDashboard() {
 
                                 <p>
 
-                                    Administrative access.
-                                    Worker identities visible.
+                                    Private communications between
+                                    verified degen workers.
 
                                 </p>
 
                                 <span className="jp-room-access">
 
-                                    ADMIN OVERRIDE
+                                    ACCESS GRANTED
 
                                 </span>
 
                             </button>
 
+                        )}
+
+
+                        {isExploiter && (
 
                             <button
-                                className="jp-room-card jp-room-admin"
+                                className="jp-room-card jp-room-exploit"
                                 onClick={() =>
                                     openRoom("exploiter")
                                 }
@@ -329,7 +278,7 @@ function JPDashboard() {
 
                                 <span className="jp-room-index">
 
-                                    02
+                                    01
 
                                 </span>
 
@@ -347,33 +296,132 @@ function JPDashboard() {
 
                                 <p>
 
-                                    Administrative access.
-                                    Identity masking bypassed.
+                                    Private communications between
+                                    verified exploit workers.
 
                                 </p>
 
                                 <span className="jp-room-access">
 
-                                    ADMIN OVERRIDE
+                                    IDENTITY MASKING ACTIVE
 
                                 </span>
 
                             </button>
 
-                        </>
+                        )}
 
-                    )}
+
+                        {isAdmin && (
+
+                            <>
+
+                                <button
+                                    className="jp-room-card jp-room-admin"
+                                    onClick={() =>
+                                        openRoom("degen")
+                                    }
+                                >
+
+                                    <span className="jp-room-index">
+
+                                        01
+
+                                    </span>
+
+                                    <div className="jp-room-icon">
+
+                                        ◈
+
+                                    </div>
+
+                                    <h2>
+
+                                        DEGEN WORKROOM
+
+                                    </h2>
+
+                                    <p>
+
+                                        Administrative access.
+                                        Worker identities visible.
+
+                                    </p>
+
+                                    <span className="jp-room-access">
+
+                                        ADMIN OVERRIDE
+
+                                    </span>
+
+                                </button>
+
+
+                                <button
+                                    className="jp-room-card jp-room-admin"
+                                    onClick={() =>
+                                        openRoom("exploiter")
+                                    }
+                                >
+
+                                    <span className="jp-room-index">
+
+                                        02
+
+                                    </span>
+
+                                    <div className="jp-room-icon">
+
+                                        ◇
+
+                                    </div>
+
+                                    <h2>
+
+                                        EXPLOIT WORKROOM
+
+                                    </h2>
+
+                                    <p>
+
+                                        Administrative access.
+                                        Identity masking bypassed.
+
+                                    </p>
+
+                                    <span className="jp-room-access">
+
+                                        ADMIN OVERRIDE
+
+                                    </span>
+
+                                </button>
+
+                            </>
+
+                        )}
+
+                    </div>
 
                 </section>
 
 
+                <div className="jp-dashboard-divider" />
+
+
                 <footer className="jp-dashboard-footer">
 
-                    <span>
+                    <div className="jp-session-status">
 
-                        SESSION: ACTIVE
+                        <span className="jp-status-dot" />
 
-                    </span>
+                        <span>
+
+                            SESSION ACTIVE
+
+                        </span>
+
+                    </div>
 
 
                     <button
@@ -381,7 +429,7 @@ function JPDashboard() {
                         onClick={handleLogout}
                     >
 
-                        LOG OUT
+                        TERMINATE SESSION
 
                     </button>
 
@@ -392,6 +440,7 @@ function JPDashboard() {
         </main>
 
     );
+
 }
 
 export default JPDashboard;
