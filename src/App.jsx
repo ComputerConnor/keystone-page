@@ -14,7 +14,9 @@ import DegenChat from "./pages/DegenChat";
 import ExploitChat from "./pages/ExploitChat";
 
 function App() {
+
     return (
+
         <HashRouter>
 
             <div className="app">
@@ -51,7 +53,7 @@ function App() {
                         />
 
                         <Route
-                            path="/jp/chat/exploiter"
+                            path="/jp/chat/exploit"
                             element={<ExploitChat />}
                         />
 
@@ -62,7 +64,9 @@ function App() {
             </div>
 
         </HashRouter>
+
     );
+
 }
 
 export default App;

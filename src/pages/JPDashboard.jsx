@@ -199,26 +199,6 @@ function JPDashboard() {
 
                 <section className="jp-room-section">
 
-                    <div className="jp-section-heading">
-
-                        <span>
-
-                            AVAILABLE CHANNELS
-
-                        </span>
-
-                        <small>
-
-                            {isAdmin
-                                ? "ADMINISTRATIVE ACCESS ENABLED"
-                                : "RESTRICTED ACCESS"
-                            }
-
-                        </small>
-
-                    </div>
-
-
                     <div className="jp-room-grid">
 
 
@@ -236,12 +216,6 @@ function JPDashboard() {
                                     01
 
                                 </span>
-
-                                <div className="jp-room-icon">
-
-                                    ◈
-
-                                </div>
 
                                 <h2>
 
@@ -281,12 +255,6 @@ function JPDashboard() {
                                     01
 
                                 </span>
-
-                                <div className="jp-room-icon">
-
-                                    ◇
-
-                                </div>
 
                                 <h2>
 
@@ -329,12 +297,6 @@ function JPDashboard() {
 
                                     </span>
 
-                                    <div className="jp-room-icon">
-
-                                        ◈
-
-                                    </div>
-
                                     <h2>
 
                                         DEGEN WORKROOM
@@ -369,12 +331,6 @@ function JPDashboard() {
                                         02
 
                                     </span>
-
-                                    <div className="jp-room-icon">
-
-                                        ◇
-
-                                    </div>
 
                                     <h2>
 
@@ -411,25 +367,12 @@ function JPDashboard() {
 
                 <footer className="jp-dashboard-footer">
 
-                    <div className="jp-session-status">
-
-                        <span className="jp-status-dot" />
-
-                        <span>
-
-                            SESSION ACTIVE
-
-                        </span>
-
-                    </div>
-
-
                     <button
                         className="jp-logout-button"
                         onClick={handleLogout}
                     >
 
-                        TERMINATE SESSION
+                        LOG OUT
 
                     </button>
 
