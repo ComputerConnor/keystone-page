@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_BASE from "../utils/api";
 
-import "./JPChat.css";
+import "./JPDashboard.css";
 
 function JPDashboard() {
 
@@ -272,7 +272,7 @@ function JPDashboard() {
                             <button
                                 className="jp-room-card jp-room-exploit"
                                 onClick={() =>
-                                    openRoom("exploiter")
+                                    openRoom("exploit")
                                 }
                             >
 
@@ -360,7 +360,7 @@ function JPDashboard() {
                                 <button
                                     className="jp-room-card jp-room-admin"
                                     onClick={() =>
-                                        openRoom("exploiter")
+                                        openRoom("exploit")
                                     }
                                 >
 
