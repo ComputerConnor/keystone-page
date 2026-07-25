@@ -10,6 +10,8 @@ import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import JPLogin from "./pages/JPLogin";
 import JPDashboard from "./pages/JPDashboard";
+import DegenChat from "./pages/DegenChat";
+import ExploitChat from "./pages/ExploitChat";
 
 function App() {
     return (
@@ -41,6 +43,16 @@ function App() {
                         <Route
                             path="/jp/dashboard"
                             element={<JPDashboard />}
+                        />
+
+                        <Route
+                            path="/degen"
+                            element={<DegenChat />}
+                        />
+
+                        <Route
+                            path="/exploiter"
+                            element={<ExploitChat />}
                         />
 
                     </Routes>
