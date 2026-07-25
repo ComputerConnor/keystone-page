@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_BASE from "../utils/api";
 
+import "./JPChat.css";
+
 function DegenChat() {
 
     const navigate = useNavigate();
 
-    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -45,10 +46,6 @@ function DegenChat() {
                     );
                 }
 
-                setUser(
-                    data.user
-                );
-
             } catch (error) {
 
                 console.error(
@@ -62,9 +59,8 @@ function DegenChat() {
 
             } finally {
 
-                setLoading(
-                    false
-                );
+                setLoading(false);
+
             }
         }
 
@@ -77,15 +73,20 @@ function DegenChat() {
 
         return (
 
-            <main className="jp-dashboard-page">
+            <main className="jp-chat-page">
 
-                <div className="jp-dashboard-shell">
+                <div className="jp-chat-panel">
 
-                    AUTHENTICATING ROOM ACCESS...
+                    <div className="jp-chat-messages">
+
+                        AUTHENTICATING ROOM ACCESS...
+
+                    </div>
 
                 </div>
 
             </main>
+
         );
     }
 
@@ -94,108 +95,130 @@ function DegenChat() {
 
         return (
 
-            <main className="jp-dashboard-page">
+            <main className="jp-chat-page">
 
-                <div className="jp-dashboard-shell">
+                <div className="jp-chat-panel">
 
-                    <h1>
-                        ACCESS DENIED
-                    </h1>
+                    <div className="jp-chat-messages">
 
-                    <p>
-                        {error}
-                    </p>
+                        <h1 className="jp-chat-title">
+                            ACCESS DENIED
+                        </h1>
 
-                    <button
-                        onClick={() =>
-                            navigate("/jp/dashboard")
-                        }
-                    >
+                        <p className="jp-chat-description">
+                            {error}
+                        </p>
 
-                        RETURN TO DASHBOARD
+                        <button
+                            className="jp-chat-button"
+                            onClick={() =>
+                                navigate("/jp/dashboard")
+                            }
+                        >
 
-                    </button>
+                            RETURN TO DASHBOARD
+
+                        </button>
+
+                    </div>
 
                 </div>
 
             </main>
+
         );
     }
 
 
     return (
 
-        <main className="jp-dashboard-page">
+        <main className="jp-chat-page">
 
-            <div className="jp-dashboard-shell">
+            <header className="jp-chat-header">
 
-                <header className="jp-dashboard-header">
+                <div className="jp-chat-header-left">
 
-                    <div>
+                    <span className="jp-chat-label">
 
-                        <span className="jp-login-label">
+                        KEYSTONE // JP // PRIVATE
 
-                            KEYSTONE // JP // PRIVATE
+                    </span>
 
-                        </span>
+                    <h1 className="jp-chat-title">
 
-                        <h1>
+                        DEGEN WORKROOM
 
-                            DEGEN WORKROOM
+                    </h1>
 
-                        </h1>
+                    <p className="jp-chat-description">
 
-                        <p>
+                        Restricted communications channel.
 
-                            Restricted communications channel.
+                    </p>
 
-                        </p>
-
-                    </div>
-
-                </header>
+                </div>
 
 
-                <section className="jp-chat-window">
+                <div className="jp-chat-actions">
 
-                    <div className="jp-chat-messages">
+                    <button
+                        className="jp-chat-button"
+                        onClick={() =>
+                            navigate("/jp/dashboard")
+                        }
+                    >
 
-                        <p>
+                        DASHBOARD
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <section className="jp-chat-panel">
+
+                <div className="jp-chat-messages">
+
+                    <article className="jp-chat-message">
+
+                        <div className="jp-chat-message-text">
+
                             The degen workroom is online.
-                        </p>
 
-                    </div>
+                        </div>
 
+                    </article>
 
-                    <div className="jp-chat-input">
-
-                        <input
-                            type="text"
-                            placeholder="Enter message..."
-                        />
-
-                        <button>
-
-                            SEND
-
-                        </button>
-
-                    </div>
-
-                </section>
+                </div>
 
 
-                <button
-                    onClick={() =>
-                        navigate("/jp/dashboard")
-                    }
+                <form
+                    className="jp-chat-composer"
+                    onSubmit={event => {
+                        event.preventDefault();
+                    }}
                 >
 
-                    RETURN TO DASHBOARD
+                    <input
+                        className="jp-chat-input"
+                        type="text"
+                        placeholder="Transmit message..."
+                    />
 
-                </button>
+                    <button
+                        className="jp-chat-send"
+                        type="submit"
+                    >
 
-            </div>
+                        SEND
+
+                    </button>
+
+                </form>
+
+            </section>
 
         </main>
 
