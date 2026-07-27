@@ -11,6 +11,14 @@ body,
 }
 
 body {
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     background: #030607;
+}
+.app {
+    min-height: 100vh;
+}
+
+.page-layer {
+    min-height: 100vh;
 }
