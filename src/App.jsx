@@ -12,6 +12,8 @@ import JPLogin from "./pages/JPLogin";
 import JPDashboard from "./pages/JPDashboard";
 import DegenChat from "./pages/DegenChat";
 import ExploitChat from "./pages/ExploitChat";
+import JPCaseQueue from "./pages/JPCaseQueue";
+import JPSubmissionQueue from "./pages/JPSubmissionQueue";
 
 function App() {
 
@@ -55,6 +57,15 @@ function App() {
                         <Route
                             path="/jp/chat/exploit"
                             element={<ExploitChat />}
+                        />
+                        <Route
+                            path="/jp/cases"
+                            element={<JPCaseQueue />}
+                        />
+
+                        <Route
+                            path="/jp/submissions"
+                            element={<JPSubmissionQueue />}
                         />
 
                     </Routes>

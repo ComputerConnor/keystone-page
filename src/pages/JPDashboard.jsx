@@ -126,16 +126,16 @@ function JPDashboard() {
     }
 
 
-    const isAdmin =
-        user.category === "admin";
+    const role = (user.category || "").toUpperCase();
 
+    const isAdmin =
+        role === "ADMIN";
 
     const isDegen =
-        user.category === "degen";
+        role === "DGN_PANEL";
 
-
-    const isExploiter =
-        user.category === "exploiter";
+    const isExploit =
+        role === "XPLT_PANEL";
 
 
     return (
@@ -201,163 +201,99 @@ function JPDashboard() {
 
                     <div className="jp-room-grid">
 
+    {(isAdmin || isDegen || isExploit) && (
 
-                        {isDegen && (
+        <button
+            className="jp-room-card"
+            onClick={() => navigate("/jp/cases")}
+        >
 
-                            <button
-                                className="jp-room-card jp-room-degen"
-                                onClick={() =>
-                                    openRoom("degen")
-                                }
-                            >
+            <span className="jp-room-index">
+                01
+            </span>
 
-                                <span className="jp-room-index">
+            <h2>
+                CASE QUEUE
+            </h2>
 
-                                    01
+            <p>
+                Review assigned investigations and complete reports.
+            </p>
 
-                                </span>
+        </button>
 
-                                <h2>
+    )}
 
-                                    DEGEN WORKROOM
+    {isAdmin && (
 
-                                </h2>
+        <button
+            className="jp-room-card"
+            onClick={() => navigate("/jp/submissions")}
+        >
 
-                                <p>
+            <span className="jp-room-index">
+                02
+            </span>
 
-                                    Private communications between
-                                    verified degen workers.
+            <h2>
+                SUBMISSION QUEUE
+            </h2>
 
-                                </p>
+            <p>
+                Approve, reject or return submitted investigations.
+            </p>
 
-                                <span className="jp-room-access">
+        </button>
 
-                                    ACCESS GRANTED
+    )}
 
-                                </span>
+    {(isAdmin || isDegen) && (
 
-                            </button>
+        <button
+            className="jp-room-card jp-room-degen"
+            onClick={() => openRoom("degen")}
+        >
 
-                        )}
+            <span className="jp-room-index">
+                03
+            </span>
 
+            <h2>
+                DEGEN CHAT
+            </h2>
 
-                        {isExploiter && (
+            <p>
+                Internal communications for DGN Panel members.
+            </p>
 
-                            <button
-                                className="jp-room-card jp-room-exploit"
-                                onClick={() =>
-                                    openRoom("exploit")
-                                }
-                            >
+        </button>
 
-                                <span className="jp-room-index">
+    )}
 
-                                    01
+    {(isAdmin || isExploit) && (
 
-                                </span>
+        <button
+            className="jp-room-card jp-room-exploit"
+            onClick={() => openRoom("exploit")}
+        >
 
-                                <h2>
+            <span className="jp-room-index">
+                04
+            </span>
 
-                                    EXPLOIT WORKROOM
+            <h2>
+                EXPLOIT CHAT
+            </h2>
 
-                                </h2>
+            <p>
+                Internal communications for XPLT Panel members.
+            </p>
 
-                                <p>
+        </button>
 
-                                    Private communications between
-                                    verified exploit workers.
+    )}
 
-                                </p>
-
-                                <span className="jp-room-access">
-
-                                    IDENTITY MASKING ACTIVE
-
-                                </span>
-
-                            </button>
-
-                        )}
-
-
-                        {isAdmin && (
-
-                            <>
-
-                                <button
-                                    className="jp-room-card jp-room-admin"
-                                    onClick={() =>
-                                        openRoom("degen")
-                                    }
-                                >
-
-                                    <span className="jp-room-index">
-
-                                        01
-
-                                    </span>
-
-                                    <h2>
-
-                                        DEGEN WORKROOM
-
-                                    </h2>
-
-                                    <p>
-
-                                        Administrative access.
-                                        Worker identities visible.
-
-                                    </p>
-
-                                    <span className="jp-room-access">
-
-                                        ADMIN OVERRIDE
-
-                                    </span>
-
-                                </button>
-
-
-                                <button
-                                    className="jp-room-card jp-room-admin"
-                                    onClick={() =>
-                                        openRoom("exploit")
-                                    }
-                                >
-
-                                    <span className="jp-room-index">
-
-                                        02
-
-                                    </span>
-
-                                    <h2>
-
-                                        EXPLOIT WORKROOM
-
-                                    </h2>
-
-                                    <p>
-
-                                        Administrative access.
-                                        Identity masking bypassed.
-
-                                    </p>
-
-                                    <span className="jp-room-access">
-
-                                        ADMIN OVERRIDE
-
-                                    </span>
-
-                                </button>
-
-                            </>
-
-                        )}
-
-                    </div>
+</div>
 
                 </section>
 

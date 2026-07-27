@@ -1245,5 +1245,94 @@ router.post(
 
 );
 
+router.get(
+    "/cases",
+    requireJpAuth,
+    async (req, res) => {
+
+        try {
+
+            const role =
+                req.jpUser.category.toUpperCase();
+
+            let sql;
+            let values = [];
+
+            if (role === "ADMIN") {
+
+                sql = `
+                    SELECT *
+                    FROM jp_case_queue
+                    ORDER BY created_at DESC
+                `;
+
+            } else if (role === "DGN_PANEL") {
+
+                sql = `
+                    SELECT *
+                    FROM jp_case_queue
+                    WHERE case_type='DGN'
+                    ORDER BY created_at DESC
+                `;
+
+            } else {
+
+                sql = `
+                    SELECT *
+                    FROM jp_case_queue
+                    WHERE case_type='XPLT'
+                    ORDER BY created_at DESC
+                `;
+
+            }
+
+            const result =
+                await query(sql, values);
+
+            res.json(result.rows);
+
+        }
+
+        catch(err){
+
+            console.error(err);
+
+            res.status(500).json({
+                error:"Unable to load queue."
+            });
+
+        }
+
+    }
+);
+
+router.get(
+    "/submissions",
+    requireJpAuth,
+    async(req,res)=>{
+
+        if(
+            req.jpUser.category.toUpperCase() !==
+            "ADMIN"
+        ){
+
+            return res.status(403).json({
+                error:"Forbidden"
+            });
+
+        }
+
+        const result =
+            await query(`
+                SELECT *
+                FROM jp_case_queue
+                WHERE status='Pending'
+                ORDER BY created_at ASC
+            `);
+
+        res.json(result.rows);
+
+    }
+);
 
 export default router;
