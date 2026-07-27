@@ -10,7 +10,7 @@
 
     min-height: 100vh;
 
-    padding: 60px 40px 80px;
+    padding: 35px 40px 80px;
 
     color: white;
 
@@ -50,7 +50,7 @@
 
     gap: 40px;
 
-    padding-bottom: 34px;
+    padding-bottom: 20px;
 
     border-bottom: 1px solid rgba(255,255,255,.08);
 
@@ -220,7 +220,7 @@
     grid-template-columns:
         repeat(2, minmax(320px, 1fr));
 
-    gap:25px;
+    gap:18px;
 
     width:100%;
 
@@ -235,9 +235,9 @@
 
     position: relative;
 
-    min-height: 290px;
+    min-height: 210px;
 
-    padding: 28px;
+    padding: 22px;
 
     display: flex;
 
@@ -394,11 +394,11 @@
 
 .jp-room-icon {
 
-    width: 48px;
+    width:42px;
 
-    height: 48px;
+    height:42px;
 
-    margin-bottom: 26px;
+    margin-bottom:18px;
 
     display: flex;
 
@@ -436,7 +436,7 @@
 
 .jp-room-card h2 {
 
-    margin: 0 0 12px;
+    margin:0 0 8px;
 
     font:
 
@@ -504,7 +504,7 @@
 
     align-items: center;
 
-    padding-top: 22px;
+    padding-top: 12px;
 
     border-top: 1px solid rgba(255,255,255,.07);
 
