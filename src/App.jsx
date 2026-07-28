@@ -14,6 +14,7 @@ import DegenChat from "./pages/DegenChat";
 import ExploitChat from "./pages/ExploitChat";
 import JPCaseQueue from "./pages/JPCaseQueue";
 import JPSubmissionQueue from "./pages/JPSubmissionQueue";
+import JPSubmitCase from "./pages/JPSubmitCase";
 
 function App() {
 
@@ -66,6 +67,10 @@ function App() {
                         <Route
                             path="/jp/submissions"
                             element={<JPSubmissionQueue />}
+                        />
+                        <Route
+                            path="/jp/submit"
+                            element={<JPSubmitCase />}
                         />
 
                     </Routes>
