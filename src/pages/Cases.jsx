@@ -419,49 +419,78 @@ function Cases() {
         currentCase
     ) {
         /*
-         * Open immediately so the browser does not block
-         * the new tab while the API request is running.
+         * Open the tab immediately during the click event
+         * so popup blockers allow it.
          */
         const evidenceWindow =
             window.open(
-                "",
-                "_blank",
-                "noopener,noreferrer"
+                "about:blank",
+                "_blank"
             );
 
-        setEvidenceLoadingKey(
-            currentCase.key
-        );
+        if (evidenceWindow) {
+            /*
+             * Prevent the new page from controlling
+             * the original website tab.
+             */
+            evidenceWindow.opener =
+                null;
 
-        setError("");
+            evidenceWindow.document.title =
+                "Loading Evidence...";
 
-        try {
-            const response =
-                await fetch(
-                    `${API_BASE}/api/cases/${
-                        encodeURIComponent(
-                            currentCase.source
-                        )
-                    }/${
-                        encodeURIComponent(
-                            currentCase.category
-                        )
-                    }/${
-                        encodeURIComponent(
-                            currentCase.caseId
-                        )
-                    }/evidence`,
-                    {
-                        method:
-                            "POST",
-                        credentials:
-                            "include",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        }
+            evidenceWindow.document.body.innerHTML = `
+            <div style="
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                background: #09090f;
+                color: #c084fc;
+                font-family: Arial, sans-serif;
+                letter-spacing: 2px;
+            ">
+                GENERATING EVIDENCE LINK...
+            </div>
+        `;
+    }
+
+    setEvidenceLoadingKey(
+        currentCase.key
+    );
+
+    setError("");
+
+    try {
+        const response =
+            await fetch(
+                `${API_BASE}/api/cases/${
+                    encodeURIComponent(
+                        currentCase.source
+                    )
+                }/${
+                    encodeURIComponent(
+                        currentCase.category
+                    )
+                }/${
+                    encodeURIComponent(
+                        currentCase.caseId
+                    )
+                }/evidence`,
+                {
+                    method:
+                        "POST",
+
+                    credentials:
+                        "include",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
                     }
-                );
+                }
+            );
 
             const data =
                 await response.json();
@@ -480,15 +509,56 @@ function Cases() {
             }
 
             if (evidenceWindow) {
-                evidenceWindow.location.href =
-                    data.url;
+                evidenceWindow.location.replace(
+                    data.url
+                );
             } else {
-                window.location.href =
-                    data.url;
+                /*
+                 * Only use the current tab when the browser
+                 * genuinely blocked the popup.
+                 */
+                window.location.assign(
+                    data.url
+                );
             }
+
         } catch (evidenceError) {
-            if (evidenceWindow) {
-                evidenceWindow.close();
+            if (
+                evidenceWindow &&
+                !evidenceWindow.closed
+            ) {
+                evidenceWindow.document.title =
+                    "Evidence Error";
+
+                evidenceWindow.document.body.innerHTML = `
+                    <div style="
+                        min-height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 16px;
+                        margin: 0;
+                        padding: 30px;
+                        background: #09090f;
+                        color: #ffffff;
+                        font-family: Arial, sans-serif;
+                        text-align: center;
+                    ">
+                        <strong style="
+                            color: #c084fc;
+                            letter-spacing: 2px;
+                        ">
+                            EVIDENCE ERROR
+                        </strong>
+
+                        <span>
+                            ${
+                                evidenceError.message
+                            }
+                        </span>
+                    </div>
+                `;
             }
 
             console.error(
@@ -499,6 +569,7 @@ function Cases() {
             setError(
                 evidenceError.message
             );
+
         } finally {
             setEvidenceLoadingKey(
                 null
