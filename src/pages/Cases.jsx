@@ -108,6 +108,195 @@ function normalizeCategory(value) {
 }
 
 
+
+function normalizeStrike(value) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+        return 0;
+    }
+
+    if (typeof value === "number") {
+        return Number.isFinite(value)
+            ? Math.max(
+                0,
+                Math.min(
+                    4,
+                    Math.trunc(value)
+                )
+            )
+            : 0;
+    }
+
+    const text =
+        String(value)
+            .trim()
+            .toLowerCase();
+
+    const tierMatch =
+        text.match(
+            /(?:tier|strike)\s*[:#-]?\s*([1-4])/i
+        );
+
+    if (tierMatch) {
+        return Number(
+            tierMatch[1]
+        );
+    }
+
+    const numberMatch =
+        text.match(
+            /\b([1-4])\b/
+        );
+
+    if (numberMatch) {
+        return Number(
+            numberMatch[1]
+        );
+    }
+
+    const parsed =
+        Number.parseInt(
+            text,
+            10
+        );
+
+    if (
+        Number.isFinite(parsed)
+    ) {
+        return Math.max(
+            0,
+            Math.min(
+                4,
+                parsed
+            )
+        );
+    }
+
+    return 0;
+}
+
+
+function normalizeStatus(value) {
+    const original =
+        String(value || "")
+            .trim();
+
+    const normalized =
+        original
+            .toLowerCase()
+            .replace(
+                /:[a-z0-9_-]+:/gi,
+                " "
+            )
+            .replace(
+                /[🟢🟠🔴🟡⚪⚫]/g,
+                " "
+            )
+            .replace(
+                /[_-]+/g,
+                " "
+            )
+            .replace(
+                /\s+/g,
+                " "
+            )
+            .trim();
+
+    const activeTerms = [
+        "active",
+        "current",
+        "open",
+        "enabled",
+        "ongoing",
+        "live"
+    ];
+
+    const archivedTerms = [
+        "archived",
+        "archive",
+        "inactive",
+        "closed",
+        "expired",
+        "ended",
+        "disabled",
+        "removed"
+    ];
+
+    if (
+        archivedTerms.some(
+            term =>
+                normalized.includes(
+                    term
+                )
+        )
+    ) {
+        return {
+            key:
+                "ARCHIVED",
+            label:
+                "Archived"
+        };
+    }
+
+    if (
+        activeTerms.some(
+            term =>
+                normalized.includes(
+                    term
+                )
+        )
+    ) {
+        return {
+            key:
+                "ACTIVE",
+            label:
+                "Active"
+        };
+    }
+
+    if (!normalized) {
+        return {
+            key:
+                "UNKNOWN",
+            label:
+                "Unknown"
+        };
+    }
+
+    return {
+        key:
+            "UNKNOWN",
+        label:
+            original
+                .replace(
+                    /:[a-z0-9_-]+:/gi,
+                    ""
+                )
+                .replace(
+                    /[🟢🟠🔴🟡⚪⚫]/g,
+                    ""
+                )
+                .trim() ||
+                "Unknown"
+    };
+}
+
+
+function formatStrikeLabel(strike) {
+    if (
+        Number(strike) >= 1 &&
+        Number(strike) <= 4
+    ) {
+        return `Tier ${strike}`;
+    }
+
+    return "Unranked";
+}
+
+
 function normalizeCase(
     record,
     index
@@ -198,24 +387,35 @@ function normalizeCase(
             ),
 
         strike:
-            firstValue(
-                record,
-                [
-                    "strike",
-                    "Strike",
-                    "strikes"
-                ],
-                0
+            normalizeStrike(
+                firstValue(
+                    record,
+                    [
+                        "strike",
+                        "Strike",
+                        "strikes",
+                        "tier",
+                        "Tier"
+                    ],
+                    0
+                )
             ),
 
         status:
-            firstValue(
-                record,
-                [
-                    "status",
-                    "Status"
-                ],
-                "UNKNOWN"
+            normalizeStatus(
+                firstValue(
+                    record,
+                    [
+                        "status",
+                        "Status",
+                        "case_status",
+                        "CaseStatus",
+                        "caseStatus",
+                        "state",
+                        "State"
+                    ],
+                    ""
+                )
             ),
 
         startDate:
@@ -340,6 +540,18 @@ function Cases() {
     const [
         sourceFilter,
         setSourceFilter
+    ] =
+        useState("ALL");
+
+    const [
+        strikeFilter,
+        setStrikeFilter
+    ] =
+        useState("ALL");
+
+    const [
+        statusFilter,
+        setStatusFilter
     ] =
         useState("ALL");
 
@@ -604,6 +816,22 @@ function Cases() {
                             return false;
                         }
 
+                        if (
+                            strikeFilter !== "ALL" &&
+                            currentCase.strike !==
+                                Number(strikeFilter)
+                        ) {
+                            return false;
+                        }
+
+                        if (
+                            statusFilter !== "ALL" &&
+                            currentCase.status.key !==
+                                statusFilter
+                        ) {
+                            return false;
+                        }
+
                         if (!normalizedSearch) {
                             return true;
                         }
@@ -615,7 +843,7 @@ function Cases() {
                                 currentCase.usernames,
                                 currentCase.type,
                                 currentCase.strike,
-                                currentCase.status,
+                                currentCase.status.label,
                                 currentCase.notes,
                                 currentCase.source,
                                 currentCase.category
@@ -638,7 +866,9 @@ function Cases() {
                 cases,
                 search,
                 categoryFilter,
-                sourceFilter
+                sourceFilter,
+                strikeFilter,
+                statusFilter
             ]
         );
 
@@ -837,6 +1067,60 @@ function Cases() {
                         </option>
                     </select>
 
+                    <select
+                        className="cases-filter"
+                        value={strikeFilter}
+                        onChange={
+                            event =>
+                                setStrikeFilter(
+                                    event.target.value
+                                )
+                        }
+                    >
+                        <option value="ALL">
+                            ALL TIERS
+                        </option>
+
+                        <option value="1">
+                            TIER 1
+                        </option>
+
+                        <option value="2">
+                            TIER 2
+                        </option>
+
+                        <option value="3">
+                            TIER 3
+                        </option>
+
+                        <option value="4">
+                            TIER 4
+                        </option>
+                    </select>
+
+                    <select
+                        className="cases-filter"
+                        value={statusFilter}
+                        onChange={
+                            event =>
+                                setStatusFilter(
+                                    event.target.value
+                                )
+                        }
+                    >
+                        <option value="ALL">
+                            ALL STATUSES
+                        </option>
+
+                        <option value="ACTIVE">
+                            ACTIVE
+                        </option>
+
+                        <option value="ARCHIVED">
+                            ARCHIVED
+                        </option>
+                    </select>
+
                 </div>
 
 
@@ -927,9 +1211,11 @@ function Cases() {
 
                                                     </div>
 
-                                                    <span className="cases-status">
+                                                    <span
+                                                        className={`cases-status cases-status-${currentCase.status.key.toLowerCase()}`}
+                                                    >
                                                         {
-                                                            currentCase.status
+                                                            currentCase.status.label
                                                         }
                                                     </span>
 
@@ -988,7 +1274,9 @@ function Cases() {
 
                                                         <p>
                                                             {
-                                                                currentCase.strike
+                                                                formatStrikeLabel(
+                                                                    currentCase.strike
+                                                                )
                                                             }
                                                         </p>
 
