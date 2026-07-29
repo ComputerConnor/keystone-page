@@ -8,6 +8,7 @@ import MeshBackground from "./components/MeshBackground";
 
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
+import Cases from "./pages/Cases";
 import JPLogin from "./pages/JPLogin";
 import JPDashboard from "./pages/JPDashboard";
 import DegenChat from "./pages/DegenChat";
@@ -17,9 +18,7 @@ import JPSubmissionQueue from "./pages/JPSubmissionQueue";
 import JPSubmitCase from "./pages/JPSubmitCase";
 
 function App() {
-
     return (
-
         <HashRouter>
 
             <div className="app">
@@ -41,6 +40,11 @@ function App() {
                         />
 
                         <Route
+                            path="/cases"
+                            element={<Cases />}
+                        />
+
+                        <Route
                             path="/jp"
                             element={<JPLogin />}
                         />
@@ -59,6 +63,7 @@ function App() {
                             path="/jp/chat/exploit"
                             element={<ExploitChat />}
                         />
+
                         <Route
                             path="/jp/cases"
                             element={<JPCaseQueue />}
@@ -68,6 +73,7 @@ function App() {
                             path="/jp/submissions"
                             element={<JPSubmissionQueue />}
                         />
+
                         <Route
                             path="/jp/submit"
                             element={<JPSubmitCase />}
@@ -80,9 +86,7 @@ function App() {
             </div>
 
         </HashRouter>
-
     );
-
 }
 
 export default App;
