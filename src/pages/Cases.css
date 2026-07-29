@@ -346,3 +346,46 @@
         flex-direction: column;
     }
 }
+
+.cases-evidence {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, .07);
+}
+
+.cases-evidence > span {
+    color: rgba(181, 104, 243, .70);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .16em;
+}
+
+.cases-evidence-button {
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #d9bcff;
+    background: rgba(181, 104, 243, .12);
+    border: 1px solid rgba(181, 104, 243, .32);
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .13em;
+}
+
+.cases-evidence-button:hover:not(:disabled) {
+    color: white;
+    background: rgba(181, 104, 243, .20);
+    border-color: rgba(181, 104, 243, .62);
+}
+
+.cases-evidence-button:disabled {
+    cursor: wait;
+    opacity: .55;
+}
+
+.cases-no-evidence {
+    margin: 0;
+    color: rgba(255, 255, 255, .30);
+    font: 400 11px/1.4 Arial, sans-serif;
+}
