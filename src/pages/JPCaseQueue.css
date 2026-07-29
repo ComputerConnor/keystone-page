@@ -245,3 +245,70 @@
         grid-template-columns: 1fr;
     }
 }
+
+.jp-case-remove {
+    padding: 10px 14px;
+
+    color: rgba(255, 175, 175, .92);
+
+    background:
+        rgba(145, 25, 35, .12);
+
+    border:
+        1px solid
+        rgba(235, 80, 90, .28);
+
+    cursor: pointer;
+
+    font:
+        500 9px/1
+        Arial,
+        sans-serif;
+
+    letter-spacing: .14em;
+
+    transition:
+        color .2s ease,
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.jp-case-remove:hover:not(:disabled) {
+    color: white;
+
+    background:
+        rgba(180, 30, 45, .22);
+
+    border-color:
+        rgba(255, 100, 110, .62);
+
+    box-shadow:
+        0 0 22px
+        rgba(255, 55, 75, .12);
+}
+
+.jp-case-remove:disabled {
+    cursor: wait;
+    opacity: .5;
+}
+
+.jp-case-action-error {
+    margin-bottom: 18px;
+    padding: 13px 15px;
+
+    color:
+        rgba(255, 175, 175, .95);
+
+    background:
+        rgba(135, 25, 35, .13);
+
+    border:
+        1px solid
+        rgba(230, 70, 85, .28);
+
+    font:
+        400 11px/1.5
+        Arial,
+        sans-serif;
+}
