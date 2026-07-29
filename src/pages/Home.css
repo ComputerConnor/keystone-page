@@ -1,57 +1,67 @@
-.home-page{
-    width:100%;
-    height:100vh;
-    background:transparent;
-    color:white;
-    overflow:hidden;
+.home-page {
+    width: 100%;
+    min-height: 100vh;
+    background: transparent;
+    color: white;
 }
 
-.home-content{
-    position:relative;
-    z-index:2;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+.home-content {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 110px 20px 60px;
+    box-sizing: border-box;
 }
 
 .home-content h1 {
+    position: relative;
+    left: 5px;
     margin: 0;
-    left:5px;
-    position:relative;
     font-size: 45px;
-    letter-spacing: .3em;
     font-weight: 500;
+    letter-spacing: .3em;
     opacity: .85;
     text-shadow: 0 0 20px rgba(190, 103, 255, .8);
 }
 
-.home-menu{
-    margin-top:60px;
-    display:flex;
-    flex-direction:column;
-    gap:25px;
-    width:260px;
+.home-menu {
+    width: 260px;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
 .home-menu a {
-    height:90px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    text-decoration:none;
-    letter-spacing: .35em;
-    font-size:14px;
-    background: rgba(20,20,30,.55);
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    box-sizing: border-box;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    letter-spacing: .28em;
+    font-size: 13px;
+    background: rgba(20, 20, 30, .55);
     border: 1px solid rgba(181, 104, 243, .45);
-    backdrop-filter:blur(8px);
+    backdrop-filter: blur(8px);
     transition: .3s ease;
 }
 
-.home-menu a:hover{
-    transform:translateY(-5px);
+.home-menu a:hover {
+    transform: translateY(-5px);
     border-color: rgba(220, 160, 255, .9);
-    box-shadow:0 0 35px rgba(190, 103, 255, .7);
+    box-shadow: 0 0 35px rgba(190, 103, 255, .7);
+}
+
+@media (max-height: 760px) {
+    .home-content {
+        justify-content: flex-start;
+    }
 }
