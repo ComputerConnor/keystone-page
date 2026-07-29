@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import API_BASE from "../utils/api";
 
 import "./JPDashboard.css";
 
+
 function JPDashboard() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] =
+        useState(null);
+
+    const [loading, setLoading] =
+        useState(true);
+
 
     useEffect(() => {
 
@@ -21,7 +28,8 @@ function JPDashboard() {
                     await fetch(
                         `${API_BASE}/api/jp/me`,
                         {
-                            credentials: "include"
+                            credentials:
+                                "include"
                         }
                     );
 
@@ -29,16 +37,13 @@ function JPDashboard() {
                     await response.json();
 
                 if (!response.ok) {
-
                     throw new Error(
                         data.error ||
                         "Unable to authenticate session."
                     );
                 }
 
-                setUser(
-                    data.user
-                );
+                setUser(data.user);
 
             } catch (error) {
 
@@ -47,15 +52,11 @@ function JPDashboard() {
                     error
                 );
 
-                navigate(
-                    "/jp"
-                );
+                navigate("/jp");
 
             } finally {
 
-                setLoading(
-                    false
-                );
+                setLoading(false);
             }
         }
 
@@ -72,70 +73,69 @@ function JPDashboard() {
                 `${API_BASE}/api/jp/logout`,
                 {
                     method: "POST",
-                    credentials: "include"
+                    credentials:
+                        "include"
                 }
             );
 
         } finally {
 
-            navigate(
-                "/jp"
-            );
+            navigate("/jp");
         }
     }
 
 
     function openRoom(room) {
-
-        navigate(
-            `/jp/chat/${room}`
-        );
+        navigate(`/jp/chat/${room}`);
     }
 
 
     if (loading) {
 
         return (
-
             <main className="jp-dashboard-page">
-
                 <div className="jp-dashboard-shell">
 
                     <span className="jp-login-label">
-
                         KEYSTONE // JP
-
                     </span>
 
                     <h1>
-
                         AUTHENTICATING SESSION...
-
                     </h1>
 
                 </div>
-
             </main>
         );
     }
 
 
     if (!user) {
-
         return null;
     }
 
 
-    const role = (user.category || "").toUpperCase();
+    const role =
+        String(
+            user.category || ""
+        ).toUpperCase();
 
     const isAdmin =
         role === "ADMIN";
 
     const isDegen =
-        role === "DGN_PANEL";
+        role === "DGN_PANEL" ||
+        role === "DEGEN";
 
     const isExploit =
-        role === "XPLT_PANEL";
+        role === "XPLT_PANEL" ||
+        role === "EXPLOIT" ||
+        role === "EXPLOITER";
+
+    const canUsePanel =
+        isAdmin ||
+        isDegen ||
+        isExploit;
 
 
     return (
@@ -149,21 +149,15 @@ function JPDashboard() {
                     <div>
 
                         <span className="jp-login-label">
-
                             KEYSTONE // JP // INTERNAL
-
                         </span>
 
                         <h1>
-
                             JP DASHBOARD
-
                         </h1>
 
                         <p>
-
-                            Secure internal communication channels.
-
+                            Secure investigation, review, and communication tools.
                         </p>
 
                     </div>
@@ -172,21 +166,15 @@ function JPDashboard() {
                     <div className="jp-user-status">
 
                         <span>
-
                             AUTHENTICATED USER
-
                         </span>
 
                         <strong>
-
                             {user.username}
-
                         </strong>
 
                         <small>
-
-                            {user.category.toUpperCase()}
-
+                            {role}
                         </small>
 
                     </div>
@@ -201,99 +189,136 @@ function JPDashboard() {
 
                     <div className="jp-room-grid">
 
-    {(isAdmin || isDegen || isExploit) && (
+                        {
+                            canUsePanel && (
+                                <button
+                                    className="jp-room-card"
+                                    onClick={() =>
+                                        navigate("/jp/cases")
+                                    }
+                                >
 
-        <button
-            className="jp-room-card"
-            onClick={() => navigate("/jp/cases")}
-        >
+                                    <span className="jp-room-index">
+                                        01
+                                    </span>
 
-            <span className="jp-room-index">
-                01
-            </span>
+                                    <h2>
+                                        CASE DATABASE
+                                    </h2>
 
-            <h2>
-                CASE QUEUE
-            </h2>
+                                    <p>
+                                        Search approved DGN and XPLT cases available to your panel.
+                                    </p>
 
-            <p>
-                Review assigned investigations and complete reports.
-            </p>
+                                </button>
+                            )
+                        }
 
-        </button>
 
-    )}
+                        {
+                            canUsePanel && (
+                                <button
+                                    className="jp-room-card"
+                                    onClick={() =>
+                                        navigate("/jp/submit")
+                                    }
+                                >
 
-    {isAdmin && (
+                                    <span className="jp-room-index">
+                                        02
+                                    </span>
 
-        <button
-            className="jp-room-card"
-            onClick={() => navigate("/jp/submissions")}
-        >
+                                    <h2>
+                                        SUBMIT CASE
+                                    </h2>
 
-            <span className="jp-room-index">
-                02
-            </span>
+                                    <p>
+                                        Send a completed investigation to the administrative review queue.
+                                    </p>
 
-            <h2>
-                SUBMISSION QUEUE
-            </h2>
+                                </button>
+                            )
+                        }
 
-            <p>
-                Approve, reject or return submitted investigations.
-            </p>
 
-        </button>
+                        {
+                            isAdmin && (
+                                <button
+                                    className="jp-room-card"
+                                    onClick={() =>
+                                        navigate("/jp/submissions")
+                                    }
+                                >
 
-    )}
+                                    <span className="jp-room-index">
+                                        03
+                                    </span>
 
-    {(isAdmin || isDegen) && (
+                                    <h2>
+                                        SUBMISSION QUEUE
+                                    </h2>
 
-        <button
-            className="jp-room-card jp-room-degen"
-            onClick={() => openRoom("degen")}
-        >
+                                    <p>
+                                        Approve, reject, or return submitted investigations.
+                                    </p>
 
-            <span className="jp-room-index">
-                03
-            </span>
+                                </button>
+                            )
+                        }
 
-            <h2>
-                DEGEN CHAT
-            </h2>
 
-            <p>
-                Internal communications for DGN Panel members.
-            </p>
+                        {
+                            (isAdmin || isDegen) && (
+                                <button
+                                    className="jp-room-card jp-room-degen"
+                                    onClick={() =>
+                                        openRoom("degen")
+                                    }
+                                >
 
-        </button>
+                                    <span className="jp-room-index">
+                                        04
+                                    </span>
 
-    )}
+                                    <h2>
+                                        DEGEN CHAT
+                                    </h2>
 
-    {(isAdmin || isExploit) && (
+                                    <p>
+                                        Internal communications for DGN Panel members.
+                                    </p>
 
-        <button
-            className="jp-room-card jp-room-exploit"
-            onClick={() => openRoom("exploit")}
-        >
+                                </button>
+                            )
+                        }
 
-            <span className="jp-room-index">
-                04
-            </span>
 
-            <h2>
-                EXPLOIT CHAT
-            </h2>
+                        {
+                            (isAdmin || isExploit) && (
+                                <button
+                                    className="jp-room-card jp-room-exploit"
+                                    onClick={() =>
+                                        openRoom("exploit")
+                                    }
+                                >
 
-            <p>
-                Internal communications for XPLT Panel members.
-            </p>
+                                    <span className="jp-room-index">
+                                        05
+                                    </span>
 
-        </button>
+                                    <h2>
+                                        EXPLOIT CHAT
+                                    </h2>
 
-    )}
+                                    <p>
+                                        Internal communications for XPLT Panel members.
+                                    </p>
 
-</div>
+                                </button>
+                            )
+                        }
+
+                    </div>
 
                 </section>
 
@@ -303,13 +328,15 @@ function JPDashboard() {
 
                 <footer className="jp-dashboard-footer">
 
+                    <span>
+                        JP ACCESS // {role}
+                    </span>
+
                     <button
                         className="jp-logout-button"
                         onClick={handleLogout}
                     >
-
                         LOG OUT
-
                     </button>
 
                 </footer>
@@ -319,7 +346,7 @@ function JPDashboard() {
         </main>
 
     );
-
 }
+
 
 export default JPDashboard;

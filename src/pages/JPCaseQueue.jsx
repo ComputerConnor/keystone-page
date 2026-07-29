@@ -1,104 +1,203 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import API_BASE from "../utils/api";
 
 import "./JPCaseQueue.css";
 
+
+function formatDate(value) {
+
+    if (!value) {
+        return "Not set";
+    }
+
+    const date =
+        new Date(value);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return String(value);
+    }
+
+    return date.toLocaleString();
+}
+
+
+function splitEvidence(value) {
+
+    return String(value || "")
+        .split(/[|;\n\r]+/)
+        .map(item => item.trim())
+        .filter(Boolean);
+}
+
+
 function JPCaseQueue() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);
+    const [loading, setLoading] =
+        useState(true);
 
-    const [cases, setCases] = useState([]);
+    const [cases, setCases] =
+        useState([]);
+
+    const [error, setError] =
+        useState("");
+
+    const [search, setSearch] =
+        useState("");
+
+    const [typeFilter, setTypeFilter] =
+        useState("ALL");
+
+
+    const load =
+        useCallback(
+            async () => {
+
+                setError("");
+
+                try {
+
+                    const authResponse =
+                        await fetch(
+                            `${API_BASE}/api/jp/me`,
+                            {
+                                credentials:
+                                    "include"
+                            }
+                        );
+
+                    const authData =
+                        await authResponse.json();
+
+                    if (!authResponse.ok) {
+                        throw new Error(
+                            authData.error ||
+                            "Unable to authenticate session."
+                        );
+                    }
+
+                    const queueResponse =
+                        await fetch(
+                            `${API_BASE}/api/jp/cases`,
+                            {
+                                credentials:
+                                    "include"
+                            }
+                        );
+
+                    const queueData =
+                        await queueResponse.json();
+
+                    if (!queueResponse.ok) {
+                        throw new Error(
+                            queueData.error ||
+                            "Unable to load cases."
+                        );
+                    }
+
+                    setCases(
+                        Array.isArray(
+                            queueData.cases
+                        )
+                            ? queueData.cases
+                            : []
+                    );
+
+                } catch (loadError) {
+
+                    console.error(
+                        "CASE QUEUE LOAD ERROR:",
+                        loadError
+                    );
+
+                    setError(
+                        loadError.message
+                    );
+
+                    if (
+                        loadError.message
+                            .toLowerCase()
+                            .includes("authenticated")
+                    ) {
+                        navigate("/jp");
+                    }
+
+                } finally {
+
+                    setLoading(false);
+                }
+            },
+            [navigate]
+        );
+
 
     useEffect(() => {
-
         load();
+    }, [load]);
 
-    }, []);
 
+    const visibleCases =
+        useMemo(() => {
 
-    async function load() {
+            const normalizedSearch =
+                search.trim().toLowerCase();
 
-        try {
+            return cases.filter(
+                currentCase => {
 
-            const response =
-                await fetch(
-                    `${API_BASE}/api/jp/me`,
-                    {
-                        credentials: "include"
+                    if (
+                        typeFilter !== "ALL" &&
+                        currentCase.case_type !==
+                        typeFilter
+                    ) {
+                        return false;
                     }
-                );
 
-            const data =
-                await response.json();
-
-            if (!response.ok) {
-
-                throw new Error(data.error);
-
-            }
-
-            setUser(data.user);
-
-            //
-            // API comes later
-            //
-
-            const queue =
-                await fetch(
-                    `${API_BASE}/api/jp/cases`,
-                    {
-                        credentials:"include"
+                    if (!normalizedSearch) {
+                        return true;
                     }
-                );
 
-            setCases(
-                await queue.json()
+                    return [
+                        currentCase.case_id,
+                        currentCase.usernames,
+                        currentCase.user_ids,
+                        currentCase.type,
+                        currentCase.status,
+                        currentCase.notes
+                    ]
+                        .some(
+                            value =>
+                                String(value || "")
+                                    .toLowerCase()
+                                    .includes(
+                                        normalizedSearch
+                                    )
+                        );
+                }
             );
 
-        }
-
-        catch (err) {
-
-            console.error(err);
-
-            navigate("/jp");
-
-        }
-
-        finally {
-
-            setLoading(false);
-
-        }
-
-    }
+        }, [cases, search, typeFilter]);
 
 
     if (loading) {
 
         return (
-
             <main className="jp-case-page">
-
                 <div className="jp-case-shell">
-
                     <h1>
-
                         Loading Case Queue...
-
                     </h1>
-
                 </div>
-
             </main>
-
         );
-
     }
 
 
@@ -113,32 +212,26 @@ function JPCaseQueue() {
                     <div>
 
                         <span>
-
-                            KEYSTONE // CASE MANAGEMENT
-
+                            KEYSTONE // CASE DATABASE
                         </span>
 
                         <h1>
-
                             CASE QUEUE
-
                         </h1>
 
                         <p>
-
-                            Review assigned investigations.
-
+                            View approved cases from the permanent Keystone databases.
                         </p>
 
                     </div>
 
                     <button
                         className="jp-back-button"
-                        onClick={() => navigate("/jp/dashboard")}
+                        onClick={() =>
+                            navigate("/jp/dashboard")
+                        }
                     >
-
                         ← Dashboard
-
                     </button>
 
                 </header>
@@ -147,64 +240,270 @@ function JPCaseQueue() {
                 <div className="jp-divider" />
 
 
+                <div className="jp-case-toolbar">
+
+                    <input
+                        value={search}
+                        onChange={
+                            event =>
+                                setSearch(
+                                    event.target.value
+                                )
+                        }
+                        placeholder="Search case ID, username, user ID, status, or notes..."
+                    />
+
+                    <select
+                        value={typeFilter}
+                        onChange={
+                            event =>
+                                setTypeFilter(
+                                    event.target.value
+                                )
+                        }
+                    >
+                        <option value="ALL">
+                            All case types
+                        </option>
+                        <option value="DGN">
+                            DGN cases
+                        </option>
+                        <option value="XPLT">
+                            XPLT cases
+                        </option>
+                    </select>
+
+                    <button
+                        onClick={load}
+                    >
+                        REFRESH
+                    </button>
+
+                </div>
+
+
                 {
+                    error && (
+                        <div className="jp-case-error">
+                            {error}
+                        </div>
+                    )
+                }
 
-                    cases.length === 0 && (
 
+                {
+                    visibleCases.length === 0 && (
                         <div className="jp-empty">
 
                             <h2>
-
                                 No Cases Available
-
                             </h2>
 
                             <p>
-
-                                Assigned investigations will appear here.
-
+                                Approved cases matching the current filters will appear here.
                             </p>
 
                         </div>
-
                     )
-
                 }
 
 
                 <div className="jp-case-grid">
 
                     {
+                        visibleCases.map(
+                            currentCase => {
 
-                        cases.map((c) => (
+                                const evidenceItems =
+                                    splitEvidence(
+                                        currentCase.evidence
+                                    );
 
-                            <div
-                                className="jp-case-card"
-                                key={c.id}
-                            >
+                                return (
 
-                                <div className="jp-case-status">
+                                    <article
+                                        className="jp-case-card"
+                                        key={
+                                            `${currentCase.case_type}-${currentCase.case_id}`
+                                        }
+                                    >
 
-                                    Pending
+                                        <div className="jp-case-card-top">
 
-                                </div>
+                                            <div className="jp-case-status">
+                                                {
+                                                    currentCase.status ||
+                                                    "Unknown"
+                                                }
+                                            </div>
 
-                                <h2>
+                                            <span>
+                                                {
+                                                    currentCase.case_type
+                                                }
+                                                {" // "}
+                                                CASE #
+                                                {
+                                                    currentCase.case_id
+                                                }
+                                            </span>
 
-                                    {c.title}
+                                        </div>
 
-                                </h2>
 
-                                <p>
+                                        <h2>
+                                            {
+                                                currentCase.usernames ||
+                                                "Unnamed Subject"
+                                            }
+                                        </h2>
 
-                                    Case #{c.id}
 
-                                </p>
+                                        <div className="jp-case-details">
 
-                            </div>
+                                            <p>
+                                                <strong>
+                                                    USER IDS
+                                                </strong>
+                                                {
+                                                    currentCase.user_ids ||
+                                                    "Not provided"
+                                                }
+                                            </p>
 
-                        ))
+                                            <p>
+                                                <strong>
+                                                    TYPE
+                                                </strong>
+                                                {
+                                                    currentCase.type ||
+                                                    currentCase.case_type
+                                                }
+                                            </p>
 
+                                            <p>
+                                                <strong>
+                                                    STRIKE
+                                                </strong>
+                                                {
+                                                    currentCase.strike ??
+                                                    0
+                                                }
+                                            </p>
+
+                                            <p>
+                                                <strong>
+                                                    START DATE
+                                                </strong>
+                                                {
+                                                    formatDate(
+                                                        currentCase.start_date
+                                                    )
+                                                }
+                                            </p>
+
+                                            <p>
+                                                <strong>
+                                                    END DATE
+                                                </strong>
+                                                {
+                                                    formatDate(
+                                                        currentCase.end_date
+                                                    )
+                                                }
+                                            </p>
+
+                                            <p>
+                                                <strong>
+                                                    UPDATED
+                                                </strong>
+                                                {
+                                                    formatDate(
+                                                        currentCase.updated
+                                                    )
+                                                }
+                                            </p>
+
+                                        </div>
+
+
+                                        {
+                                            currentCase.notes && (
+                                                <section className="jp-case-notes">
+
+                                                    <h3>
+                                                        NOTES
+                                                    </h3>
+
+                                                    <p>
+                                                        {
+                                                            currentCase.notes
+                                                        }
+                                                    </p>
+
+                                                </section>
+                                            )
+                                        }
+
+
+                                        {
+                                            evidenceItems.length > 0 && (
+                                                <section className="jp-case-evidence">
+
+                                                    <h3>
+                                                        EVIDENCE
+                                                    </h3>
+
+                                                    <div>
+
+                                                        {
+                                                            evidenceItems.map(
+                                                                (
+                                                                    item,
+                                                                    index
+                                                                ) => {
+
+                                                                    const isUrl =
+                                                                        item.startsWith(
+                                                                            "http://"
+                                                                        ) ||
+                                                                        item.startsWith(
+                                                                            "https://"
+                                                                        );
+
+                                                                    return isUrl
+                                                                        ? (
+                                                                            <a
+                                                                                key={`${item}-${index}`}
+                                                                                href={item}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                            >
+                                                                                Evidence {index + 1}
+                                                                            </a>
+                                                                        )
+                                                                        : (
+                                                                            <span
+                                                                                key={`${item}-${index}`}
+                                                                            >
+                                                                                {item}
+                                                                            </span>
+                                                                        );
+                                                                }
+                                                            )
+                                                        }
+
+                                                    </div>
+
+                                                </section>
+                                            )
+                                        }
+
+                                    </article>
+
+                                );
+                            }
+                        )
                     }
 
                 </div>
@@ -214,7 +513,7 @@ function JPCaseQueue() {
         </main>
 
     );
-
 }
+
 
 export default JPCaseQueue;

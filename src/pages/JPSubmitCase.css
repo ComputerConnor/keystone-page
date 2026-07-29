@@ -1,0 +1,206 @@
+/* ============================================================
+   JP CASE SUBMISSION
+   ============================================================ */
+
+.jp-submit-page {
+    min-height: 100vh;
+    padding: 45px 40px 80px;
+    color: white;
+}
+
+.jp-submit-shell {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    padding: 34px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(14, 17, 22, .90),
+            rgba(4, 6, 8, .94)
+        );
+    border: 1px solid rgba(255, 255, 255, .08);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, .02),
+        0 24px 70px rgba(0, 0, 0, .42);
+    backdrop-filter: blur(18px);
+}
+
+.jp-submit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.jp-submit-header span {
+    color: rgba(181, 104, 243, .72);
+    font: 500 10px/1 Arial, sans-serif;
+    letter-spacing: .22em;
+}
+
+.jp-submit-header h1 {
+    margin: 10px 0 10px;
+    font: 400 40px/1 Arial, sans-serif;
+    letter-spacing: -.035em;
+}
+
+.jp-submit-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, .42);
+    font: 400 12px/1.6 Arial, sans-serif;
+}
+
+.jp-submit-back,
+.jp-submit-secondary,
+.jp-submit-primary {
+    border: 1px solid rgba(255, 255, 255, .12);
+    background: transparent;
+    color: rgba(255, 255, 255, .72);
+    padding: 12px 18px;
+    cursor: pointer;
+    font: 500 10px/1 Arial, sans-serif;
+    letter-spacing: .14em;
+}
+
+.jp-submit-back:hover,
+.jp-submit-secondary:hover {
+    border-color: rgba(181, 104, 243, .55);
+    color: white;
+}
+
+.jp-submit-divider {
+    height: 1px;
+    margin: 30px 0;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(181, 104, 243, .72),
+            rgba(255, 255, 255, .08),
+            transparent
+        );
+}
+
+.jp-submit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.jp-submit-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.jp-submit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.jp-submit-field > span {
+    color: rgba(255, 255, 255, .42);
+    font: 500 9px/1 Arial, sans-serif;
+    letter-spacing: .18em;
+}
+
+.jp-submit-field input,
+.jp-submit-field select,
+.jp-submit-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, .10);
+    background: rgba(0, 0, 0, .32);
+    color: white;
+    padding: 13px 14px;
+    outline: none;
+    font: 400 13px/1.5 Arial, sans-serif;
+}
+
+.jp-submit-field input:focus,
+.jp-submit-field select:focus,
+.jp-submit-field textarea:focus {
+    border-color: rgba(181, 104, 243, .58);
+    box-shadow: 0 0 24px rgba(181, 104, 243, .08);
+}
+
+.jp-submit-field textarea {
+    min-height: 125px;
+    resize: vertical;
+}
+
+.jp-submit-wide {
+    width: 100%;
+}
+
+.jp-submit-message {
+    padding: 14px 16px;
+    border: 1px solid;
+    font: 400 12px/1.5 Arial, sans-serif;
+}
+
+.jp-submit-error {
+    color: #ffb1b1;
+    border-color: rgba(255, 80, 80, .35);
+    background: rgba(255, 70, 70, .08);
+}
+
+.jp-submit-success {
+    color: #b7ffd3;
+    border-color: rgba(70, 220, 130, .35);
+    background: rgba(70, 220, 130, .08);
+}
+
+.jp-submit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+.jp-submit-primary {
+    color: white;
+    border-color: rgba(181, 104, 243, .52);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(181, 104, 243, .30),
+            rgba(100, 50, 160, .20)
+        );
+}
+
+.jp-submit-primary:hover:not(:disabled) {
+    box-shadow: 0 0 28px rgba(181, 104, 243, .16);
+}
+
+.jp-submit-primary:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+}
+
+@media (max-width: 720px) {
+    .jp-submit-page {
+        padding: 25px 16px 55px;
+    }
+
+    .jp-submit-shell {
+        padding: 24px 18px;
+    }
+
+    .jp-submit-header {
+        flex-direction: column;
+    }
+
+    .jp-submit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .jp-submit-actions {
+        flex-direction: column-reverse;
+    }
+
+    .jp-submit-actions button {
+        width: 100%;
+    }
+}
