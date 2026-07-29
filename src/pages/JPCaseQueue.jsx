@@ -11,7 +11,7 @@ import {
 
 import API_BASE from "../utils/api";
 
-import "./JPQueue.css";
+import "./JPCaseQueue.css";
 
 
 function JPCaseQueue() {
