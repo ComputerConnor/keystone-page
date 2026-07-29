@@ -41,33 +41,38 @@ function firstValue(
 }
 
 
+function formatDelimitedList(value) {
+    const values =
+        String(value || "")
+            .split(/[|,;\n\r]+/)
+            .map(item => item.trim())
+            .filter(Boolean);
+
+    return values.length > 0
+        ? values.join(", ")
+        : "—";
+}
+
+
 function normalizeSource(value) {
     const normalized =
         String(value || "")
             .trim()
             .toUpperCase();
 
-    if (
-        normalized.includes("KEYSTONE")
-    ) {
+    if (normalized.includes("KEYSTONE")) {
         return "KEYSTONE";
     }
 
-    if (
-        normalized.includes("CJA")
-    ) {
+    if (normalized.includes("CJA")) {
         return "CJA";
     }
 
-    if (
-        normalized.includes("CW")
-    ) {
+    if (normalized.includes("CW")) {
         return "CW";
     }
 
-    if (
-        normalized.includes("SCC")
-    ) {
+    if (normalized.includes("SCC")) {
         return "SCC";
     }
 
@@ -137,55 +142,49 @@ function normalizeCase(
             )
         );
 
+    const caseId =
+        firstValue(
+            record,
+            [
+                "case_id",
+                "CaseID",
+                "id"
+            ],
+            "—"
+        );
+
     return {
         key:
-            `${source}-${category}-${
+            `${source}-${category}-${caseId}-${index}`,
+
+        source,
+        category,
+        caseId,
+
+        userIds:
+            formatDelimitedList(
                 firstValue(
                     record,
                     [
-                        "case_id",
-                        "CaseID",
-                        "id"
+                        "user_ids",
+                        "UserIds",
+                        "user_id"
                     ],
-                    index
+                    ""
                 )
-            }-${index}`,
-
-        source,
-
-        category,
-
-        caseId:
-            firstValue(
-                record,
-                [
-                    "case_id",
-                    "CaseID",
-                    "id"
-                ],
-                "—"
-            ),
-
-        userIds:
-            firstValue(
-                record,
-                [
-                    "user_ids",
-                    "UserIds",
-                    "user_id"
-                ],
-                "—"
             ),
 
         usernames:
-            firstValue(
-                record,
-                [
-                    "usernames",
-                    "Usernames",
-                    "username"
-                ],
-                "—"
+            formatDelimitedList(
+                firstValue(
+                    record,
+                    [
+                        "usernames",
+                        "Usernames",
+                        "username"
+                    ],
+                    ""
+                )
             ),
 
         type:
@@ -249,14 +248,16 @@ function normalizeCase(
                 ""
             ),
 
-        evidence:
-            firstValue(
-                record,
-                [
-                    "evidence",
-                    "Evidence"
-                ],
-                ""
+        hasEvidence:
+            Boolean(
+                firstValue(
+                    record,
+                    [
+                        "has_evidence",
+                        "hasEvidence"
+                    ],
+                    false
+                )
             ),
 
         updated:
@@ -292,16 +293,11 @@ function formatDate(value) {
     return date.toLocaleString(
         [],
         {
-            year:
-                "numeric",
-            month:
-                "short",
-            day:
-                "numeric",
-            hour:
-                "2-digit",
-            minute:
-                "2-digit"
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
         }
     );
 }
@@ -346,6 +342,12 @@ function Cases() {
         setSourceFilter
     ] =
         useState("ALL");
+
+    const [
+        evidenceLoadingKey,
+        setEvidenceLoadingKey
+    ] =
+        useState(null);
 
 
     const loadCases =
@@ -413,6 +415,98 @@ function Cases() {
     );
 
 
+    async function openEvidence(
+        currentCase
+    ) {
+        /*
+         * Open immediately so the browser does not block
+         * the new tab while the API request is running.
+         */
+        const evidenceWindow =
+            window.open(
+                "",
+                "_blank",
+                "noopener,noreferrer"
+            );
+
+        setEvidenceLoadingKey(
+            currentCase.key
+        );
+
+        setError("");
+
+        try {
+            const response =
+                await fetch(
+                    `${API_BASE}/api/cases/${
+                        encodeURIComponent(
+                            currentCase.source
+                        )
+                    }/${
+                        encodeURIComponent(
+                            currentCase.category
+                        )
+                    }/${
+                        encodeURIComponent(
+                            currentCase.caseId
+                        )
+                    }/evidence`,
+                    {
+                        method:
+                            "POST",
+                        credentials:
+                            "include",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        }
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error ||
+                    "Unable to create the evidence link."
+                );
+            }
+
+            if (!data.url) {
+                throw new Error(
+                    "The server did not return an evidence link."
+                );
+            }
+
+            if (evidenceWindow) {
+                evidenceWindow.location.href =
+                    data.url;
+            } else {
+                window.location.href =
+                    data.url;
+            }
+        } catch (evidenceError) {
+            if (evidenceWindow) {
+                evidenceWindow.close();
+            }
+
+            console.error(
+                "PUBLIC EVIDENCE LINK ERROR:",
+                evidenceError
+            );
+
+            setError(
+                evidenceError.message
+            );
+        } finally {
+            setEvidenceLoadingKey(
+                null
+            );
+        }
+    }
+
+
     const filteredCases =
         useMemo(
             () => {
@@ -452,7 +546,6 @@ function Cases() {
                                 currentCase.strike,
                                 currentCase.status,
                                 currentCase.notes,
-                                currentCase.evidence,
                                 currentCase.source,
                                 currentCase.category
                             ]
@@ -900,23 +993,44 @@ function Cases() {
                                                 }
 
 
-                                                {
-                                                    currentCase.evidence && (
-                                                        <section className="cases-block">
+                                                <section className="cases-evidence">
 
-                                                            <span>
-                                                                EVIDENCE
-                                                            </span>
+                                                    <span>
+                                                        EVIDENCE
+                                                    </span>
 
-                                                            <p>
-                                                                {
-                                                                    currentCase.evidence
-                                                                }
-                                                            </p>
+                                                    {
+                                                        currentCase.hasEvidence
+                                                            ? (
+                                                                <button
+                                                                    type="button"
+                                                                    className="cases-evidence-button"
+                                                                    disabled={
+                                                                        evidenceLoadingKey ===
+                                                                        currentCase.key
+                                                                    }
+                                                                    onClick={() =>
+                                                                        openEvidence(
+                                                                            currentCase
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        evidenceLoadingKey ===
+                                                                        currentCase.key
+                                                                            ? "CREATING LINK..."
+                                                                            : "GET EVIDENCE"
+                                                                    }
+                                                                </button>
+                                                            )
+                                                            : (
+                                                                <p className="cases-no-evidence">
+                                                                    No evidence available
+                                                                </p>
+                                                            )
+                                                    }
 
-                                                        </section>
-                                                    )
-                                                }
+                                                </section>
 
                                             </article>
                                         )
