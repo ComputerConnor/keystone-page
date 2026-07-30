@@ -13,30 +13,30 @@ function UnderConstruction() {
         useNavigate();
 
     const [
-        pulse,
-        setPulse
+        dots,
+        setDots
     ] =
         useState("");
 
 
     useEffect(
         () => {
-            const timer =
+            const interval =
                 window.setInterval(
                     () => {
-                        setPulse(
+                        setDots(
                             current =>
                                 current.length >= 3
                                     ? ""
                                     : `${current}.`
                         );
                     },
-                    450
+                    500
                 );
 
             return () =>
                 window.clearInterval(
-                    timer
+                    interval
                 );
         },
         []
@@ -53,28 +53,10 @@ function UnderConstruction() {
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        padding: 32px;
+                        padding: 24px;
                         box-sizing: border-box;
-                        overflow: hidden;
                         position: relative;
-                        color: #f4f4f4;
-                        background:
-                            radial-gradient(
-                                circle at 20% 15%,
-                                rgba(183, 27, 27, 0.15),
-                                transparent 34%
-                            ),
-                            radial-gradient(
-                                circle at 82% 78%,
-                                rgba(145, 0, 0, 0.12),
-                                transparent 30%
-                            ),
-                            linear-gradient(
-                                145deg,
-                                #070707 0%,
-                                #0d0d0d 48%,
-                                #050505 100%
-                            );
+                        color: #eeeaf8;
                         font-family:
                             Inter,
                             ui-sans-serif,
@@ -85,320 +67,221 @@ function UnderConstruction() {
                             sans-serif;
                     }
 
-                    .construction-page::before {
-                        content: "";
-                        position: absolute;
-                        inset: 0;
-                        opacity: 0.18;
-                        pointer-events: none;
-                        background-image:
-                            linear-gradient(
-                                rgba(255, 255, 255, 0.025) 1px,
-                                transparent 1px
-                            ),
-                            linear-gradient(
-                                90deg,
-                                rgba(255, 255, 255, 0.025) 1px,
-                                transparent 1px
-                            );
-                        background-size: 38px 38px;
-                        mask-image:
-                            linear-gradient(
-                                to bottom,
-                                black,
-                                transparent 90%
-                            );
-                    }
-
-                    .construction-glow {
-                        width: 440px;
-                        height: 440px;
-                        border-radius: 50%;
-                        position: absolute;
-                        filter: blur(120px);
-                        opacity: 0.16;
-                        pointer-events: none;
-                        background: #ca1717;
-                        animation:
-                            constructionGlow 5s ease-in-out infinite;
-                    }
-
-                    .construction-shell {
-                        width: min(100%, 900px);
+                    .construction-card {
+                        width: min(100%, 520px);
+                        padding: 28px;
+                        box-sizing: border-box;
                         position: relative;
-                        z-index: 2;
-                        border: 1px solid rgba(255, 255, 255, 0.09);
+                        overflow: hidden;
+                        border:
+                            1px solid rgba(161, 126, 255, 0.18);
+                        border-radius: 16px;
                         background:
                             linear-gradient(
                                 145deg,
-                                rgba(18, 18, 18, 0.97),
-                                rgba(8, 8, 8, 0.98)
+                                rgba(25, 21, 35, 0.9),
+                                rgba(14, 12, 21, 0.92)
                             );
                         box-shadow:
-                            0 30px 90px rgba(0, 0, 0, 0.58),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+                            0 18px 55px rgba(0, 0, 0, 0.34),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.035);
+                        backdrop-filter: blur(16px);
                     }
 
-                    .construction-topbar {
-                        min-height: 48px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                        gap: 18px;
-                        padding: 0 20px;
-                        border-bottom:
-                            1px solid rgba(255, 255, 255, 0.08);
+                    .construction-card::before {
+                        content: "";
+                        width: 210px;
+                        height: 210px;
+                        position: absolute;
+                        top: -130px;
+                        right: -90px;
+                        border-radius: 50%;
+                        pointer-events: none;
                         background:
-                            rgba(255, 255, 255, 0.02);
-                    }
-
-                    .construction-topbar span {
-                        color: #a7a7a7;
-                        font-family:
-                            "Courier New",
-                            monospace;
-                        font-size: 0.72rem;
-                        letter-spacing: 0.16em;
+                            rgba(139, 92, 246, 0.12);
+                        filter: blur(34px);
                     }
 
                     .construction-status {
                         display: inline-flex;
                         align-items: center;
                         gap: 8px;
-                        color: #d7d7d7;
-                    }
-
-                    .construction-status::before {
-                        content: "";
-                        width: 8px;
-                        height: 8px;
-                        border-radius: 50%;
-                        background: #d11d1d;
-                        box-shadow:
-                            0 0 12px rgba(209, 29, 29, 0.9);
-                        animation:
-                            constructionBlink 1.4s ease-in-out infinite;
-                    }
-
-                    .construction-content {
-                        padding: clamp(42px, 7vw, 78px);
-                    }
-
-                    .construction-kicker {
-                        margin: 0 0 16px;
-                        color: #d02828;
-                        font-family:
-                            "Courier New",
-                            monospace;
-                        font-size: 0.74rem;
+                        margin-bottom: 18px;
+                        color: #a998d4;
+                        font-size: 0.68rem;
                         font-weight: 700;
-                        letter-spacing: 0.18em;
+                        letter-spacing: 0.14em;
+                        text-transform: uppercase;
+                    }
+
+                    .construction-status-dot {
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 50%;
+                        background: #9b7af3;
+                        box-shadow:
+                            0 0 10px rgba(155, 122, 243, 0.55);
+                        animation:
+                            constructionPulse 1.8s ease-in-out infinite;
+                    }
+
+                    .construction-eyebrow {
+                        margin: 0 0 8px;
+                        color: #8d78c5;
+                        font-size: 0.7rem;
+                        font-weight: 700;
+                        letter-spacing: 0.13em;
+                        text-transform: uppercase;
                     }
 
                     .construction-title {
-                        max-width: 700px;
                         margin: 0;
+                        color: #f2eefb;
                         font-size:
                             clamp(
-                                2.8rem,
-                                8vw,
-                                6.3rem
+                                1.75rem,
+                                6vw,
+                                2.35rem
                             );
-                        line-height: 0.88;
-                        letter-spacing: -0.055em;
-                        text-transform: uppercase;
-                        font-weight: 900;
-                    }
-
-                    .construction-title strong {
-                        display: block;
-                        color: #d62222;
-                        text-shadow:
-                            0 0 32px rgba(214, 34, 34, 0.2);
+                        line-height: 1.1;
+                        letter-spacing: -0.035em;
                     }
 
                     .construction-description {
-                        max-width: 650px;
-                        margin: 28px 0 0;
-                        color: #a9a9a9;
-                        font-size: 1rem;
-                        line-height: 1.8;
+                        margin: 14px 0 0;
+                        color: #aaa2bb;
+                        font-size: 0.9rem;
+                        line-height: 1.65;
                     }
 
-                    .construction-divider {
-                        width: 100%;
-                        height: 1px;
-                        margin: 36px 0 26px;
-                        background:
-                            linear-gradient(
-                                to right,
-                                #ba1f1f,
-                                rgba(255, 255, 255, 0.08),
-                                transparent
-                            );
-                    }
-
-                    .construction-terminal {
-                        display: grid;
-                        gap: 12px;
-                        padding: 20px;
+                    .construction-progress {
+                        margin-top: 22px;
+                        padding: 14px 16px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 16px;
                         border:
-                            1px solid rgba(255, 255, 255, 0.07);
-                        background: #080808;
+                            1px solid rgba(161, 126, 255, 0.1);
+                        border-radius: 10px;
+                        background:
+                            rgba(120, 90, 180, 0.055);
+                    }
+
+                    .construction-progress span {
+                        color: #8f86a2;
+                        font-size: 0.68rem;
+                        font-weight: 700;
+                        letter-spacing: 0.1em;
+                        text-transform: uppercase;
+                    }
+
+                    .construction-progress strong {
+                        color: #b9a8e7;
                         font-family:
                             "Courier New",
                             monospace;
-                        font-size: 0.8rem;
-                    }
-
-                    .construction-terminal-line {
-                        display: grid;
-                        grid-template-columns:
-                            minmax(110px, auto)
-                            1fr;
-                        gap: 16px;
-                    }
-
-                    .construction-terminal-line span:first-child {
-                        color: #d02626;
-                    }
-
-                    .construction-terminal-line span:last-child {
-                        color: #bdbdbd;
+                        font-size: 0.75rem;
+                        font-weight: 600;
                     }
 
                     .construction-actions {
                         display: flex;
-                        flex-wrap: wrap;
-                        gap: 12px;
-                        margin-top: 28px;
+                        gap: 10px;
+                        margin-top: 22px;
                     }
 
                     .construction-button {
-                        min-height: 46px;
-                        padding: 0 22px;
-                        border: 1px solid transparent;
+                        min-height: 40px;
+                        padding: 0 16px;
+                        border-radius: 9px;
                         cursor: pointer;
                         font: inherit;
-                        font-size: 0.75rem;
-                        font-weight: 800;
-                        letter-spacing: 0.12em;
+                        font-size: 0.7rem;
+                        font-weight: 750;
+                        letter-spacing: 0.09em;
+                        text-transform: uppercase;
                         transition:
-                            transform 160ms ease,
-                            border-color 160ms ease,
-                            background 160ms ease;
+                            transform 150ms ease,
+                            border-color 150ms ease,
+                            background 150ms ease;
                     }
 
                     .construction-button:hover {
-                        transform: translateY(-2px);
+                        transform: translateY(-1px);
                     }
 
                     .construction-button-primary {
-                        color: white;
-                        border-color: #c82121;
+                        color: #f8f5ff;
+                        border:
+                            1px solid rgba(160, 126, 255, 0.48);
                         background:
                             linear-gradient(
                                 135deg,
-                                #c51f1f,
-                                #8e1010
+                                rgba(125, 89, 218, 0.92),
+                                rgba(91, 62, 165, 0.92)
                             );
-                        box-shadow:
-                            0 12px 28px rgba(181, 20, 20, 0.2);
                     }
 
                     .construction-button-primary:hover {
+                        border-color:
+                            rgba(184, 157, 255, 0.72);
                         background:
                             linear-gradient(
                                 135deg,
-                                #df2929,
-                                #a41313
+                                rgba(140, 101, 235, 0.96),
+                                rgba(101, 69, 180, 0.96)
                             );
                     }
 
                     .construction-button-secondary {
-                        color: #d5d5d5;
-                        border-color:
-                            rgba(255, 255, 255, 0.12);
+                        color: #aaa2b8;
+                        border:
+                            1px solid rgba(255, 255, 255, 0.08);
                         background:
-                            rgba(255, 255, 255, 0.03);
+                            rgba(255, 255, 255, 0.025);
                     }
 
                     .construction-button-secondary:hover {
+                        color: #d8d1e7;
                         border-color:
-                            rgba(255, 255, 255, 0.25);
+                            rgba(161, 126, 255, 0.2);
                         background:
-                            rgba(255, 255, 255, 0.06);
+                            rgba(161, 126, 255, 0.055);
                     }
 
                     .construction-footer {
-                        display: flex;
-                        justify-content: space-between;
-                        gap: 18px;
-                        padding: 16px 20px;
+                        margin-top: 20px;
+                        padding-top: 16px;
                         border-top:
-                            1px solid rgba(255, 255, 255, 0.07);
-                        color: #6f6f6f;
-                        font-family:
-                            "Courier New",
-                            monospace;
-                        font-size: 0.68rem;
-                        letter-spacing: 0.12em;
+                            1px solid rgba(255, 255, 255, 0.055);
+                        color: #675f78;
+                        font-size: 0.64rem;
+                        letter-spacing: 0.1em;
+                        text-transform: uppercase;
                     }
 
-                    @keyframes constructionBlink {
+                    @keyframes constructionPulse {
                         0%,
                         100% {
-                            opacity: 0.35;
+                            opacity: 0.45;
+                            transform: scale(0.9);
                         }
 
                         50% {
                             opacity: 1;
+                            transform: scale(1);
                         }
                     }
 
-                    @keyframes constructionGlow {
-                        0%,
-                        100% {
-                            transform: scale(0.92);
-                            opacity: 0.11;
-                        }
-
-                        50% {
-                            transform: scale(1.08);
-                            opacity: 0.2;
-                        }
-                    }
-
-                    @media (max-width: 640px) {
+                    @media (max-width: 540px) {
                         .construction-page {
                             padding: 16px;
                         }
 
-                        .construction-topbar {
-                            align-items: flex-start;
-                            flex-direction: column;
-                            padding-top: 14px;
-                            padding-bottom: 14px;
-                        }
-
-                        .construction-content {
-                            padding:
-                                42px
-                                24px;
-                        }
-
-                        .construction-title {
-                            font-size:
-                                clamp(
-                                    2.6rem,
-                                    17vw,
-                                    4.8rem
-                                );
-                        }
-
-                        .construction-terminal-line {
-                            grid-template-columns: 1fr;
-                            gap: 4px;
+                        .construction-card {
+                            padding: 22px;
+                            border-radius: 14px;
                         }
 
                         .construction-actions {
@@ -409,8 +292,10 @@ function UnderConstruction() {
                             width: 100%;
                         }
 
-                        .construction-footer {
+                        .construction-progress {
+                            align-items: flex-start;
                             flex-direction: column;
+                            gap: 6px;
                         }
                     }
 
@@ -418,8 +303,7 @@ function UnderConstruction() {
                         prefers-reduced-motion:
                         reduce
                     ) {
-                        .construction-glow,
-                        .construction-status::before {
+                        .construction-status-dot {
                             animation: none;
                         }
 
@@ -431,116 +315,72 @@ function UnderConstruction() {
             </style>
 
 
-            <div
-                className="construction-glow"
-                aria-hidden="true"
-            />
+            <section className="construction-card">
+
+                <div className="construction-status">
+                    <span
+                        className="construction-status-dot"
+                        aria-hidden="true"
+                    />
+
+                    Development in progress
+                </div>
 
 
-            <section className="construction-shell">
+                <p className="construction-eyebrow">
+                    Keystone
+                </p>
 
-                <header className="construction-topbar">
+                <h1 className="construction-title">
+                    This page is under construction
+                </h1>
+
+                <p className="construction-description">
+                    This section is still being prepared.
+                    Check back later once development is complete.
+                </p>
+
+
+                <div className="construction-progress">
 
                     <span>
-                        KEYSTONE // SYSTEM NOTICE
+                        Current status
                     </span>
 
-                    <span className="construction-status">
-                        DEVELOPMENT ACTIVE
-                    </span>
+                    <strong>
+                        Building{dots}
+                    </strong>
 
-                </header>
-
-
-                <div className="construction-content">
-
-                    <p className="construction-kicker">
-                        PAGE STATUS // 503
-                    </p>
-
-                    <h1 className="construction-title">
-                        Under
-                        <strong>
-                            Construction
-                        </strong>
-                    </h1>
-
-                    <p className="construction-description">
-                        This section of Keystone is currently being built.
-                    </p>
+                </div>
 
 
-                    <div className="construction-divider" />
+                <div className="construction-actions">
 
+                    <button
+                        type="button"
+                        className="construction-button construction-button-primary"
+                        onClick={() =>
+                            navigate("/home")
+                        }
+                    >
+                        Return home
+                    </button>
 
-                    <div className="construction-terminal">
-
-                        <div className="construction-terminal-line">
-                            <span>
-                                [STATUS]
-                            </span>
-
-                            <span>
-                                PAGE BUILD IN PROGRESS{pulse}
-                            </span>
-                        </div>
-
-                        <div className="construction-terminal-line">
-                            <span>
-                                [ACCESS]
-                            </span>
-
-                            <span>
-                                TEMPORARILY RESTRICTED
-                            </span>
-                        </div>
-
-                        <div className="construction-terminal-line">
-                            <span>
-                                [SYSTEM]
-                            </span>
-
-                            <span>
-                                KEYSTONE
-                            </span>
-                        </div>
-
-                    </div>
-
-
-                    <div className="construction-actions">
-
-                        <button
-                            type="button"
-                            className="construction-button construction-button-primary"
-                            onClick={() =>
-                                navigate("/home")
-                            }
-                        >
-                            RETURN HOME
-                        </button>
-
-                        <button
-                            type="button"
-                            className="construction-button construction-button-secondary"
-                            onClick={() =>
-                                navigate(-1)
-                            }
-                        >
-                            GO BACK
-                        </button>
-
-                    </div>
+                    <button
+                        type="button"
+                        className="construction-button construction-button-secondary"
+                        onClick={() =>
+                            navigate(-1)
+                        }
+                    >
+                        Go back
+                    </button>
 
                 </div>
 
 
                 <footer className="construction-footer">
-
-                    <span>
-                        KEYSTONE
-                    </span>
-
+                    Keystone Network
                 </footer>
 
             </section>
