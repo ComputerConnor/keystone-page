@@ -17,6 +17,8 @@ import JPCaseQueue from "./pages/JPCaseQueue";
 import JPSubmissionQueue from "./pages/JPSubmissionQueue";
 import JPSubmitCase from "./pages/JPSubmitCase";
 import PublicSubmitCase from "./pages/PublicSubmitCase";
+import Tierlist from "./pages/Tierlist";
+import GroupTier from "./pages/GroupTier";
 
 function App() {
     return (
@@ -83,6 +85,16 @@ function App() {
                         <Route
                             path="/submit-case"
                             element={<PublicSubmitCase />}
+                        />
+
+                        <Route
+                            path="/tierlist"
+                            element={<Tierlist />}
+                        />
+
+                        <Route
+                            path="/groups"
+                            element={<GroupTier />}
                         />
 
                     </Routes>
