@@ -1,0 +1,15 @@
+.jp-workspace-card { text-align: left; color: inherit; cursor: pointer; }
+.jp-workspace-card:hover { border-color: rgba(181,104,243,.45); transform: translateY(-2px); }
+.jp-workspace-page { min-height: 100vh; padding: 42px; color: white; box-sizing: border-box; }
+.jp-workspace-layout { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); gap: 20px; height: calc(100vh - 150px); }
+.jp-workspace-sidebar { overflow-y: auto; padding: 24px; background: rgba(10,10,15,.86); border: 1px solid rgba(181,104,243,.20); }
+.jp-workspace-sidebar h2 { margin: 24px 0 10px; color: rgba(181,104,243,.75); font: 600 9px/1 Arial; letter-spacing: .18em; }
+.jp-workspace-sidebar dl { margin: 18px 0 0; display: grid; gap: 10px; }
+.jp-workspace-sidebar dt { color: rgba(255,255,255,.3); font: 600 8px/1 Arial; letter-spacing: .14em; }
+.jp-workspace-sidebar dd, .jp-workspace-sidebar p { margin: 4px 0 0; color: rgba(255,255,255,.64); font: 400 12px/1.6 Arial; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 850px) { .jp-workspace-page { padding: 20px; } .jp-workspace-layout { grid-template-columns: 1fr; height: auto; } .jp-workspace-sidebar { max-height: none; } .jp-workspace-layout .jp-chat-panel { min-height: 65vh; } }
+
+.jp-voting-box { display: grid; gap: 9px; padding: 13px; border: 1px solid rgba(181,104,243,.18); background: rgba(181,104,243,.05); font: 500 9px/1.4 Arial; letter-spacing: .08em; }
+.jp-vote-actions { display: grid; grid-template-columns: 1fr; gap: 7px; }
+.jp-vote-actions button, .jp-workspace-admin-button { padding: 10px; color: rgba(255,255,255,.82); background: rgba(181,104,243,.10); border: 1px solid rgba(181,104,243,.35); cursor: pointer; font: 600 8px/1 Arial; letter-spacing: .12em; }
+.jp-workspace-admin-button { width: 100%; margin-top: 10px; }

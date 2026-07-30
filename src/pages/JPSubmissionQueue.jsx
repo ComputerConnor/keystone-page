@@ -358,9 +358,9 @@ function JPSubmissionQueue() {
         }
 
         if (
-            action === "approve" &&
+            action === "open" &&
             !window.confirm(
-                `Approve submission #${submission.id} and add it to the permanent database?`
+                `Open submission #${submission.id} for seven-day committee review?`
             )
         ) {
             return;
@@ -470,7 +470,7 @@ function JPSubmissionQueue() {
                         </h1>
 
                         <p>
-                            Review investigator submissions before they enter the permanent database.
+                            Assign investigator submissions to a seven-day committee workspace.
                         </p>
 
                     </div>
@@ -623,7 +623,7 @@ function JPSubmissionQueue() {
                     </span>
 
                     <span>
-                        ADMIN REVIEW MODE
+                        LEADERSHIP INTAKE MODE
                     </span>
 
                 </div>
@@ -845,7 +845,7 @@ function JPSubmissionQueue() {
                                                     <label className="jp-return-field">
 
                                                         <span>
-                                                            RETURN / REJECTION REASON
+                                                            HOLD / REJECTION REASON
                                                         </span>
 
                                                         <textarea
@@ -866,7 +866,7 @@ function JPSubmissionQueue() {
                                                                         })
                                                                     )
                                                             }
-                                                            placeholder="Required when returning a case for revision."
+                                                            placeholder="Required when placing a submission on hold."
                                                         />
 
                                                     </label>
@@ -876,19 +876,19 @@ function JPSubmissionQueue() {
 
                                                         <button
                                                             type="button"
-                                                            className="jp-review-approve"
+                                                            className="jp-review-open"
                                                             disabled={busy}
                                                             onClick={() =>
                                                                 reviewSubmission(
                                                                     currentCase,
-                                                                    "approve"
+                                                                    "open"
                                                                 )
                                                             }
                                                         >
                                                             {
                                                                 busy
                                                                     ? "WORKING..."
-                                                                    : "APPROVE"
+                                                                    : "OPEN CASE"
                                                             }
                                                         </button>
 

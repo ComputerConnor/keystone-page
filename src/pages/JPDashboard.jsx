@@ -203,11 +203,37 @@ function JPDashboard() {
                                     </span>
 
                                     <h2>
-                                        CASE DATABASE
+                                        PUBLIC CASE DATABASE
                                     </h2>
 
                                     <p>
-                                        Search approved DGN and XPLT cases available to your panel.
+                                        Search finalized DGN and XPLT records available to your panel.
+                                    </p>
+
+                                </button>
+                            )
+                        }
+
+
+                        {
+                            canUsePanel && (
+                                <button
+                                    className="jp-room-card"
+                                    onClick={() =>
+                                        navigate("/jp/workspaces")
+                                    }
+                                >
+
+                                    <span className="jp-room-index">
+                                        02
+                                    </span>
+
+                                    <h2>
+                                        COMMITTEE CASES
+                                    </h2>
+
+                                    <p>
+                                        Open case workspaces, anonymous discussion, evidence, and voting.
                                     </p>
 
                                 </button>
@@ -225,7 +251,7 @@ function JPDashboard() {
                                 >
 
                                     <span className="jp-room-index">
-                                        02
+                                        03
                                     </span>
 
                                     <h2>
@@ -251,7 +277,7 @@ function JPDashboard() {
                                 >
 
                                     <span className="jp-room-index">
-                                        03
+                                        04
                                     </span>
 
                                     <h2>
@@ -259,7 +285,7 @@ function JPDashboard() {
                                     </h2>
 
                                     <p>
-                                        Approve, reject, or return submitted investigations.
+                                        Assign submissions to DGN or XPLT committee review.
                                     </p>
 
                                 </button>
@@ -277,7 +303,7 @@ function JPDashboard() {
                                 >
 
                                     <span className="jp-room-index">
-                                        04
+                                        05
                                     </span>
 
                                     <h2>
@@ -303,7 +329,7 @@ function JPDashboard() {
                                 >
 
                                     <span className="jp-room-index">
-                                        05
+                                        06
                                     </span>
 
                                     <h2>
