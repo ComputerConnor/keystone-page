@@ -1,0 +1,142 @@
+.jp-settings-page {
+    min-height: 100vh;
+    padding: 45px 20px;
+    color: #f5f3ff;
+}
+
+.jp-settings-shell {
+    width: min(1050px, 100%);
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid rgba(168, 85, 247, .35);
+    border-radius: 20px;
+    background: rgba(10, 7, 18, .92);
+    box-shadow: 0 0 40px rgba(168, 85, 247, .15);
+}
+
+.jp-settings-shell header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.jp-settings-shell header span,
+.jp-settings-card label > span {
+    color: #c084fc;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.jp-settings-shell h1 {
+    margin: 8px 0 0;
+}
+
+.jp-settings-card {
+    margin-top: 20px;
+    padding: 24px;
+    border: 1px solid rgba(192, 132, 252, .2);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .025);
+}
+
+.jp-settings-card h2 {
+    margin-top: 0;
+    color: #d8b4fe;
+}
+
+.jp-settings-card form,
+.jp-2fa-setup {
+    display: grid;
+    gap: 15px;
+}
+
+.jp-settings-card label {
+    display: grid;
+    gap: 8px;
+}
+
+.jp-settings-card input,
+.jp-settings-card select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(192, 132, 252, .35);
+    border-radius: 10px;
+    background: #09060f;
+    color: white;
+}
+
+.jp-settings-shell button {
+    padding: 11px 16px;
+    border: 1px solid #a855f7;
+    border-radius: 10px;
+    background: rgba(168, 85, 247, .16);
+    color: white;
+    cursor: pointer;
+}
+
+.jp-settings-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.jp-2fa-setup img {
+    width: 220px;
+    max-width: 100%;
+    border-radius: 12px;
+    background: white;
+    padding: 10px;
+}
+
+.jp-2fa-setup code,
+.jp-link-code {
+    padding: 14px;
+    border-radius: 10px;
+    background: #050308;
+    color: #d8b4fe;
+    word-break: break-all;
+}
+
+.jp-link-code {
+    margin-top: 16px;
+    font-size: 24px;
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+.jp-settings-error,
+.jp-settings-success {
+    margin: 15px 0;
+    padding: 14px;
+    border-radius: 10px;
+}
+
+.jp-settings-error {
+    background: rgba(239, 68, 68, .15);
+    border: 1px solid rgba(239, 68, 68, .4);
+}
+
+.jp-settings-success {
+    background: rgba(34, 197, 94, .15);
+    border: 1px solid rgba(34, 197, 94, .4);
+}
+
+.jp-toggle {
+    display: flex !important;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.jp-toggle input {
+    width: auto;
+    margin-right: 10px;
+}
+
+.jp-admin-member-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}

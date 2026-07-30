@@ -21,6 +21,8 @@ import JPSubmitCase from "./pages/JPSubmitCase";
 import PublicSubmitCase from "./pages/PublicSubmitCase";
 import Tierlist from "./pages/Tierlist";
 import GroupTier from "./pages/GroupTier";
+import JPSettings from "./pages/JPSettings";
+import JPPanelAdmin from "./pages/JPPanelAdmin";
 
 function App() {
     return (
@@ -107,6 +109,16 @@ function App() {
                         <Route
                             path="/groups"
                             element={<GroupTier />}
+                        />
+
+                        <Route
+                            path="/jp/settings"
+                            element={<JPSettings />}
+                        />
+
+                        <Route
+                            path="/jp/panel-admin"
+                            element={<JPPanelAdmin />}
                         />
 
                     </Routes>

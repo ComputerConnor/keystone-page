@@ -1,165 +1,153 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_BASE from "../utils/api";
+import "./JPLogin.css";
 
 function JPLogin() {
     const navigate = useNavigate();
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [form, setForm] = useState({
+        username: "",
+        password: "",
+        code: ""
+    });
+
+    const [step, setStep] = useState("password");
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [working, setWorking] = useState(false);
 
-    async function handleLogin(event) {
+    function update(event) {
+        setForm(current => ({
+            ...current,
+            [event.target.name]: event.target.value
+        }));
+    }
+
+    async function submit(event) {
         event.preventDefault();
-
+        setWorking(true);
         setError("");
-        setLoading(true);
 
         try {
             const response = await fetch(
-                `${API_BASE}/api/jp/login`,
+                step === "twoFactor"
+                    ? `${API_BASE}/api/jp/2fa/challenge`
+                    : `${API_BASE}/api/jp/login`,
                 {
                     method: "POST",
-
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json"
                     },
-
-                    credentials: "include",
-
-                    body: JSON.stringify({
-                        username,
-                        password
-                    })
+                    body: JSON.stringify(
+                        step === "twoFactor"
+                            ? { code: form.code }
+                            : {
+                                username: form.username,
+                                password: form.password
+                            }
+                    )
                 }
             );
 
             const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(
-                    data.error || "Login failed"
-                );
+            if (response.status === 202 &&
+                data.requiresTwoFactor) {
+                setStep("twoFactor");
+                return;
             }
 
-            console.log(
-                "JP LOGIN SUCCESS:",
-                data
-            );
+            if (!response.ok) {
+                throw new Error(data.error || "Unable to sign in.");
+            }
 
-            /*
-             * Login succeeded.
-             *
-             * The backend has created the HTTP-only
-             * JP session cookie.
-             *
-             * Now send the user to the JP dashboard.
-             */
-
-            navigate("/jp/dashboard");
-
-        } catch (error) {
-            setError(
-                error.message ||
-                "Unable to connect to the authentication server."
-            );
+            if (data.requiresTwoFactorSetup) {
+                navigate("/jp/settings?setup2fa=1");
+            } else {
+                navigate("/jp/dashboard");
+            }
+        } catch (loginError) {
+            setError(loginError.message);
         } finally {
-            setLoading(false);
+            setWorking(false);
         }
     }
 
     return (
         <main className="jp-login-page">
+            <section className="jp-login-card">
+                <span className="jp-login-label">
+                    KEYSTONE // JUDICIAL PANEL
+                </span>
 
-            <div className="jp-login-card">
+                <h1>
+                    {step === "twoFactor"
+                        ? "TWO-FACTOR VERIFICATION"
+                        : "SECURE LOGIN"}
+                </h1>
 
-                <div className="jp-login-header">
+                <p>
+                    {step === "twoFactor"
+                        ? "Enter the six-digit code from your authenticator."
+                        : "Authenticate to access internal panel systems."}
+                </p>
 
-                    <span className="jp-login-label">
-                        KEYSTONE // JP
-                    </span>
+                <form onSubmit={submit}>
+                    {step === "password" ? (
+                        <>
+                            <label>
+                                <span>USERNAME</span>
+                                <input
+                                    name="username"
+                                    value={form.username}
+                                    onChange={update}
+                                    autoComplete="username"
+                                    required
+                                />
+                            </label>
 
-                    <h1>
-                        Restricted Access
-                    </h1>
-
-                    <p>
-                        Authorized personnel only.
-                    </p>
-
-                </div>
-
-                <form
-                    onSubmit={handleLogin}
-                >
-
-                    <div className="jp-input-group">
-
+                            <label>
+                                <span>PASSWORD</span>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={form.password}
+                                    onChange={update}
+                                    autoComplete="current-password"
+                                    required
+                                />
+                            </label>
+                        </>
+                    ) : (
                         <label>
-                            Username
+                            <span>AUTHENTICATOR CODE</span>
+                            <input
+                                name="code"
+                                value={form.code}
+                                onChange={update}
+                                inputMode="numeric"
+                                autoComplete="one-time-code"
+                                maxLength={8}
+                                autoFocus
+                                required
+                            />
                         </label>
-
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(event) =>
-                                setUsername(
-                                    event.target.value
-                                )
-                            }
-                            placeholder="Enter username"
-                            required
-                        />
-
-                    </div>
-
-                    <div className="jp-input-group">
-
-                        <label>
-                            Password
-                        </label>
-
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(event) =>
-                                setPassword(
-                                    event.target.value
-                                )
-                            }
-                            placeholder="Enter password"
-                            required
-                        />
-
-                    </div>
-
-                    {error && (
-
-                        <div className="jp-login-error">
-
-                            {error}
-
-                        </div>
-
                     )}
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                    >
+                    {error && (
+                        <div className="jp-login-error">{error}</div>
+                    )}
 
-                        {loading
-                            ? "AUTHENTICATING..."
-                            : "AUTHENTICATE"
-                        }
-
+                    <button disabled={working}>
+                        {working
+                            ? "VERIFYING..."
+                            : step === "twoFactor"
+                                ? "VERIFY CODE"
+                                : "SIGN IN"}
                     </button>
-
                 </form>
-
-            </div>
-
+            </section>
         </main>
     );
 }
