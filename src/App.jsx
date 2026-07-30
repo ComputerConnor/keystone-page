@@ -15,6 +15,8 @@ import DegenChat from "./pages/DegenChat";
 import ExploitChat from "./pages/ExploitChat";
 import JPCaseQueue from "./pages/JPCaseQueue";
 import JPSubmissionQueue from "./pages/JPSubmissionQueue";
+import JPWorkspaces from "./pages/JPWorkspaces";
+import JPWorkspace from "./pages/JPWorkspace";
 import JPSubmitCase from "./pages/JPSubmitCase";
 import PublicSubmitCase from "./pages/PublicSubmitCase";
 import Tierlist from "./pages/Tierlist";
@@ -75,6 +77,16 @@ function App() {
                         <Route
                             path="/jp/submissions"
                             element={<JPSubmissionQueue />}
+                        />
+
+                        <Route
+                            path="/jp/workspaces"
+                            element={<JPWorkspaces />}
+                        />
+
+                        <Route
+                            path="/jp/workspaces/:workspaceId"
+                            element={<JPWorkspace />}
                         />
 
                         <Route
