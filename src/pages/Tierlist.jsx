@@ -366,21 +366,11 @@ function UnderConstruction() {
                         Return home
                     </button>
 
-                    <button
-                        type="button"
-                        className="construction-button construction-button-secondary"
-                        onClick={() =>
-                            navigate(-1)
-                        }
-                    >
-                        Go back
-                    </button>
-
                 </div>
 
 
                 <footer className="construction-footer">
-                    Keystone Network
+                    Keystone
                 </footer>
 
             </section>
