@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_BASE from "../utils/api";
-import "./JPSettings.css";
+import "./JPLogin.css";
 
 function JPLogin() {
     const navigate = useNavigate();
