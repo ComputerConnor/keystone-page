@@ -16,6 +16,7 @@ import ExploitChat from "./pages/ExploitChat";
 import JPCaseQueue from "./pages/JPCaseQueue";
 import JPSubmissionQueue from "./pages/JPSubmissionQueue";
 import JPSubmitCase from "./pages/JPSubmitCase";
+import PublicSubmitCase from "./pages/PublicSubmitCase";
 
 function App() {
     return (
@@ -77,6 +78,11 @@ function App() {
                         <Route
                             path="/jp/submit"
                             element={<JPSubmitCase />}
+                        />
+
+                        <Route
+                            path="/submit-case"
+                            element={<PublicSubmitCase />}
                         />
 
                     </Routes>
