@@ -230,6 +230,18 @@ function PublicSubmitCase() {
         setError("");
         setSuccess("");
         setUploadProgress("");
+
+        if (
+            !form.evidence.trim() &&
+            mediaFiles.length === 0
+        ) {
+            setError(
+                "Provide at least one evidence link or upload at least one media file."
+            );
+
+            return;
+        }
+
         setSubmitting(true);
 
         try {
@@ -281,8 +293,25 @@ function PublicSubmitCase() {
                     }
                 );
 
-            const data =
-                await response.json();
+            const responseText =
+                await response.text();
+
+            let data = {};
+
+            try {
+                data =
+                    responseText
+                        ? JSON.parse(
+                            responseText
+                        )
+                        : {};
+            } catch {
+                data = {
+                    error:
+                        responseText ||
+                        "The server returned an invalid response."
+                };
+            }
 
             if (!response.ok) {
                 throw new Error(
@@ -311,6 +340,12 @@ function PublicSubmitCase() {
             );
 
             setMediaFiles([]);
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value =
+                    "";
+            }
+
             setUploadProgress("");
 
             window.scrollTo({
@@ -589,6 +624,10 @@ function PublicSubmitCase() {
                             placeholder="Optional: place one image, video, document, Discord attachment, or other evidence URL per line."
                             maxLength={30000}
                         />
+
+                        <small className="public-submit-field-help">
+                            At least one evidence link or uploaded file is required.
+                        </small>
                     </label>
 
 
@@ -613,9 +652,18 @@ function PublicSubmitCase() {
                                     fileInputRef.current
                                         ?.click()
                                 }
-                                disabled={submitting}
+                                disabled={
+                                    submitting ||
+                                    mediaFiles.length >=
+                                        MAX_FILES
+                                }
                             >
-                                + ADD MEDIA
+                                {
+                                    mediaFiles.length >=
+                                    MAX_FILES
+                                        ? "FILE LIMIT REACHED"
+                                        : "+ ADD MEDIA"
+                                }
                             </button>
                         </div>
 
@@ -627,6 +675,11 @@ function PublicSubmitCase() {
                             multiple
                             accept="image/*,video/*,audio/*,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx"
                             onChange={addMediaFiles}
+                            disabled={
+                                submitting ||
+                                mediaFiles.length >=
+                                    MAX_FILES
+                            }
                         />
 
                         {
