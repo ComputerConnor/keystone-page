@@ -1,4 +1,6 @@
 import {
+    useMemo,
+    useRef,
     useState
 } from "react";
 
@@ -10,6 +12,12 @@ import API_BASE from "../utils/api";
 
 import "./PublicSubmitCase.css";
 
+
+const MAX_FILES =
+    10;
+
+const MAX_FILE_SIZE =
+    50 * 1024 * 1024;
 
 const INITIAL_FORM = {
     caseType: "",
@@ -25,9 +33,37 @@ const INITIAL_FORM = {
 };
 
 
+function formatBytes(bytes) {
+    if (!Number.isFinite(bytes)) {
+        return "Unknown size";
+    }
+
+    if (bytes < 1024) {
+        return `${bytes} B`;
+    }
+
+    if (bytes < 1024 * 1024) {
+        return `${(
+            bytes / 1024
+        ).toFixed(1)} KB`;
+    }
+
+    return `${(
+        bytes /
+        (
+            1024 *
+            1024
+        )
+    ).toFixed(1)} MB`;
+}
+
+
 function PublicSubmitCase() {
     const navigate =
         useNavigate();
+
+    const fileInputRef =
+        useRef(null);
 
     const [
         form,
@@ -36,10 +72,22 @@ function PublicSubmitCase() {
         useState(INITIAL_FORM);
 
     const [
+        mediaFiles,
+        setMediaFiles
+    ] =
+        useState([]);
+
+    const [
         submitting,
         setSubmitting
     ] =
         useState(false);
+
+    const [
+        uploadProgress,
+        setUploadProgress
+    ] =
+        useState("");
 
     const [
         error,
@@ -52,6 +100,22 @@ function PublicSubmitCase() {
         setSuccess
     ] =
         useState("");
+
+
+    const totalMediaSize =
+        useMemo(
+            () =>
+                mediaFiles.reduce(
+                    (
+                        total,
+                        file
+                    ) =>
+                        total +
+                        file.size,
+                    0
+                ),
+            [mediaFiles]
+        );
 
 
     function updateField(event) {
@@ -71,14 +135,138 @@ function PublicSubmitCase() {
     }
 
 
+    function addMediaFiles(event) {
+        const selectedFiles =
+            Array.from(
+                event.target.files ||
+                []
+            );
+
+        setError("");
+
+        const combined =
+            [
+                ...mediaFiles,
+                ...selectedFiles
+            ];
+
+        const unique =
+            combined.filter(
+                (
+                    file,
+                    index,
+                    files
+                ) =>
+                    files.findIndex(
+                        candidate =>
+                            candidate.name ===
+                                file.name &&
+                            candidate.size ===
+                                file.size &&
+                            candidate.lastModified ===
+                                file.lastModified
+                    ) === index
+            );
+
+        if (
+            unique.length >
+            MAX_FILES
+        ) {
+            setError(
+                `You can upload a maximum of ${MAX_FILES} files.`
+            );
+
+            event.target.value =
+                "";
+
+            return;
+        }
+
+        const oversized =
+            unique.find(
+                file =>
+                    file.size >
+                    MAX_FILE_SIZE
+            );
+
+        if (oversized) {
+            setError(
+                `${oversized.name} is larger than the 50 MB per-file limit.`
+            );
+
+            event.target.value =
+                "";
+
+            return;
+        }
+
+        setMediaFiles(
+            unique
+        );
+
+        event.target.value =
+            "";
+    }
+
+
+    function removeMediaFile(index) {
+        setMediaFiles(
+            current =>
+                current.filter(
+                    (
+                        _,
+                        currentIndex
+                    ) =>
+                        currentIndex !==
+                        index
+                )
+        );
+    }
+
+
     async function handleSubmit(event) {
         event.preventDefault();
 
         setError("");
         setSuccess("");
+        setUploadProgress("");
         setSubmitting(true);
 
         try {
+            const body =
+                new FormData();
+
+            Object.entries(form)
+                .forEach(
+                    (
+                        [
+                            key,
+                            value
+                        ]
+                    ) => {
+                        body.append(
+                            key,
+                            value
+                        );
+                    }
+                );
+
+            mediaFiles.forEach(
+                file => {
+                    body.append(
+                        "media",
+                        file,
+                        file.name
+                    );
+                }
+            );
+
+            setUploadProgress(
+                mediaFiles.length > 0
+                    ? `Uploading ${mediaFiles.length} media file${mediaFiles.length === 1 ? "" : "s"} and creating the queue entry...`
+                    : "Creating the queue entry..."
+            );
+
             const response =
                 await fetch(
                     `${API_BASE}/api/public-submissions`,
@@ -89,13 +277,7 @@ function PublicSubmitCase() {
                         credentials:
                             "include",
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify(form)
+                        body
                     }
                 );
 
@@ -109,13 +291,27 @@ function PublicSubmitCase() {
                 );
             }
 
+            const uploadedCount =
+                Number(
+                    data.submission
+                        ?.uploadedMediaCount ||
+                    0
+                );
+
             setSuccess(
-                `Submission #${data.submission.id} was added to the administrative review queue.`
+                `Submission #${data.submission.id} was added to the administrative review queue${
+                    uploadedCount > 0
+                        ? ` with ${uploadedCount} uploaded media file${uploadedCount === 1 ? "" : "s"}.`
+                        : "."
+                }`
             );
 
             setForm(
                 INITIAL_FORM
             );
+
+            setMediaFiles([]);
+            setUploadProgress("");
 
             window.scrollTo({
                 top: 0,
@@ -131,6 +327,8 @@ function PublicSubmitCase() {
             setError(
                 submitError.message
             );
+
+            setUploadProgress("");
 
         } finally {
             setSubmitting(false);
@@ -165,7 +363,7 @@ function PublicSubmitCase() {
                         type="button"
                         className="public-submit-back"
                         onClick={() =>
-                            navigate("/")
+                            navigate("/home")
                         }
                     >
                         ← HOME
@@ -204,6 +402,15 @@ function PublicSubmitCase() {
                     success && (
                         <div className="public-submit-message public-submit-success">
                             {success}
+                        </div>
+                    )
+                }
+
+
+                {
+                    uploadProgress && (
+                        <div className="public-submit-message public-submit-progress">
+                            {uploadProgress}
                         </div>
                     )
                 }
@@ -379,11 +586,120 @@ function PublicSubmitCase() {
                             name="evidence"
                             value={form.evidence}
                             onChange={updateField}
-                            placeholder="Place one image, video, document, Discord attachment, or other evidence URL per line."
+                            placeholder="Optional: place one image, video, document, Discord attachment, or other evidence URL per line."
                             maxLength={30000}
-                            required
                         />
                     </label>
+
+
+                    <section className="public-submit-upload">
+
+                        <div className="public-submit-upload-header">
+                            <div>
+                                <span>
+                                    MEDIA UPLOADS
+                                </span>
+
+                                <p>
+                                    Upload images, videos, audio, or documents.
+                                    Maximum {MAX_FILES} files and 50 MB per file.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="public-submit-upload-button"
+                                onClick={() =>
+                                    fileInputRef.current
+                                        ?.click()
+                                }
+                                disabled={submitting}
+                            >
+                                + ADD MEDIA
+                            </button>
+                        </div>
+
+                        <input
+                            ref={fileInputRef}
+                            className="public-submit-file-input"
+                            type="file"
+                            name="media"
+                            multiple
+                            accept="image/*,video/*,audio/*,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx"
+                            onChange={addMediaFiles}
+                        />
+
+                        {
+                            mediaFiles.length === 0
+                                ? (
+                                    <div className="public-submit-upload-empty">
+                                        No media selected
+                                    </div>
+                                )
+                                : (
+                                    <div className="public-submit-file-list">
+                                        {
+                                            mediaFiles.map(
+                                                (
+                                                    file,
+                                                    index
+                                                ) => (
+                                                    <div
+                                                        className="public-submit-file"
+                                                        key={`${file.name}-${file.size}-${file.lastModified}`}
+                                                    >
+                                                        <div>
+                                                            <strong>
+                                                                {file.name}
+                                                            </strong>
+
+                                                            <span>
+                                                                {
+                                                                    file.type ||
+                                                                    "Unknown media"
+                                                                } · {
+                                                                    formatBytes(
+                                                                        file.size
+                                                                    )
+                                                                }
+                                                            </span>
+                                                        </div>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                removeMediaFile(
+                                                                    index
+                                                                )
+                                                            }
+                                                            disabled={submitting}
+                                                            aria-label={`Remove ${file.name}`}
+                                                        >
+                                                            REMOVE
+                                                        </button>
+                                                    </div>
+                                                )
+                                            )
+                                        }
+                                    </div>
+                                )
+                        }
+
+                        <div className="public-submit-upload-total">
+                            <span>
+                                SELECTED FILES
+                            </span>
+
+                            <strong>
+                                {mediaFiles.length} · {
+                                    formatBytes(
+                                        totalMediaSize
+                                    )
+                                }
+                            </strong>
+                        </div>
+
+                    </section>
 
 
                     <label
@@ -421,8 +737,9 @@ function PublicSubmitCase() {
                             type="button"
                             className="public-submit-secondary"
                             onClick={() =>
-                                navigate("/")
+                                navigate("/home")
                             }
+                            disabled={submitting}
                         >
                             CANCEL
                         </button>
