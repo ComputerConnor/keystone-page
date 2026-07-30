@@ -44,7 +44,8 @@
 
 .public-submit-back,
 .public-submit-secondary,
-.public-submit-primary {
+.public-submit-primary,
+.public-submit-upload-button {
     border: 1px solid rgba(255, 255, 255, .12);
     background: transparent;
     color: rgba(255, 255, 255, .72);
@@ -55,7 +56,8 @@
 }
 
 .public-submit-back:hover,
-.public-submit-secondary:hover {
+.public-submit-secondary:hover,
+.public-submit-upload-button:hover:not(:disabled) {
     color: white;
     border-color: rgba(181, 104, 243, .55);
 }
@@ -174,6 +176,129 @@
     background: rgba(70, 220, 130, .08);
 }
 
+.public-submit-progress {
+    color: #d9bcff;
+    border-color: rgba(181, 104, 243, .35);
+    background: rgba(181, 104, 243, .08);
+}
+
+.public-submit-upload {
+    padding: 20px;
+    background: rgba(0, 0, 0, .24);
+    border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.public-submit-upload-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.public-submit-upload-header span {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(181, 104, 243, .78);
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .17em;
+}
+
+.public-submit-upload-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, .40);
+    font: 400 12px/1.55 Arial, sans-serif;
+}
+
+.public-submit-upload-button {
+    flex-shrink: 0;
+    color: #d9bcff;
+    background: rgba(181, 104, 243, .10);
+    border-color: rgba(181, 104, 243, .28);
+}
+
+.public-submit-file-input {
+    display: none;
+}
+
+.public-submit-upload-empty {
+    margin-top: 18px;
+    padding: 28px 15px;
+    text-align: center;
+    color: rgba(255, 255, 255, .30);
+    border: 1px dashed rgba(255, 255, 255, .10);
+    font: 500 10px/1 Arial, sans-serif;
+    letter-spacing: .12em;
+}
+
+.public-submit-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.public-submit-file {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(255, 255, 255, .07);
+}
+
+.public-submit-file > div {
+    min-width: 0;
+}
+
+.public-submit-file strong,
+.public-submit-file span {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.public-submit-file strong {
+    color: rgba(255, 255, 255, .72);
+    font: 500 12px/1.4 Arial, sans-serif;
+}
+
+.public-submit-file span {
+    margin-top: 5px;
+    color: rgba(255, 255, 255, .32);
+    font: 400 10px/1.4 Arial, sans-serif;
+}
+
+.public-submit-file button {
+    flex-shrink: 0;
+    cursor: pointer;
+    padding: 8px 10px;
+    color: #ff9d9d;
+    background: rgba(255, 70, 70, .07);
+    border: 1px solid rgba(255, 90, 90, .20);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .12em;
+}
+
+.public-submit-upload-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, .07);
+}
+
+.public-submit-upload-total span {
+    color: rgba(255, 255, 255, .32);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .15em;
+}
+
+.public-submit-upload-total strong {
+    color: #d9bcff;
+    font: 500 11px/1 Arial, sans-serif;
+}
+
 .public-submit-actions {
     display: flex;
     justify-content: flex-end;
@@ -196,7 +321,10 @@
     box-shadow: 0 0 28px rgba(181, 104, 243, .16);
 }
 
-.public-submit-primary:disabled {
+.public-submit-primary:disabled,
+.public-submit-secondary:disabled,
+.public-submit-upload-button:disabled,
+.public-submit-file button:disabled {
     cursor: not-allowed;
     opacity: .55;
 }
@@ -219,12 +347,21 @@
         padding: 24px 18px;
     }
 
-    .public-submit-header {
+    .public-submit-header,
+    .public-submit-upload-header {
         flex-direction: column;
     }
 
     .public-submit-grid {
         grid-template-columns: 1fr;
+    }
+
+    .public-submit-upload-button {
+        width: 100%;
+    }
+
+    .public-submit-file {
+        align-items: flex-start;
     }
 
     .public-submit-actions {
