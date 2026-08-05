@@ -23,6 +23,16 @@ function JPLogin() {
         }));
     }
 
+    function restartLogin() {
+        setStep("password");
+        setError("");
+        setForm(current => ({
+            ...current,
+            password: "",
+            code: ""
+        }));
+    }
+
     async function submit(event) {
         event.preventDefault();
         setWorking(true);
@@ -41,7 +51,11 @@ function JPLogin() {
                     },
                     body: JSON.stringify(
                         step === "twoFactor"
-                            ? { code: form.code }
+                            ? {
+                                code:
+                                    form.code
+                                        .replace(/\D/g, "")
+                            }
                             : {
                                 username: form.username,
                                 password: form.password
@@ -52,23 +66,61 @@ function JPLogin() {
 
             const data = await response.json();
 
-            if (response.status === 202 &&
-                data.requiresTwoFactor) {
+            if (
+                response.status === 202 &&
+                data.requiresTwoFactor
+            ) {
+                setForm(current => ({
+                    ...current,
+                    code: ""
+                }));
+
                 setStep("twoFactor");
                 return;
             }
 
             if (!response.ok) {
-                throw new Error(data.error || "Unable to sign in.");
+                const message =
+                    data.error ||
+                    "Unable to sign in.";
+
+                if (
+                    step === "twoFactor" &&
+                    message
+                        .toLowerCase()
+                        .includes("challenge expired")
+                ) {
+                    setStep("password");
+
+                    setForm(current => ({
+                        ...current,
+                        password: "",
+                        code: ""
+                    }));
+
+                    throw new Error(
+                        "The two-factor challenge expired. Enter your password to begin again."
+                    );
+                }
+
+                throw new Error(
+                    message
+                );
             }
 
             if (data.requiresTwoFactorSetup) {
-                navigate("/jp/settings?setup2fa=1");
+                navigate(
+                    "/jp/settings?setup2fa=1"
+                );
             } else {
-                navigate("/jp/dashboard");
+                navigate(
+                    "/jp/dashboard"
+                );
             }
         } catch (loginError) {
-            setError(loginError.message);
+            setError(
+                loginError.message
+            );
         } finally {
             setWorking(false);
         }
@@ -82,70 +134,114 @@ function JPLogin() {
                 </span>
 
                 <h1>
-                    {step === "twoFactor"
-                        ? "TWO-FACTOR VERIFICATION"
-                        : "SECURE LOGIN"}
+                    {
+                        step === "twoFactor"
+                            ? "TWO-FACTOR VERIFICATION"
+                            : "SECURE LOGIN"
+                    }
                 </h1>
 
                 <p>
-                    {step === "twoFactor"
-                        ? "Enter the six-digit code from your authenticator."
-                        : "Authenticate to access internal panel systems."}
+                    {
+                        step === "twoFactor"
+                            ? "Enter the six-digit code from your authenticator. This challenge remains valid for ten minutes."
+                            : "Authenticate to access internal panel systems."
+                    }
                 </p>
 
                 <form onSubmit={submit}>
-                    {step === "password" ? (
-                        <>
-                            <label>
-                                <span>USERNAME</span>
-                                <input
-                                    name="username"
-                                    value={form.username}
-                                    onChange={update}
-                                    autoComplete="username"
-                                    required
-                                />
-                            </label>
+                    {
+                        step === "password"
+                            ? (
+                                <>
+                                    <label>
+                                        <span>
+                                            USERNAME
+                                        </span>
 
-                            <label>
-                                <span>PASSWORD</span>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={form.password}
-                                    onChange={update}
-                                    autoComplete="current-password"
-                                    required
-                                />
-                            </label>
-                        </>
-                    ) : (
-                        <label>
-                            <span>AUTHENTICATOR CODE</span>
-                            <input
-                                name="code"
-                                value={form.code}
-                                onChange={update}
-                                inputMode="numeric"
-                                autoComplete="one-time-code"
-                                maxLength={8}
-                                autoFocus
-                                required
-                            />
-                        </label>
-                    )}
+                                        <input
+                                            name="username"
+                                            value={form.username}
+                                            onChange={update}
+                                            autoComplete="username"
+                                            required
+                                        />
+                                    </label>
 
-                    {error && (
-                        <div className="jp-login-error">{error}</div>
-                    )}
+                                    <label>
+                                        <span>
+                                            PASSWORD
+                                        </span>
+
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            value={form.password}
+                                            onChange={update}
+                                            autoComplete="current-password"
+                                            required
+                                        />
+                                    </label>
+                                </>
+                            )
+                            : (
+                                <label>
+                                    <span>
+                                        AUTHENTICATOR CODE
+                                    </span>
+
+                                    <input
+                                        name="code"
+                                        value={form.code}
+                                        onChange={event =>
+                                            setForm(current => ({
+                                                ...current,
+                                                code:
+                                                    event.target.value
+                                                        .replace(/\D/g, "")
+                                                        .slice(0, 6)
+                                            }))
+                                        }
+                                        inputMode="numeric"
+                                        autoComplete="one-time-code"
+                                        maxLength={6}
+                                        pattern="[0-9]{6}"
+                                        autoFocus
+                                        required
+                                    />
+                                </label>
+                            )
+                    }
+
+                    {
+                        error && (
+                            <div className="jp-login-error">
+                                {error}
+                            </div>
+                        )
+                    }
 
                     <button disabled={working}>
-                        {working
-                            ? "VERIFYING..."
-                            : step === "twoFactor"
-                                ? "VERIFY CODE"
-                                : "SIGN IN"}
+                        {
+                            working
+                                ? "VERIFYING..."
+                                : step === "twoFactor"
+                                    ? "VERIFY CODE"
+                                    : "SIGN IN"
+                        }
                     </button>
+
+                    {
+                        step === "twoFactor" && (
+                            <button
+                                type="button"
+                                disabled={working}
+                                onClick={restartLogin}
+                            >
+                                START OVER
+                            </button>
+                        )
+                    }
                 </form>
             </section>
         </main>
