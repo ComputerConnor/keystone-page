@@ -204,3 +204,161 @@
         width: 100%;
     }
 }
+
+
+/* ============================================================
+   JP CASE MEDIA UPLOADS
+   ============================================================ */
+
+.jp-submit-upload {
+    padding: 20px;
+    background: rgba(0, 0, 0, .24);
+    border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.jp-submit-upload-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.jp-submit-upload-header span {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(181, 104, 243, .78);
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .17em;
+}
+
+.jp-submit-upload-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, .40);
+    font: 400 12px/1.55 Arial, sans-serif;
+}
+
+.jp-submit-upload-button {
+    flex-shrink: 0;
+    padding: 12px 18px;
+    cursor: pointer;
+    color: #d9bcff;
+    background: rgba(181, 104, 243, .10);
+    border: 1px solid rgba(181, 104, 243, .28);
+    font: 500 10px/1 Arial, sans-serif;
+    letter-spacing: .14em;
+}
+
+.jp-submit-upload-button:hover:not(:disabled) {
+    color: white;
+    border-color: rgba(181, 104, 243, .55);
+}
+
+.jp-submit-file-input {
+    display: none;
+}
+
+.jp-submit-upload-empty {
+    margin-top: 18px;
+    padding: 28px 15px;
+    text-align: center;
+    color: rgba(255, 255, 255, .30);
+    border: 1px dashed rgba(255, 255, 255, .10);
+    font: 500 10px/1 Arial, sans-serif;
+    letter-spacing: .12em;
+}
+
+.jp-submit-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.jp-submit-file {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(255, 255, 255, .07);
+}
+
+.jp-submit-file > div {
+    min-width: 0;
+}
+
+.jp-submit-file strong,
+.jp-submit-file span {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.jp-submit-file strong {
+    color: rgba(255, 255, 255, .72);
+    font: 500 12px/1.4 Arial, sans-serif;
+}
+
+.jp-submit-file span {
+    margin-top: 5px;
+    color: rgba(255, 255, 255, .32);
+    font: 400 10px/1.4 Arial, sans-serif;
+}
+
+.jp-submit-file button {
+    flex-shrink: 0;
+    padding: 8px 10px;
+    cursor: pointer;
+    color: #ff9d9d;
+    background: rgba(255, 70, 70, .07);
+    border: 1px solid rgba(255, 90, 90, .20);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .12em;
+}
+
+.jp-submit-upload-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, .07);
+}
+
+.jp-submit-upload-total span {
+    color: rgba(255, 255, 255, .32);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .15em;
+}
+
+.jp-submit-upload-total strong {
+    color: #d9bcff;
+    font: 500 11px/1 Arial, sans-serif;
+}
+
+.jp-submit-progress {
+    color: #d9bcff;
+    border-color: rgba(181, 104, 243, .35);
+    background: rgba(181, 104, 243, .08);
+}
+
+.jp-submit-upload-button:disabled,
+.jp-submit-file button:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+}
+
+@media (max-width: 720px) {
+    .jp-submit-upload-header {
+        flex-direction: column;
+    }
+
+    .jp-submit-upload-button {
+        width: 100%;
+    }
+
+    .jp-submit-file {
+        align-items: flex-start;
+    }
+}
+
