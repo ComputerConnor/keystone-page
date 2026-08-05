@@ -1,15 +1,189 @@
-.jp-workspace-card { text-align: left; color: inherit; cursor: pointer; }
-.jp-workspace-card:hover { border-color: rgba(181,104,243,.45); transform: translateY(-2px); }
-.jp-workspace-page { min-height: 100vh; padding: 42px; color: white; box-sizing: border-box; }
-.jp-workspace-layout { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); gap: 20px; height: calc(100vh - 150px); }
-.jp-workspace-sidebar { overflow-y: auto; padding: 24px; background: rgba(10,10,15,.86); border: 1px solid rgba(181,104,243,.20); }
-.jp-workspace-sidebar h2 { margin: 24px 0 10px; color: rgba(181,104,243,.75); font: 600 9px/1 Arial; letter-spacing: .18em; }
-.jp-workspace-sidebar dl { margin: 18px 0 0; display: grid; gap: 10px; }
-.jp-workspace-sidebar dt { color: rgba(255,255,255,.3); font: 600 8px/1 Arial; letter-spacing: .14em; }
-.jp-workspace-sidebar dd, .jp-workspace-sidebar p { margin: 4px 0 0; color: rgba(255,255,255,.64); font: 400 12px/1.6 Arial; white-space: pre-wrap; overflow-wrap: anywhere; }
-@media (max-width: 850px) { .jp-workspace-page { padding: 20px; } .jp-workspace-layout { grid-template-columns: 1fr; height: auto; } .jp-workspace-sidebar { max-height: none; } .jp-workspace-layout .jp-chat-panel { min-height: 65vh; } }
+.jp-workspace-card {
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+}
 
-.jp-voting-box { display: grid; gap: 9px; padding: 13px; border: 1px solid rgba(181,104,243,.18); background: rgba(181,104,243,.05); font: 500 9px/1.4 Arial; letter-spacing: .08em; }
-.jp-vote-actions { display: grid; grid-template-columns: 1fr; gap: 7px; }
-.jp-vote-actions button, .jp-workspace-admin-button { padding: 10px; color: rgba(255,255,255,.82); background: rgba(181,104,243,.10); border: 1px solid rgba(181,104,243,.35); cursor: pointer; font: 600 8px/1 Arial; letter-spacing: .12em; }
-.jp-workspace-admin-button { width: 100%; margin-top: 10px; }
+.jp-workspace-card:hover {
+    border-color: rgba(181,104,243,.45);
+    transform: translateY(-2px);
+}
+
+.jp-workspace-page {
+    min-height: 100vh;
+    height: 100vh;
+    padding: 34px 40px 42px;
+    color: white;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.jp-workspace-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(280px, 360px)
+        minmax(0, 1fr);
+    gap: 18px;
+    height: calc(100vh - 145px);
+    min-height: 0;
+}
+
+.jp-workspace-sidebar {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 22px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(14,17,22,.88),
+            rgba(4,6,8,.94)
+        );
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.02),
+        0 20px 55px rgba(0,0,0,.35);
+}
+
+.jp-workspace-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.jp-workspace-deadline {
+    color: rgba(210,160,255,.78);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .13em;
+}
+
+.jp-workspace-deadline.is-closed {
+    color: rgba(255,170,170,.72);
+}
+
+.jp-workspace-section {
+    margin-top: 22px;
+    padding-top: 2px;
+}
+
+.jp-workspace-section + .jp-workspace-section {
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.jp-workspace-sidebar h2 {
+    margin: 0 0 11px;
+    color: rgba(181,104,243,.72);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .18em;
+}
+
+.jp-workspace-sidebar dl {
+    margin: 0;
+    display: grid;
+    gap: 9px;
+}
+
+.jp-workspace-sidebar dl > div {
+    padding: 10px 11px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.055);
+}
+
+.jp-workspace-sidebar dt {
+    color: rgba(255,255,255,.28);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .14em;
+}
+
+.jp-workspace-sidebar dd,
+.jp-workspace-sidebar p {
+    margin: 5px 0 0;
+    color: rgba(255,255,255,.62);
+    font: 400 11px/1.6 Arial, sans-serif;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.jp-workspace-chat-panel {
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.02),
+        0 20px 55px rgba(0,0,0,.35);
+}
+
+.jp-voting-box {
+    display: grid;
+    gap: 10px;
+    padding: 13px;
+    border: 1px solid rgba(181,104,243,.18);
+    background: rgba(181,104,243,.05);
+    color: rgba(255,255,255,.58);
+    font: 500 9px/1.45 Arial, sans-serif;
+    letter-spacing: .08em;
+}
+
+.jp-voting-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: rgba(210,160,255,.82);
+}
+
+.jp-vote-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 7px;
+}
+
+.jp-vote-actions button,
+.jp-workspace-admin-button {
+    padding: 10px;
+    color: rgba(255,255,255,.82);
+    background: rgba(181,104,243,.10);
+    border: 1px solid rgba(181,104,243,.35);
+    cursor: pointer;
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .12em;
+}
+
+.jp-vote-actions button:hover:not(:disabled),
+.jp-workspace-admin-button:hover:not(:disabled) {
+    background: rgba(181,104,243,.18);
+    border-color: rgba(210,160,255,.55);
+}
+
+.jp-vote-actions button:disabled,
+.jp-workspace-admin-button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
+.jp-workspace-admin-button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+    .jp-workspace-page {
+        height: auto;
+        min-height: 100vh;
+        padding: 22px 16px 40px;
+        overflow: visible;
+    }
+
+    .jp-workspace-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .jp-workspace-sidebar {
+        max-height: none;
+    }
+
+    .jp-workspace-layout .jp-chat-panel {
+        min-height: 70vh;
+    }
+}
