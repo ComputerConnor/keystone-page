@@ -5,21 +5,12 @@
 .jp-dashboard-page {
     position: relative;
     width: 100%;
-    height: 100vh;
-    min-height: 0;
+    min-height: 100vh;
     padding: 35px 40px 80px;
     box-sizing: border-box;
+    display: block;
+    overflow: visible;
     color: white;
-
-    /*
-     * The dashboard owns its scrolling. This prevents a centered or
-     * overflow-hidden parent from pushing the header above the viewport.
-     */
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    align-self: stretch;
-    justify-self: stretch;
 }
 
 
@@ -27,7 +18,6 @@
 
 .jp-dashboard-shell {
     width: min(1180px, 100%);
-    min-height: max-content;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -45,6 +35,7 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 40px;
+    margin-bottom: 0;
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255,255,255,.08);
 }
@@ -69,8 +60,7 @@
 .jp-dashboard-header h1 {
     margin: 0 0 12px;
     font:
-        400 42px/1.05
-        Arial,
+        400 42px/1.05 Arial,
         sans-serif;
     letter-spacing: -.035em;
 }
@@ -80,8 +70,7 @@
     margin: 0;
     color: rgba(255,255,255,.40);
     font:
-        400 12px/1.5
-        Arial,
+        400 12px/1.5 Arial,
         sans-serif;
     letter-spacing: .08em;
 }
@@ -117,8 +106,7 @@
     color:
         rgba(181,104,243,.68);
     font:
-        500 9px/1
-        Arial,
+        500 9px/1 Arial,
         sans-serif;
     letter-spacing: .22em;
 }
@@ -130,8 +118,7 @@
     color:
         rgba(255,255,255,.88);
     font:
-        500 14px/1.2
-        Arial,
+        500 14px/1.2 Arial,
         sans-serif;
 }
 
@@ -140,8 +127,7 @@
     color:
         rgba(255,255,255,.38);
     font:
-        400 10px/1
-        Arial,
+        400 10px/1 Arial,
         sans-serif;
     letter-spacing: .16em;
     text-transform: uppercase;
@@ -286,8 +272,7 @@
     color:
         rgba(255,255,255,.22);
     font:
-        500 10px/1
-        Arial,
+        500 10px/1 Arial,
         sans-serif;
     letter-spacing: .2em;
 }
@@ -303,8 +288,7 @@
     color:
         rgba(210,166,255,.88);
     font:
-        400 27px/1
-        Arial,
+        400 27px/1 Arial,
         sans-serif;
     background:
         rgba(181,104,243,.07);
@@ -319,8 +303,7 @@
 .jp-room-card h2 {
     margin: 0 0 8px;
     font:
-        500 17px/1.1
-        Arial,
+        500 17px/1.1 Arial,
         sans-serif;
     letter-spacing: .04em;
 }
@@ -332,8 +315,7 @@
     color:
         rgba(255,255,255,.40);
     font:
-        400 12px/1.65
-        Arial,
+        400 12px/1.65 Arial,
         sans-serif;
 }
 
@@ -344,8 +326,7 @@
     color:
         rgba(181,104,243,.72);
     font:
-        500 9px/1
-        Arial,
+        500 9px/1 Arial,
         sans-serif;
     letter-spacing: .22em;
 }
@@ -370,8 +351,7 @@
     color:
         rgba(255,255,255,.28);
     font:
-        500 9px/1
-        Arial,
+        500 9px/1 Arial,
         sans-serif;
     letter-spacing: .2em;
 }
@@ -388,8 +368,7 @@
         rgba(255,255,255,.12);
     cursor: pointer;
     font:
-        500 9px/1
-        Arial,
+        500 9px/1 Arial,
         sans-serif;
     letter-spacing: .2em;
     transition:
@@ -409,34 +388,12 @@
 
 
 /* ============================================================
-   DASHBOARD SCROLLBAR
-   ============================================================ */
-
-.jp-dashboard-page::-webkit-scrollbar {
-    width: 7px;
-}
-
-.jp-dashboard-page::-webkit-scrollbar-track {
-    background: rgba(0,0,0,.16);
-}
-
-.jp-dashboard-page::-webkit-scrollbar-thumb {
-    background: rgba(181,104,243,.30);
-}
-
-.jp-dashboard-page::-webkit-scrollbar-thumb:hover {
-    background: rgba(181,104,243,.55);
-}
-
-
-/* ============================================================
    MOBILE
    ============================================================ */
 
 @media (max-width: 700px) {
     .jp-dashboard-page {
-        height: 100vh;
-        min-height: 0;
+        min-height: 100vh;
         padding:
             30px 20px 55px;
     }
