@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import API_BASE from "../utils/api";
@@ -6,9 +6,56 @@ import API_BASE from "../utils/api";
 import "./JPSubmitCase.css";
 
 
+const MAX_FILES =
+    10;
+
+const MAX_FILE_SIZE =
+    1024 * 1024 * 1024;
+
+const MAX_TOTAL_UPLOAD_SIZE =
+    1024 * 1024 * 1024;
+
+
+function formatBytes(bytes) {
+    if (!Number.isFinite(bytes)) {
+        return "Unknown size";
+    }
+
+    if (bytes < 1024) {
+        return `${bytes} B`;
+    }
+
+    if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+
+    if (bytes < 1024 * 1024 * 1024) {
+        return `${(
+            bytes /
+            (
+                1024 *
+                1024
+            )
+        ).toFixed(1)} MB`;
+    }
+
+    return `${(
+        bytes /
+        (
+            1024 *
+            1024 *
+            1024
+        )
+    ).toFixed(2)} GB`;
+}
+
+
 function JPSubmitCase() {
 
     const navigate = useNavigate();
+
+    const fileInputRef =
+        useRef(null);
 
     const [user, setUser] =
         useState(null);
@@ -23,6 +70,12 @@ function JPSubmitCase() {
         useState("");
 
     const [success, setSuccess] =
+        useState("");
+
+    const [mediaFiles, setMediaFiles] =
+        useState([]);
+
+    const [uploadProgress, setUploadProgress] =
         useState("");
 
     const [form, setForm] =
@@ -170,6 +223,108 @@ function JPSubmitCase() {
         }, [role]);
 
 
+    const totalMediaSize =
+        useMemo(
+            () =>
+                mediaFiles.reduce(
+                    (total, file) =>
+                        total + file.size,
+                    0
+                ),
+            [mediaFiles]
+        );
+
+
+    function addMediaFiles(event) {
+        const selectedFiles =
+            Array.from(
+                event.target.files ||
+                []
+            );
+
+        setError("");
+
+        const unique =
+            [
+                ...mediaFiles,
+                ...selectedFiles
+            ].filter(
+                (
+                    file,
+                    index,
+                    files
+                ) =>
+                    files.findIndex(
+                        candidate =>
+                            candidate.name === file.name &&
+                            candidate.size === file.size &&
+                            candidate.lastModified === file.lastModified
+                    ) === index
+            );
+
+        if (unique.length > MAX_FILES) {
+            setError(
+                `You can upload a maximum of ${MAX_FILES} files.`
+            );
+
+            event.target.value = "";
+            return;
+        }
+
+        const oversized =
+            unique.find(
+                file =>
+                    file.size >
+                    MAX_FILE_SIZE
+            );
+
+        if (oversized) {
+            setError(
+                `${oversized.name} is larger than the 1 GB per-file limit.`
+            );
+
+            event.target.value = "";
+            return;
+        }
+
+        const combinedSize =
+            unique.reduce(
+                (total, file) =>
+                    total + file.size,
+                0
+            );
+
+        if (
+            combinedSize >
+            MAX_TOTAL_UPLOAD_SIZE
+        ) {
+            setError(
+                "The combined upload size cannot exceed 1 GB."
+            );
+
+            event.target.value = "";
+            return;
+        }
+
+        setMediaFiles(unique);
+        event.target.value = "";
+    }
+
+
+    function removeMediaFile(index) {
+        setMediaFiles(
+            current =>
+                current.filter(
+                    (
+                        _,
+                        currentIndex
+                    ) =>
+                        currentIndex !== index
+                )
+        );
+    }
+
+
     function updateField(event) {
 
         const {
@@ -197,6 +352,38 @@ function JPSubmitCase() {
 
         try {
 
+            const body =
+                new FormData();
+
+            Object.entries(form)
+                .forEach(
+                    (
+                        [
+                            key,
+                            value
+                        ]
+                    ) =>
+                        body.append(
+                            key,
+                            value
+                        )
+                );
+
+            mediaFiles.forEach(
+                file =>
+                    body.append(
+                        "media",
+                        file,
+                        file.name
+                    )
+            );
+
+            setUploadProgress(
+                mediaFiles.length > 0
+                    ? `Uploading ${mediaFiles.length} file${mediaFiles.length === 1 ? "" : "s"} and creating the queue entry...`
+                    : "Creating the queue entry..."
+            );
+
             const response =
                 await fetch(
                     `${API_BASE}/api/jp/submit`,
@@ -204,17 +391,27 @@ function JPSubmitCase() {
                         method: "POST",
                         credentials:
                             "include",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body:
-                            JSON.stringify(form)
+                        body
                     }
                 );
 
-            const data =
-                await response.json();
+            const responseText =
+                await response.text();
+
+            let data = {};
+
+            try {
+                data =
+                    responseText
+                        ? JSON.parse(responseText)
+                        : {};
+            } catch {
+                data = {
+                    error:
+                        responseText ||
+                        "The server returned an invalid response."
+                };
+            }
 
             if (!response.ok) {
                 throw new Error(
@@ -223,8 +420,19 @@ function JPSubmitCase() {
                 );
             }
 
+            const uploadedCount =
+                Number(
+                    data.submission
+                        ?.uploadedMediaCount ||
+                    0
+                );
+
             setSuccess(
-                `Submission #${data.submission.id} was added to the review queue.`
+                `Submission #${data.submission.id} was added to the review queue${
+                    uploadedCount > 0
+                        ? ` with ${uploadedCount} uploaded media file${uploadedCount === 1 ? "" : "s"}.`
+                        : "."
+                }`
             );
 
             setForm(
@@ -243,6 +451,13 @@ function JPSubmitCase() {
                 })
             );
 
+            setMediaFiles([]);
+            setUploadProgress("");
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
+
         } catch (submitError) {
 
             console.error(
@@ -253,6 +468,8 @@ function JPSubmitCase() {
             setError(
                 submitError.message
             );
+
+            setUploadProgress("");
 
         } finally {
 
@@ -537,6 +754,138 @@ function JPSubmitCase() {
 
                     </label>
 
+
+
+                    <section className="jp-submit-upload">
+
+                        <div className="jp-submit-upload-header">
+                            <div>
+                                <span>
+                                    MEDIA UPLOADS
+                                </span>
+
+                                <p>
+                                    Upload images, video, audio, PDFs, or supporting documents.
+                                    Maximum {MAX_FILES} files, 1 GB per file, and 1 GB combined.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="jp-submit-upload-button"
+                                onClick={() =>
+                                    fileInputRef.current
+                                        ?.click()
+                                }
+                                disabled={
+                                    submitting ||
+                                    mediaFiles.length >=
+                                        MAX_FILES
+                                }
+                            >
+                                {
+                                    mediaFiles.length >=
+                                    MAX_FILES
+                                        ? "FILE LIMIT REACHED"
+                                        : "+ ADD MEDIA"
+                                }
+                            </button>
+                        </div>
+
+                        <input
+                            ref={fileInputRef}
+                            className="jp-submit-file-input"
+                            type="file"
+                            name="media"
+                            multiple
+                            accept="image/*,video/*,audio/*,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx"
+                            onChange={addMediaFiles}
+                            disabled={
+                                submitting ||
+                                mediaFiles.length >=
+                                    MAX_FILES
+                            }
+                        />
+
+                        {
+                            mediaFiles.length === 0
+                                ? (
+                                    <div className="jp-submit-upload-empty">
+                                        No media selected
+                                    </div>
+                                )
+                                : (
+                                    <div className="jp-submit-file-list">
+                                        {
+                                            mediaFiles.map(
+                                                (
+                                                    file,
+                                                    index
+                                                ) => (
+                                                    <div
+                                                        className="jp-submit-file"
+                                                        key={`${file.name}-${file.size}-${file.lastModified}`}
+                                                    >
+                                                        <div>
+                                                            <strong>
+                                                                {file.name}
+                                                            </strong>
+
+                                                            <span>
+                                                                {
+                                                                    file.type ||
+                                                                    "Unknown media"
+                                                                } · {
+                                                                    formatBytes(
+                                                                        file.size
+                                                                    )
+                                                                }
+                                                            </span>
+                                                        </div>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                removeMediaFile(
+                                                                    index
+                                                                )
+                                                            }
+                                                            disabled={submitting}
+                                                        >
+                                                            REMOVE
+                                                        </button>
+                                                    </div>
+                                                )
+                                            )
+                                        }
+                                    </div>
+                                )
+                        }
+
+                        <div className="jp-submit-upload-total">
+                            <span>
+                                SELECTED FILES
+                            </span>
+
+                            <strong>
+                                {mediaFiles.length} · {
+                                    formatBytes(
+                                        totalMediaSize
+                                    )
+                                } / 1 GB
+                            </strong>
+                        </div>
+
+                    </section>
+
+
+                    {
+                        uploadProgress && (
+                            <div className="jp-submit-message jp-submit-progress">
+                                {uploadProgress}
+                            </div>
+                        )
+                    }
 
                     {
                         error && (
