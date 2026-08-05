@@ -8,255 +8,184 @@
 
 
 /* Global animated background */
+
 .mesh-background {
     position: fixed;
-
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     z-index: 0;
-
     pointer-events: none;
 }
 
 
+/* Main page scroll container */
+
 .page-layer {
     position: relative;
-
     width: 100%;
     height: 100vh;
-
-    overflow-y: auto;
     overflow-x: hidden;
-
+    overflow-y: auto;
     z-index: 1;
 }
 
 
 /* Pages */
+
 .landing-page,
 .home-page {
-
     position: relative;
-
     width: 100%;
     height: 100%;
-
     background: transparent;
 }
 
 
 /* Home elements */
+
 .home-content,
 .keystone-logo {
-
     position: relative;
-
     z-index: 2;
-
 }
 
 
 /* Landing foreground */
+
 .foreground {
-
     position: absolute;
-
     inset: 0;
-
     z-index: 2;
-
     display: flex;
-
     flex-direction: column;
-
     justify-content: center;
-
     align-items: center;
-
     gap: 32px;
-
     color: white;
-
     transform: translateY(30px);
 }
 
 
 /* Logo container */
+
 .logo-stage {
-
     position: relative;
-
     width: 220px;
-
     height: 220px;
-
 }
 
 
 .mesh-eye,
 .logo-emblem,
 .logo-sword {
-
     position: absolute;
-
     left: 50%;
-
     top: 50%;
-
     transform: translate(-50%, -50%);
-
 }
 
 
 .logo-emblem {
-
     z-index: 2;
-
     width: 100%;
-
     height: 100%;
-
     object-fit: contain;
-
     opacity: 0;
-
     filter:
         drop-shadow(
             0 14px 20px rgba(0,0,0,0.7)
         );
-
 }
 
 
 .logo-sword {
-
     z-index: 3;
-
     width: 100%;
-
     height: 100%;
-
     object-fit: contain;
-
 }
 
 
 /* Enter button */
+
 .enter-link {
-
     display: flex;
-
     align-items: center;
-
     gap: 13px;
-
     padding: 12px 18px;
-
     color: rgba(229,202,255,0.9);
-
     text-decoration: none;
-
     font:
-        500 11px/1 Arial, sans-serif;
-
+        500 11px/1 Arial,
+        sans-serif;
     letter-spacing: .34em;
-
     background: none;
-
     border: none;
-
     cursor: pointer;
-
     transition:
         color .25s ease,
         text-shadow .25s ease,
         letter-spacing .25s ease;
-
 }
 
 
 .enter-link:hover {
-
-    color:white;
-
-    letter-spacing:.38em;
-
+    color: white;
+    letter-spacing: .38em;
     text-shadow:
         0 0 15px rgba(190,103,255,.82);
-
 }
 
 
 .enter-link span:first-child,
 .enter-link span:last-child {
-
     color: rgba(181,104,243,.66);
-
 }
+
 
 /* ============================================================
    JP AUTHENTICATION
    ============================================================ */
 
 .jp-login-page {
-
     position: relative;
-
     width: 100%;
-    height: 100%;
-
+    min-height: 100vh;
     display: flex;
-
     justify-content: center;
     align-items: center;
-
     color: white;
-
 }
 
 
 .jp-login-card {
-
     position: relative;
-
     width: min(420px, calc(100% - 40px));
-
     padding: 42px;
-
+    box-sizing: border-box;
     background:
         linear-gradient(
             145deg,
             rgba(14, 17, 22, 0.94),
             rgba(4, 6, 8, 0.97)
         );
-
     border: 1px solid rgba(181, 104, 243, 0.22);
-
     box-shadow:
         0 0 0 1px rgba(255,255,255,0.025),
         0 25px 80px rgba(0,0,0,0.65),
         0 0 45px rgba(120, 50, 180, 0.08);
-
     backdrop-filter: blur(18px);
-
 }
 
 
 .jp-login-card::before {
-
     content: "";
-
     position: absolute;
-
     top: 0;
     left: 0;
     right: 0;
-
     height: 1px;
-
     background:
         linear-gradient(
             90deg,
@@ -264,513 +193,177 @@
             rgba(181,104,243,.8),
             transparent
         );
-
 }
 
 
 .jp-login-header {
-
     margin-bottom: 34px;
-
 }
 
 
 .jp-login-label {
-
     display: block;
-
     margin-bottom: 14px;
-
     color: rgba(181,104,243,.72);
-
     font:
-        500 10px/1 Arial, sans-serif;
-
+        500 10px/1 Arial,
+        sans-serif;
     letter-spacing: .32em;
-
 }
 
 
 .jp-login-header h1 {
-
     margin: 0 0 10px;
-
     font:
-        400 30px/1.1 Arial, sans-serif;
-
+        400 30px/1.1 Arial,
+        sans-serif;
     letter-spacing: -.02em;
-
 }
 
 
 .jp-login-header p {
-
     margin: 0;
-
     color: rgba(255,255,255,.42);
-
     font:
-        400 12px/1.5 Arial, sans-serif;
-
+        400 12px/1.5 Arial,
+        sans-serif;
     letter-spacing: .05em;
-
 }
 
 
 /* Inputs */
 
 .jp-input-group {
-
     display: flex;
-
     flex-direction: column;
-
     gap: 8px;
-
     margin-bottom: 20px;
-
 }
 
 
 .jp-input-group label {
-
     color: rgba(255,255,255,.52);
-
     font:
-        500 10px/1 Arial, sans-serif;
-
+        500 10px/1 Arial,
+        sans-serif;
     letter-spacing: .18em;
-
     text-transform: uppercase;
-
 }
 
 
 .jp-input-group input {
-
     width: 100%;
-
     box-sizing: border-box;
-
     padding: 14px 15px;
-
     color: white;
-
     background: rgba(0,0,0,.32);
-
     border: 1px solid rgba(255,255,255,.10);
-
     outline: none;
-
     font:
-        400 13px Arial, sans-serif;
-
+        400 13px Arial,
+        sans-serif;
     transition:
         border-color .2s ease,
         box-shadow .2s ease,
         background .2s ease;
-
 }
 
 
 .jp-input-group input::placeholder {
-
     color: rgba(255,255,255,.22);
-
 }
 
 
 .jp-input-group input:focus {
-
     background: rgba(0,0,0,.48);
-
     border-color: rgba(181,104,243,.65);
-
     box-shadow:
         0 0 0 3px rgba(181,104,243,.08),
         0 0 20px rgba(181,104,243,.08);
-
 }
 
 
 /* Login button */
 
 .jp-login-card button {
-
     width: 100%;
-
     margin-top: 10px;
-
     padding: 15px;
-
     color: rgba(255,255,255,.88);
-
     background:
         linear-gradient(
             135deg,
             rgba(135,65,190,.55),
             rgba(75,35,115,.55)
         );
-
     border: 1px solid rgba(181,104,243,.42);
-
     cursor: pointer;
-
     font:
-        500 10px/1 Arial, sans-serif;
-
+        500 10px/1 Arial,
+        sans-serif;
     letter-spacing: .28em;
-
     transition:
         background .25s ease,
         border-color .25s ease,
         box-shadow .25s ease,
         letter-spacing .25s ease;
-
 }
 
 
 .jp-login-card button:hover {
-
     background:
         linear-gradient(
             135deg,
             rgba(155,78,220,.72),
             rgba(85,40,130,.72)
         );
-
     border-color: rgba(210,160,255,.72);
-
     box-shadow:
         0 0 24px rgba(181,104,243,.20);
-
     letter-spacing: .34em;
-
 }
 
 
 .jp-login-card button:disabled {
-
     opacity: .45;
-
     cursor: wait;
-
 }
 
 
 /* Error */
 
 .jp-login-error {
-
     margin: 8px 0 12px;
-
     padding: 11px 13px;
-
     color: rgba(255,150,150,.9);
-
     background: rgba(120,20,30,.12);
-
     border: 1px solid rgba(200,70,80,.22);
-
     font:
-        400 11px/1.4 Arial, sans-serif;
-
+        400 11px/1.4 Arial,
+        sans-serif;
 }
 
+
 /* ============================================================
-   JP DASHBOARD
+   CURRENT JP DASHBOARD PAGE PROTECTION
    ============================================================ */
 
-.jp-dashboard-page {
+/*
+ * The current dashboard has its own stylesheet and natural document
+ * height. These rules prevent older centered-dashboard styles from
+ * pushing the header above the viewport.
+ */
 
+.page-layer > .jp-dashboard-page {
     position: relative;
-
     width: 100%;
-    height: 100%;
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
+    height: auto;
+    min-height: 100vh;
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    overflow: visible;
     color: white;
-
-}
-
-
-.jp-dashboard-card {
-
-    position: relative;
-
-    width: min(760px, calc(100% - 40px));
-
-    padding: 42px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(14, 17, 22, 0.94),
-            rgba(4, 6, 8, 0.97)
-        );
-
-    border: 1px solid rgba(181, 104, 243, 0.22);
-
-    box-shadow:
-        0 0 0 1px rgba(255,255,255,0.025),
-        0 25px 80px rgba(0,0,0,0.65),
-        0 0 45px rgba(120, 50, 180, 0.08);
-
-    backdrop-filter: blur(18px);
-
-}
-
-
-.jp-dashboard-card::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    right: 0;
-
-    height: 1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(181,104,243,.8),
-            transparent
-        );
-
-}
-
-
-.jp-dashboard-card h1 {
-
-    margin: 0 0 12px;
-
-    font:
-        400 30px/1.1 Arial, sans-serif;
-
-    letter-spacing: -.02em;
-
-}
-
-
-.jp-dashboard-card p {
-
-    margin: 8px 0;
-
-    color: rgba(255,255,255,.46);
-
-    font:
-        400 12px/1.5 Arial, sans-serif;
-
-    letter-spacing: .05em;
-
-}
-
-
-.jp-dashboard-card strong {
-
-    color: rgba(210,160,255,.9);
-
-    font-weight: 500;
-
-}
-
-
-/* ============================================================
-   JP DASHBOARD HEADER
-   ============================================================ */
-
-.jp-dashboard-header {
-
-    margin-bottom: 34px;
-
-}
-
-
-/* ============================================================
-   JP CHATROOM BUTTON GRID
-   ============================================================ */
-
-.jp-chatroom-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            2,
-            minmax(0, 1fr)
-        );
-
-    gap: 12px;
-
-    margin-top: 34px;
-
-}
-
-
-.jp-chatroom-button {
-
-    position: relative;
-
-    min-height: 105px;
-
-    padding: 20px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: space-between;
-
-    text-align: left;
-
-    color: rgba(255,255,255,.86);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(18, 20, 27, .92),
-            rgba(5, 7, 9, .96)
-        );
-
-    border: 1px solid rgba(181,104,243,.20);
-
-    cursor: pointer;
-
-    transition:
-        border-color .25s ease,
-        background .25s ease,
-        box-shadow .25s ease,
-        transform .25s ease;
-
-}
-
-
-.jp-chatroom-button:hover {
-
-    transform: translateY(-2px);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(31, 24, 43, .96),
-            rgba(7, 8, 12, .98)
-        );
-
-    border-color:
-        rgba(181,104,243,.62);
-
-    box-shadow:
-        0 0 24px rgba(181,104,243,.12);
-
-}
-
-
-.jp-chatroom-button-label {
-
-    color:
-        rgba(181,104,243,.72);
-
-    font:
-        500 9px/1 Arial, sans-serif;
-
-    letter-spacing:
-        .28em;
-
-    text-transform:
-        uppercase;
-
-}
-
-
-.jp-chatroom-button-title {
-
-    margin-top: 12px;
-
-    color:
-        rgba(255,255,255,.92);
-
-    font:
-        400 17px/1 Arial, sans-serif;
-
-    letter-spacing:
-        .02em;
-
-}
-
-
-.jp-chatroom-button-description {
-
-    margin-top: 8px;
-
-    color:
-        rgba(255,255,255,.35);
-
-    font:
-        400 10px/1.4 Arial, sans-serif;
-
-    letter-spacing:
-        .04em;
-
-}
-
-
-/* ============================================================
-   LOGOUT
-   ============================================================ */
-
-.jp-dashboard-logout {
-
-    width: 100%;
-
-    margin-top: 24px;
-
-    padding: 14px;
-
-    color:
-        rgba(255,255,255,.55);
-
-    background:
-        transparent;
-
-    border:
-        1px solid rgba(255,255,255,.10);
-
-    cursor:
-        pointer;
-
-    font:
-        500 10px/1 Arial, sans-serif;
-
-    letter-spacing:
-        .28em;
-
-    transition:
-        color .25s ease,
-        border-color .25s ease,
-        background .25s ease;
-
-}
-
-
-.jp-dashboard-logout:hover {
-
-    color:
-        rgba(255,255,255,.9);
-
-    background:
-        rgba(255,255,255,.035);
-
-    border-color:
-        rgba(181,104,243,.38);
-
 }
 
 
@@ -779,19 +372,7 @@
    ============================================================ */
 
 @media (max-width: 650px) {
-
-    .jp-dashboard-card {
-
+    .jp-login-card {
         padding: 28px;
-
     }
-
-
-    .jp-chatroom-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
 }
