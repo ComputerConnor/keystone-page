@@ -17,7 +17,10 @@ const MAX_FILES =
     10;
 
 const MAX_FILE_SIZE =
-    50 * 1024 * 1024;
+    1024 * 1024 * 1024;
+
+const MAX_TOTAL_UPLOAD_SIZE =
+    1024 * 1024 * 1024;
 
 const INITIAL_FORM = {
     caseType: "",
@@ -48,13 +51,24 @@ function formatBytes(bytes) {
         ).toFixed(1)} KB`;
     }
 
+    if (bytes < 1024 * 1024 * 1024) {
+        return `${(
+            bytes /
+            (
+                1024 *
+                1024
+            )
+        ).toFixed(1)} MB`;
+    }
+
     return `${(
         bytes /
         (
             1024 *
+            1024 *
             1024
         )
-    ).toFixed(1)} MB`;
+    ).toFixed(2)} GB`;
 }
 
 
@@ -191,7 +205,28 @@ function PublicSubmitCase() {
 
         if (oversized) {
             setError(
-                `${oversized.name} is larger than the 50 MB per-file limit.`
+                `${oversized.name} is larger than the 1 GB per-file limit.`
+            );
+
+            event.target.value =
+                "";
+
+            return;
+        }
+
+        const combinedSize =
+            unique.reduce(
+                (total, file) =>
+                    total + file.size,
+                0
+            );
+
+        if (
+            combinedSize >
+            MAX_TOTAL_UPLOAD_SIZE
+        ) {
+            setError(
+                "The combined upload size cannot exceed 1 GB."
             );
 
             event.target.value =
@@ -641,7 +676,8 @@ function PublicSubmitCase() {
 
                                 <p>
                                     Upload images, videos, audio, or documents.
-                                    Maximum {MAX_FILES} files and 50 MB per file.
+                                    Maximum {MAX_FILES} files, 1 GB per file,
+                                    and 1 GB combined per submission.
                                 </p>
                             </div>
 
