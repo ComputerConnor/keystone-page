@@ -1,288 +1,238 @@
+/* ============================================================
+   JP SECURE LOGIN
+   ============================================================ */
+
 .jp-login-page {
     position: relative;
+    width: 100%;
     min-height: 100vh;
-    overflow: hidden;
+    padding: 42px 20px;
+    box-sizing: border-box;
     display: grid;
     place-items: center;
-    padding: 42px 20px;
-    color: #f7f3ff;
-    background:
-        radial-gradient(
-            circle at 18% 12%,
-            rgba(181, 104, 243, 0.13),
-            transparent 34%
-        ),
-        radial-gradient(
-            circle at 82% 88%,
-            rgba(105, 52, 150, 0.12),
-            transparent 38%
-        ),
-        linear-gradient(
-            145deg,
-            #040406 0%,
-            #09070d 46%,
-            #050507 100%
-        );
+    color: white;
+    background: transparent;
 }
 
-.jp-login-page::before {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    content: "";
-    pointer-events: none;
-    opacity: 0.2;
-    background-image:
-        linear-gradient(
-            rgba(255, 255, 255, 0.02) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.02) 1px,
-            transparent 1px
-        );
-    background-size: 52px 52px;
-    mask-image:
-        linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.9),
-            transparent 92%
-        );
-}
-
-.jp-login-page::after {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    content: "";
-    pointer-events: none;
-    background:
-        linear-gradient(
-            115deg,
-            transparent 0%,
-            rgba(181, 104, 243, 0.025) 46%,
-            transparent 62%
-        );
-}
 
 .jp-login-card {
     position: relative;
-    z-index: 1;
-    width: min(480px, 100%);
-    padding: 34px 34px 30px;
+    width: min(440px, 100%);
+    padding: 30px;
+    box-sizing: border-box;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.085);
-    border-radius: 14px;
     background:
         linear-gradient(
             145deg,
-            rgba(22, 19, 27, 0.94),
-            rgba(9, 8, 12, 0.97)
+            rgba(14,17,22,.90),
+            rgba(4,6,8,.94)
         );
+    border: 1px solid rgba(255,255,255,.08);
     box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.48),
-        0 0 0 1px rgba(181, 104, 243, 0.025) inset,
-        0 0 38px rgba(155, 92, 255, 0.08);
-    backdrop-filter: blur(22px);
+        0 0 0 1px rgba(255,255,255,.02),
+        0 22px 65px rgba(0,0,0,.42);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
+
 
 .jp-login-card::before {
     position: absolute;
     top: 0;
     left: 0;
-    width: 118px;
+    width: 150px;
     height: 1px;
     content: "";
     background:
         linear-gradient(
             90deg,
-            #b568f3,
-            rgba(181, 104, 243, 0)
+            rgba(181,104,243,.88),
+            transparent
         );
-    box-shadow: 0 0 14px rgba(181, 104, 243, 0.65);
 }
 
-.jp-login-card::after {
-    position: absolute;
-    top: -90px;
-    right: -70px;
-    width: 180px;
-    height: 180px;
-    content: "";
-    border-radius: 999px;
-    pointer-events: none;
-    background: rgba(181, 104, 243, 0.055);
-    filter: blur(36px);
+
+.jp-login-header {
+    margin-bottom: 25px;
+    padding-bottom: 21px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
 }
+
 
 .jp-login-label {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 18px;
-    color: rgba(201, 160, 255, 0.72);
-    font: 600 10px/1 Arial, sans-serif;
-    letter-spacing: 0.2em;
+    display: block;
+    margin-bottom: 13px;
+    color: rgba(181,104,243,.70);
+    font:
+        500 9px/1 Arial,
+        sans-serif;
+    letter-spacing: .22em;
 }
 
-.jp-login-label::before {
-    width: 7px;
-    height: 7px;
-    content: "";
-    border: 1px solid rgba(181, 104, 243, 0.72);
-    transform: rotate(45deg);
-    box-shadow: 0 0 10px rgba(181, 104, 243, 0.28);
+
+.jp-login-header h1 {
+    margin: 0 0 10px;
+    color: rgba(255,255,255,.92);
+    font:
+        400 32px/1.05 Arial,
+        sans-serif;
+    letter-spacing: -.035em;
 }
 
-.jp-login-card h1 {
-    position: relative;
-    z-index: 1;
+
+.jp-login-header p {
     margin: 0;
-    color: #f8f5ff;
-    font: 500 clamp(28px, 5vw, 38px)/1 Arial, sans-serif;
-    letter-spacing: -0.045em;
+    color: rgba(255,255,255,.40);
+    font:
+        400 11px/1.65 Arial,
+        sans-serif;
 }
 
-.jp-login-card > p {
-    position: relative;
-    z-index: 1;
-    max-width: 390px;
-    margin: 15px 0 27px;
-    color: rgba(255, 255, 255, 0.42);
-    font: 400 12px/1.7 Arial, sans-serif;
-}
 
 .jp-login-card form {
-    position: relative;
-    z-index: 1;
     display: grid;
-    gap: 16px;
+    gap: 15px;
 }
 
-.jp-login-card label {
+
+.jp-login-field {
     display: grid;
     gap: 8px;
 }
 
-.jp-login-card label > span {
-    color: rgba(255, 255, 255, 0.43);
-    font: 600 9px/1 Arial, sans-serif;
-    letter-spacing: 0.16em;
+
+.jp-login-field > span {
+    color: rgba(255,255,255,.38);
+    font:
+        600 8px/1 Arial,
+        sans-serif;
+    letter-spacing: .17em;
 }
 
-.jp-login-card input {
+
+.jp-login-field input {
     width: 100%;
-    height: 48px;
+    height: 47px;
     padding: 0 14px;
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 8px;
+    box-sizing: border-box;
     outline: none;
-    color: #ffffff;
-    background:
-        linear-gradient(
-            180deg,
-            rgba(5, 5, 8, 0.82),
-            rgba(10, 9, 13, 0.92)
-        );
-    font: 400 13px/1 Arial, sans-serif;
+    color: white;
+    background: rgba(0,0,0,.32);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    font:
+        400 13px/1 Arial,
+        sans-serif;
     transition:
-        border-color 0.18s ease,
-        box-shadow 0.18s ease,
-        background 0.18s ease;
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
 }
 
-.jp-login-card input:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+
+.jp-login-field input:hover {
+    border-color: rgba(255,255,255,.15);
 }
 
-.jp-login-card input:focus {
-    border-color: rgba(181, 104, 243, 0.72);
-    background: rgba(10, 8, 14, 0.96);
+
+.jp-login-field input:focus {
+    background: rgba(0,0,0,.46);
+    border-color: rgba(181,104,243,.58);
     box-shadow:
-        0 0 0 3px rgba(181, 104, 243, 0.09),
-        0 0 20px rgba(181, 104, 243, 0.06);
+        0 0 0 3px rgba(181,104,243,.06),
+        0 0 18px rgba(181,104,243,.06);
 }
 
-.jp-login-card input::placeholder {
-    color: rgba(255, 255, 255, 0.2);
-}
 
-.jp-login-card button {
-    min-height: 48px;
-    margin-top: 5px;
-    padding: 0 18px;
-    cursor: pointer;
-    border: 1px solid rgba(181, 104, 243, 0.42);
-    border-radius: 8px;
-    color: #f5ecff;
-    background:
-        linear-gradient(
-            180deg,
-            rgba(181, 104, 243, 0.16),
-            rgba(122, 61, 176, 0.1)
-        );
+.jp-login-field input:-webkit-autofill,
+.jp-login-field input:-webkit-autofill:hover,
+.jp-login-field input:-webkit-autofill:focus {
+    -webkit-text-fill-color: white;
+    caret-color: white;
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.025) inset;
-    font: 600 10px/1 Arial, sans-serif;
-    letter-spacing: 0.17em;
+        0 0 0 1000px #08090c inset;
     transition:
-        transform 0.16s ease,
-        border-color 0.16s ease,
-        background 0.16s ease,
-        box-shadow 0.16s ease;
+        background-color 9999s ease-out 0s;
 }
 
-.jp-login-card button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    border-color: rgba(201, 160, 255, 0.74);
-    background:
-        linear-gradient(
-            180deg,
-            rgba(181, 104, 243, 0.23),
-            rgba(122, 61, 176, 0.14)
-        );
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.22),
-        0 0 20px rgba(181, 104, 243, 0.08);
-}
-
-.jp-login-card button:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-.jp-login-card button:disabled {
-    cursor: not-allowed;
-    opacity: 0.48;
-}
 
 .jp-login-error {
     padding: 12px 13px;
-    border: 1px solid rgba(239, 68, 68, 0.28);
-    border-radius: 8px;
-    color: #f4b4b4;
-    background: rgba(127, 29, 29, 0.12);
-    font: 400 11px/1.5 Arial, sans-serif;
+    color: rgba(255,175,175,.94);
+    background: rgba(145,25,35,.12);
+    border: 1px solid rgba(235,75,90,.26);
+    font:
+        400 10px/1.55 Arial,
+        sans-serif;
 }
+
+
+.jp-login-primary,
+.jp-login-secondary {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 16px;
+    cursor: pointer;
+    font:
+        600 9px/1 Arial,
+        sans-serif;
+    letter-spacing: .17em;
+    transition:
+        color .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.jp-login-primary {
+    color: rgba(255,255,255,.88);
+    background: rgba(181,104,243,.11);
+    border: 1px solid rgba(181,104,243,.34);
+}
+
+
+.jp-login-primary:hover:not(:disabled) {
+    color: white;
+    background: rgba(181,104,243,.18);
+    border-color: rgba(210,160,255,.56);
+    box-shadow:
+        0 0 20px rgba(181,104,243,.10);
+}
+
+
+.jp-login-secondary {
+    color: rgba(255,255,255,.48);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.10);
+}
+
+
+.jp-login-secondary:hover:not(:disabled) {
+    color: rgba(255,255,255,.85);
+    border-color: rgba(181,104,243,.34);
+}
+
+
+.jp-login-primary:disabled,
+.jp-login-secondary:disabled {
+    cursor: wait;
+    opacity: .46;
+}
+
 
 @media (max-width: 560px) {
     .jp-login-page {
-        place-items: center;
         padding: 24px 14px;
     }
 
     .jp-login-card {
-        padding: 27px 21px 23px;
-        border-radius: 12px;
+        padding: 25px 20px;
     }
 
-    .jp-login-card h1 {
-        font-size: 29px;
-    }
-
-    .jp-login-card > p {
-        margin-bottom: 23px;
+    .jp-login-header h1 {
+        font-size: 28px;
     }
 }
