@@ -1,4 +1,5 @@
 const API_BASE =
-    "https://nottkeystone.up.railway.app";
+    import.meta.env.VITE_API_BASE ||
+    "https://api.keystone-swords.com";
 
 export default API_BASE;
