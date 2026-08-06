@@ -182,9 +182,6 @@ function JPDashboard() {
                 </header>
 
 
-                <div className="jp-dashboard-divider" />
-
-
                 <section className="jp-room-section">
 
                     <div className="jp-room-grid">
@@ -347,9 +344,6 @@ function JPDashboard() {
                     </div>
 
                 </section>
-
-
-                <div className="jp-dashboard-divider" />
 
 
                 <footer className="jp-dashboard-footer">
