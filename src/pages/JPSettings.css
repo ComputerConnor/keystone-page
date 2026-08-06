@@ -1,142 +1,30 @@
-.jp-settings-page {
-    min-height: 100vh;
-    padding: 45px 20px;
-    color: #f5f3ff;
-}
-
-.jp-settings-shell {
-    width: min(1050px, 100%);
-    margin: 0 auto;
-    padding: 30px;
-    border: 1px solid rgba(168, 85, 247, .35);
-    border-radius: 20px;
-    background: rgba(10, 7, 18, .92);
-    box-shadow: 0 0 40px rgba(168, 85, 247, .15);
-}
-
-.jp-settings-shell header {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.jp-settings-shell header span,
-.jp-settings-card label > span {
-    color: #c084fc;
-    font-size: 12px;
-    letter-spacing: 2px;
-}
-
-.jp-settings-shell h1 {
-    margin: 8px 0 0;
-}
-
-.jp-settings-card {
-    margin-top: 20px;
-    padding: 24px;
-    border: 1px solid rgba(192, 132, 252, .2);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, .025);
-}
-
-.jp-settings-card h2 {
-    margin-top: 0;
-    color: #d8b4fe;
-}
-
-.jp-settings-card form,
-.jp-2fa-setup {
-    display: grid;
-    gap: 15px;
-}
-
-.jp-settings-card label {
-    display: grid;
-    gap: 8px;
-}
-
-.jp-settings-card input,
-.jp-settings-card select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid rgba(192, 132, 252, .35);
-    border-radius: 10px;
-    background: #09060f;
-    color: white;
-}
-
-.jp-settings-shell button {
-    padding: 11px 16px;
-    border: 1px solid #a855f7;
-    border-radius: 10px;
-    background: rgba(168, 85, 247, .16);
-    color: white;
-    cursor: pointer;
-}
-
-.jp-settings-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.jp-2fa-setup img {
-    width: 220px;
-    max-width: 100%;
-    border-radius: 12px;
-    background: white;
-    padding: 10px;
-}
-
-.jp-2fa-setup code,
-.jp-link-code {
-    padding: 14px;
-    border-radius: 10px;
-    background: #050308;
-    color: #d8b4fe;
-    word-break: break-all;
-}
-
-.jp-link-code {
-    margin-top: 16px;
-    font-size: 24px;
-    letter-spacing: 5px;
-    text-align: center;
-}
-
-.jp-settings-error,
-.jp-settings-success {
-    margin: 15px 0;
-    padding: 14px;
-    border-radius: 10px;
-}
-
-.jp-settings-error {
-    background: rgba(239, 68, 68, .15);
-    border: 1px solid rgba(239, 68, 68, .4);
-}
-
-.jp-settings-success {
-    background: rgba(34, 197, 94, .15);
-    border: 1px solid rgba(34, 197, 94, .4);
-}
-
-.jp-toggle {
-    display: flex !important;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    margin: 8px 0;
-}
-
-.jp-toggle input {
-    width: auto;
-    margin-right: 10px;
-}
-
-.jp-admin-member-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
-}
+.jp-settings-page { min-height: 100vh; padding: 42px 28px 70px; box-sizing: border-box; color: white; }
+.jp-settings-shell { width: min(1050px, 100%); margin: 0 auto; }
+.jp-settings-header { position: relative; display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.jp-settings-header::after { position: absolute; bottom: -1px; left: 0; width: 180px; height: 1px; content: ""; background: linear-gradient(90deg, rgba(181,104,243,.88), transparent); }
+.jp-settings-header span, .jp-settings-card-label, .jp-settings-card label > span, .jp-notification-status span { color: rgba(181,104,243,.70); font: 600 9px/1 Arial,sans-serif; letter-spacing: .19em; }
+.jp-settings-header h1 { margin: 10px 0 0; color: rgba(255,255,255,.94); font: 400 40px/1 Arial,sans-serif; letter-spacing: -.035em; }
+.jp-settings-card { position: relative; margin-top: 18px; padding: 24px; overflow: hidden; background: linear-gradient(145deg,rgba(14,17,22,.88),rgba(4,6,8,.94)); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 0 0 1px rgba(255,255,255,.02),0 20px 55px rgba(0,0,0,.28); }
+.jp-settings-card::before { position:absolute; top:0; left:0; width:130px; height:1px; content:""; background:linear-gradient(90deg,rgba(181,104,243,.65),transparent); }
+.jp-settings-card-label { display:block; margin-bottom:11px; }
+.jp-settings-card h2 { margin:0 0 10px; color:rgba(255,255,255,.90); font:500 20px/1.15 Arial,sans-serif; }
+.jp-settings-card p { max-width:760px; margin:0 0 18px; color:rgba(255,255,255,.42); font:400 12px/1.65 Arial,sans-serif; }
+.jp-settings-card form, .jp-2fa-setup { display:grid; gap:15px; }
+.jp-settings-card label { display:grid; gap:8px; }
+.jp-settings-grid, .jp-notification-status { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+.jp-settings-card input, .jp-settings-card select { width:100%; min-height:46px; padding:0 13px; box-sizing:border-box; outline:none; color:white; background:rgba(0,0,0,.32); border:1px solid rgba(255,255,255,.10); border-radius:0; font:400 13px/1 Arial,sans-serif; }
+.jp-settings-card input:focus { border-color:rgba(181,104,243,.58); box-shadow:0 0 0 3px rgba(181,104,243,.06),0 0 20px rgba(181,104,243,.07); }
+.jp-settings-shell button { min-height:42px; padding:0 16px; cursor:pointer; color:rgba(255,255,255,.80); background:rgba(181,104,243,.10); border:1px solid rgba(181,104,243,.32); border-radius:0; font:600 9px/1 Arial,sans-serif; letter-spacing:.14em; }
+.jp-settings-shell button:hover:not(:disabled) { color:white; background:rgba(181,104,243,.17); border-color:rgba(210,160,255,.55); box-shadow:0 0 20px rgba(181,104,243,.09); }
+.jp-settings-shell button:disabled { cursor:not-allowed; opacity:.46; }
+.jp-settings-actions { display:flex; gap:10px; flex-wrap:wrap; }
+.jp-2fa-setup img { width:220px; max-width:100%; padding:10px; box-sizing:border-box; background:white; }
+.jp-2fa-setup code, .jp-link-code { padding:14px; color:#d8b4fe; background:rgba(0,0,0,.38); border:1px solid rgba(181,104,243,.16); word-break:break-all; }
+.jp-link-code { margin-top:16px; font:500 24px/1 Arial,sans-serif; letter-spacing:5px; text-align:center; }
+.jp-notification-status > div { padding:13px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); }
+.jp-notification-status span { display:block; margin-bottom:8px; }
+.jp-notification-status strong { color:rgba(255,255,255,.78); font:500 12px/1.2 Arial,sans-serif; }
+.jp-settings-error, .jp-settings-success { margin:15px 0; padding:13px 14px; font:400 11px/1.5 Arial,sans-serif; }
+.jp-settings-error { color:rgba(255,175,175,.94); background:rgba(145,25,35,.12); border:1px solid rgba(235,75,90,.26); }
+.jp-settings-success { color:rgba(180,255,208,.90); background:rgba(34,197,94,.09); border:1px solid rgba(34,197,94,.25); }
+@media (max-width:720px) { .jp-settings-page{padding:28px 16px 55px}.jp-settings-header{flex-direction:column}.jp-settings-header h1{font-size:32px}.jp-settings-grid,.jp-notification-status{grid-template-columns:1fr}.jp-settings-actions{flex-direction:column}.jp-settings-actions button{width:100%} }
