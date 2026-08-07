@@ -34,7 +34,7 @@ function Home() {
                     </Link>
 
                     <Link to="/groups">
-                        GROUP TIERS
+                        CLAN TIERS
                     </Link>
 
                 </div>
