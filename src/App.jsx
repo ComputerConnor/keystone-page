@@ -1,5 +1,6 @@
 import {
     HashRouter,
+    Navigate,
     Routes,
     Route
 } from "react-router-dom";
@@ -20,22 +21,20 @@ import JPWorkspace from "./pages/JPWorkspace";
 import JPSubmitCase from "./pages/JPSubmitCase";
 import PublicSubmitCase from "./pages/PublicSubmitCase";
 import Tierlist from "./pages/Tierlist";
-import GroupTier from "./pages/GroupTier";
+import ClanTier from "./pages/ClanTier";
+import ClanTierSubmit from "./pages/ClanTierSubmit";
 import JPSettings from "./pages/JPSettings";
 import JPPanelAdmin from "./pages/JPPanelAdmin";
+
 
 function App() {
     return (
         <HashRouter>
-
             <div className="app">
-
                 <MeshBackground />
 
                 <div className="page-layer">
-
                     <Routes>
-
                         <Route
                             path="/"
                             element={<Landing />}
@@ -107,8 +106,23 @@ function App() {
                         />
 
                         <Route
+                            path="/clan-tier"
+                            element={<ClanTier />}
+                        />
+
+                        <Route
+                            path="/clan-tier/submit"
+                            element={<ClanTierSubmit />}
+                        />
+
+                        <Route
                             path="/groups"
-                            element={<GroupTier />}
+                            element={
+                                <Navigate
+                                    to="/clan-tier"
+                                    replace
+                                />
+                            }
                         />
 
                         <Route
@@ -120,15 +134,12 @@ function App() {
                             path="/jp/panel-admin"
                             element={<JPPanelAdmin />}
                         />
-
                     </Routes>
-
                 </div>
-
             </div>
-
         </HashRouter>
     );
 }
+
 
 export default App;
