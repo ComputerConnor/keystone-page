@@ -1,0 +1,19 @@
+
+/* Appeal-specific additions. Append to both submission stylesheets. */
+
+.public-submit-appeal,
+.jp-submit-appeal {
+    display: grid;
+    gap: 18px;
+    padding: 20px;
+    border: 1px solid rgba(181, 104, 243, .20);
+    background: rgba(181, 104, 243, .045);
+}
+
+.public-submit-appeal::before,
+.jp-submit-appeal::before {
+    content: "APPEAL INFORMATION";
+    color: rgba(181, 104, 243, .76);
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .17em;
+}
