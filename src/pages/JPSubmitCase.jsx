@@ -90,7 +90,9 @@ function JPSubmitCase() {
             endDate: "",
             description: "",
             notes: "",
-            evidence: ""
+            evidence: "",
+            appealedCaseId: "",
+            appealReason: ""
         });
 
 
@@ -177,6 +179,12 @@ function JPSubmitCase() {
         ).toUpperCase();
 
 
+    const isAppeal =
+        form.caseType.endsWith(
+            "_APPEAL"
+        );
+
+
     const availableTypes =
         useMemo(() => {
 
@@ -184,11 +192,19 @@ function JPSubmitCase() {
                 return [
                     {
                         value: "DGN",
-                        label: "DGN // Degenerate"
+                        label: "DGN // Degenerate Case"
+                    },
+                    {
+                        value: "DGN_APPEAL",
+                        label: "DGN // Case Appeal"
                     },
                     {
                         value: "XPLT",
-                        label: "XPLT // Exploiter"
+                        label: "XPLT // Exploiter Case"
+                    },
+                    {
+                        value: "XPLT_APPEAL",
+                        label: "XPLT // Case Appeal"
                     }
                 ];
             }
@@ -200,7 +216,11 @@ function JPSubmitCase() {
                 return [
                     {
                         value: "DGN",
-                        label: "DGN // Degenerate"
+                        label: "DGN // Degenerate Case"
+                    },
+                    {
+                        value: "DGN_APPEAL",
+                        label: "DGN // Case Appeal"
                     }
                 ];
             }
@@ -213,7 +233,11 @@ function JPSubmitCase() {
                 return [
                     {
                         value: "XPLT",
-                        label: "XPLT // Exploiter"
+                        label: "XPLT // Exploiter Case"
+                    },
+                    {
+                        value: "XPLT_APPEAL",
+                        label: "XPLT // Case Appeal"
                     }
                 ];
             }
@@ -447,7 +471,9 @@ function JPSubmitCase() {
                     endDate: "",
                     description: "",
                     notes: "",
-                    evidence: ""
+                    evidence: "",
+                    appealedCaseId: "",
+                    appealReason: ""
                 })
             );
 
@@ -704,10 +730,68 @@ function JPSubmitCase() {
                     </div>
 
 
+                    {
+                        isAppeal && (
+                            <section className="jp-submit-appeal jp-submit-wide">
+                                <div className="jp-submit-grid">
+                                    <label className="jp-submit-field">
+                                        <span>
+                                            ORIGINAL CASE ID
+                                        </span>
+
+                                        <input
+                                            name="appealedCaseId"
+                                            value={form.appealedCaseId}
+                                            onChange={updateField}
+                                            placeholder="Case ID being appealed"
+                                            maxLength={30}
+                                            required
+                                        />
+                                    </label>
+
+                                    <label className="jp-submit-field">
+                                        <span>
+                                            APPEAL CLASSIFICATION
+                                        </span>
+
+                                        <input
+                                            value={
+                                                form.caseType === "DGN_APPEAL"
+                                                    ? "DGN APPEAL"
+                                                    : "XPLT APPEAL"
+                                            }
+                                            readOnly
+                                        />
+                                    </label>
+                                </div>
+
+                                <label className="jp-submit-field jp-submit-wide">
+                                    <span>
+                                        BASIS FOR APPEAL
+                                    </span>
+
+                                    <textarea
+                                        name="appealReason"
+                                        value={form.appealReason}
+                                        onChange={updateField}
+                                        placeholder="Explain why the original case outcome should be reconsidered and what outcome is requested."
+                                        maxLength={10000}
+                                        required
+                                    />
+                                </label>
+                            </section>
+                        )
+                    }
+
+
                     <label className="jp-submit-field jp-submit-wide">
 
                         <span>
-                            INVESTIGATION SUMMARY
+                            {
+                                isAppeal
+                                    ? "APPEAL SUMMARY"
+                                    : "INVESTIGATION SUMMARY"
+                            }
                         </span>
 
                         <textarea
