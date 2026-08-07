@@ -1,0 +1,142 @@
+.clan-submit-page {
+    min-height: 100vh;
+    padding: 50px 30px 70px;
+    box-sizing: border-box;
+    color: white;
+}
+
+.clan-submit-shell {
+    width: min(1050px,100%);
+    margin: 0 auto;
+    padding: 32px;
+    box-sizing: border-box;
+    background: rgba(10,10,15,.82);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.clan-submit-shell header {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.clan-submit-shell header span,
+.clan-submit-shell label > span {
+    color: rgba(181,104,243,.72);
+    font: 600 9px/1 Arial,sans-serif;
+    letter-spacing: .17em;
+}
+
+.clan-submit-shell h1 {
+    margin: 9px 0;
+    font: 400 36px/1 Arial,sans-serif;
+}
+
+.clan-submit-shell p {
+    margin: 0;
+    color: rgba(255,255,255,.42);
+    font: 400 12px/1.6 Arial,sans-serif;
+}
+
+.clan-submit-divider {
+    height: 1px;
+    margin: 28px 0;
+    background: linear-gradient(
+        90deg,
+        rgba(181,104,243,.70),
+        rgba(255,255,255,.08),
+        transparent
+    );
+}
+
+.clan-submit-shell form {
+    display: grid;
+    gap: 18px;
+}
+
+.clan-submit-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 16px;
+}
+
+.clan-submit-shell label {
+    display: grid;
+    gap: 8px;
+}
+
+.clan-submit-shell input,
+.clan-submit-shell textarea {
+    width: 100%;
+    padding: 13px 14px;
+    box-sizing: border-box;
+    color: white;
+    background: rgba(0,0,0,.32);
+    border: 1px solid rgba(255,255,255,.10);
+    outline: none;
+}
+
+.clan-submit-shell textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.clan-submit-shell input:focus,
+.clan-submit-shell textarea:focus {
+    border-color: rgba(181,104,243,.55);
+}
+
+.clan-submit-shell button {
+    padding: 11px 16px;
+    cursor: pointer;
+    color: rgba(255,255,255,.75);
+    background: rgba(181,104,243,.08);
+    border: 1px solid rgba(181,104,243,.28);
+    font: 600 9px/1 Arial,sans-serif;
+    letter-spacing: .13em;
+}
+
+.clan-submit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.clan-submit-error,
+.clan-submit-success {
+    margin-bottom: 18px;
+    padding: 13px 14px;
+    font: 400 11px/1.5 Arial,sans-serif;
+}
+
+.clan-submit-error {
+    color: #ffb1b1;
+    background: rgba(255,70,70,.08);
+    border: 1px solid rgba(255,80,80,.35);
+}
+
+.clan-submit-success {
+    color: #b7ffd3;
+    background: rgba(70,220,130,.08);
+    border: 1px solid rgba(70,220,130,.35);
+}
+
+@media (max-width: 720px) {
+    .clan-submit-page {
+        padding: 25px 16px 55px;
+    }
+
+    .clan-submit-shell {
+        padding: 24px 18px;
+    }
+
+    .clan-submit-shell header,
+    .clan-submit-actions {
+        flex-direction: column;
+    }
+
+    .clan-submit-grid {
+        grid-template-columns: 1fr;
+    }
+}
