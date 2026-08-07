@@ -32,6 +32,8 @@ const INITIAL_FORM = {
     description: "",
     notes: "",
     evidence: "",
+    appealedCaseId: "",
+    appealReason: "",
     website: ""
 };
 
@@ -114,6 +116,12 @@ function PublicSubmitCase() {
         setSuccess
     ] =
         useState("");
+
+
+    const isAppeal =
+        form.caseType.endsWith(
+            "_APPEAL"
+        );
 
 
     const totalMediaSize =
@@ -265,6 +273,28 @@ function PublicSubmitCase() {
         setError("");
         setSuccess("");
         setUploadProgress("");
+
+        if (
+            isAppeal &&
+            !form.appealedCaseId.trim()
+        ) {
+            setError(
+                "Enter the original case ID being appealed."
+            );
+
+            return;
+        }
+
+        if (
+            isAppeal &&
+            !form.appealReason.trim()
+        ) {
+            setError(
+                "Explain the basis for the appeal."
+            );
+
+            return;
+        }
 
         if (
             !form.evidence.trim() &&
@@ -509,11 +539,19 @@ function PublicSubmitCase() {
                                 </option>
 
                                 <option value="DGN">
-                                    DGN // Degenerate
+                                    DGN // Degenerate Case
                                 </option>
 
                                 <option value="XPLT">
-                                    XPLT // Exploiter
+                                    XPLT // Exploiter Case
+                                </option>
+
+                                <option value="DGN_APPEAL">
+                                    DGN // Case Appeal
+                                </option>
+
+                                <option value="XPLT_APPEAL">
+                                    XPLT // Case Appeal
                                 </option>
                             </select>
                         </label>
@@ -616,16 +654,78 @@ function PublicSubmitCase() {
                     </div>
 
 
+                    {
+                        isAppeal && (
+                            <section className="public-submit-appeal">
+                                <div className="public-submit-grid">
+                                    <label className="public-submit-field">
+                                        <span>
+                                            ORIGINAL CASE ID
+                                        </span>
+
+                                        <input
+                                            name="appealedCaseId"
+                                            value={form.appealedCaseId}
+                                            onChange={updateField}
+                                            placeholder="Case ID being appealed"
+                                            maxLength={30}
+                                            required
+                                        />
+                                    </label>
+
+                                    <label className="public-submit-field">
+                                        <span>
+                                            APPEAL TYPE
+                                        </span>
+
+                                        <input
+                                            value={
+                                                form.caseType === "DGN_APPEAL"
+                                                    ? "DGN APPEAL"
+                                                    : "XPLT APPEAL"
+                                            }
+                                            readOnly
+                                        />
+                                    </label>
+                                </div>
+
+                                <label className="public-submit-field public-submit-wide">
+                                    <span>
+                                        BASIS FOR APPEAL
+                                    </span>
+
+                                    <textarea
+                                        name="appealReason"
+                                        value={form.appealReason}
+                                        onChange={updateField}
+                                        placeholder="Explain what decision is being challenged, why it should be reconsidered, and what outcome you are requesting."
+                                        maxLength={10000}
+                                        required
+                                    />
+                                </label>
+                            </section>
+                        )
+                    }
+
+
                     <label className="public-submit-field public-submit-wide">
                         <span>
-                            REPORT SUMMARY
+                            {
+                                isAppeal
+                                    ? "APPEAL SUMMARY"
+                                    : "REPORT SUMMARY"
+                            }
                         </span>
 
                         <textarea
                             name="description"
                             value={form.description}
                             onChange={updateField}
-                            placeholder="Explain what happened, who was involved, and why this should be reviewed."
+                            placeholder={
+                                isAppeal
+                                    ? "Summarize the original case, the decision being appealed, and any relevant new context."
+                                    : "Explain what happened, who was involved, and why this should be reviewed."
+                            }
                             maxLength={10000}
                             required
                         />
