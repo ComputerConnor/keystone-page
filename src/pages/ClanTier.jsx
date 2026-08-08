@@ -449,12 +449,26 @@ function ClanTier() {
                                         }
                                     </h2>
 
+                                    <div className="clan-tier-group-info">
                                     <p>
                                         Roblox Group {
                                             clan.group_id ||
                                             "—"
                                         }
                                     </p>
+
+                                    {
+                                        clan.group_url && (
+                                            <a
+                                                href={clan.group_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="clan-tier-group-link"
+                                            >
+                                                OPEN ROBLOX GROUP
+                                            </a>
+                                        )
+                                    }
                                 </div>
 
                                 <div className="clan-tier-grade">
