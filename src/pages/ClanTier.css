@@ -1,789 +1,496 @@
-import {
-    createCanvas,
-    loadImage
-} from "canvas";
+/* ============================================================
+   CLAN TIER
+   ============================================================ */
 
+.clan-tier-page {
+    min-height: 100vh;
+    padding: 50px 35px 80px;
+    box-sizing: border-box;
+    color: white;
+}
 
-export async function createGroupDashboard({
-    groupName,
-    groupIcon,
-    flagged,
-    risk,
-    activePercent,
-    inactivePercent,
-    tier,
-    members,
-    created,
-    activeExploiters,
-    activeDegens,
-    inactiveExploiters,
-    inactiveDegens,
-    scanTime: duration = 0,
-    groupId = "Unknown"
-}) {
-    activeExploiters =
-        activeExploiters ||
-        [];
+.clan-tier-shell {
+    width: min(1450px, 100%);
+    margin: 0 auto;
+}
 
-    activeDegens =
-        activeDegens ||
-        [];
+.clan-tier-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
 
-    inactiveExploiters =
-        inactiveExploiters ||
-        [];
+.clan-tier-header::after {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 190px;
+    height: 1px;
+    content: "";
+    background: linear-gradient(
+        90deg,
+        rgba(181,104,243,.85),
+        transparent
+    );
+}
 
-    inactiveDegens =
-        inactiveDegens ||
-        [];
+.clan-tier-header > div:first-child > span,
+.clan-tier-profile-heading span,
+.clan-tier-section-heading span,
+.clan-tier-record-card-header span,
+.clan-tier-record-meta span,
+.clan-tier-listed-card > span,
+.clan-tier-policy > span,
+.clan-tier-directory-heading span,
+.clan-tier-directory-card span,
+.clan-tier-score-grid span,
+.clan-tier-evidence-item span {
+    color: rgba(181,104,243,.72);
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .17em;
+}
 
-    const width =
-        1200;
+.clan-tier-header h1 {
+    margin: 10px 0;
+    font: 400 42px/1 Arial, sans-serif;
+    letter-spacing: -.035em;
+}
 
-    const maxUsers =
-        Math.max(
-            activeExploiters.length,
-            activeDegens.length,
-            inactiveExploiters.length,
-            inactiveDegens.length
-        );
+.clan-tier-header p,
+.clan-tier-profile-heading p {
+    margin: 0;
+    color: rgba(255,255,255,.42);
+    font: 400 12px/1.6 Arial, sans-serif;
+}
 
-    const cardHeight =
-        Math.max(
-            190,
-            120 +
-            (
-                maxUsers *
-                18
-            )
-        );
+.clan-tier-header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
 
-    const height =
-        Math.max(
-            540,
-            260 +
-            cardHeight +
-            120
-        );
+.clan-tier-header button,
+.clan-tier-directory-card {
+    cursor: pointer;
+}
 
-    const canvas =
-        createCanvas(
-            width,
-            height
-        );
+.clan-tier-header button {
+    padding: 11px 17px;
+    color: rgba(255,255,255,.70);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.12);
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .13em;
+}
 
-    const ctx =
-        canvas.getContext(
-            "2d"
-        );
+.clan-tier-header button:hover {
+    color: white;
+    border-color: rgba(181,104,243,.55);
+}
 
+.clan-tier-divider {
+    height: 1px;
+    margin: 28px 0;
+    background: linear-gradient(
+        90deg,
+        rgba(181,104,243,.42),
+        rgba(255,255,255,.07),
+        transparent
+    );
+}
 
-    function roundedRect(
-        context,
-        x,
-        y,
-        boxWidth,
-        boxHeight,
-        radius
-    ) {
-        context.beginPath();
+.clan-tier-error {
+    margin-bottom: 18px;
+    padding: 14px;
+    color: #ffb1b1;
+    background: rgba(255,70,70,.08);
+    border: 1px solid rgba(255,80,80,.30);
+    font: 400 11px/1.5 Arial, sans-serif;
+}
 
-        context.roundRect(
-            x,
-            y,
-            boxWidth,
-            boxHeight,
-            radius
-        );
+.clan-tier-profile {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 32px;
+}
 
-        context.closePath();
+.clan-tier-profile-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.clan-tier-profile-heading h2 {
+    margin: 8px 0;
+    font: 500 31px/1 Arial, sans-serif;
+}
+
+.clan-tier-grade {
+    min-width: 115px;
+    padding: 15px;
+    text-align: center;
+    background: rgba(181,104,243,.08);
+    border: 1px solid rgba(181,104,243,.22);
+}
+
+.clan-tier-grade span {
+    display: block;
+    margin-bottom: 9px;
+}
+
+.clan-tier-grade strong {
+    color: #d9bcff;
+    font: 500 42px/1 Arial, sans-serif;
+}
+
+.clan-tier-snapshot-section,
+.clan-tier-record-section,
+.clan-tier-policy {
+    padding: 22px;
+    background: linear-gradient(
+        145deg,
+        rgba(14,17,22,.88),
+        rgba(4,6,8,.94)
+    );
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 20px 50px rgba(0,0,0,.28);
+}
+
+.clan-tier-section-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+}
+
+.clan-tier-section-heading h3 {
+    margin: 7px 0 0;
+    font: 500 20px/1.1 Arial, sans-serif;
+}
+
+.clan-tier-section-heading small,
+.clan-tier-section-heading > strong {
+    color: rgba(255,255,255,.35);
+    font: 500 9px/1.4 Arial, sans-serif;
+    letter-spacing: .10em;
+}
+
+.clan-tier-snapshot-frame {
+    overflow: auto;
+    padding: 10px;
+    background: rgba(0,0,0,.30);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.clan-tier-snapshot-frame img {
+    display: block;
+    width: 100%;
+    min-width: 760px;
+    height: auto;
+}
+
+.clan-tier-snapshot-empty {
+    padding: 70px 20px;
+    text-align: center;
+    color: rgba(255,255,255,.32);
+    border: 1px dashed rgba(255,255,255,.10);
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .14em;
+}
+
+.clan-tier-score-grid {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 10px;
+}
+
+.clan-tier-score-grid > div {
+    padding: 15px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.clan-tier-score-grid span {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.clan-tier-score-grid strong {
+    color: #d9bcff;
+    font: 500 24px/1 Arial, sans-serif;
+}
+
+.clan-tier-score-grid .clan-tier-date-value {
+    color: rgba(255,255,255,.75);
+    font-size: 13px;
+}
+
+.clan-tier-record-list {
+    display: grid;
+    gap: 12px;
+}
+
+.clan-tier-record-card,
+.clan-tier-listed-card {
+    padding: 16px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.clan-tier-record-card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.clan-tier-record-card h4,
+.clan-tier-listed-card h4 {
+    margin: 7px 0;
+    font: 500 16px/1.2 Arial, sans-serif;
+}
+
+.clan-tier-record-card > p,
+.clan-tier-listed-card p,
+.clan-tier-policy p,
+.clan-tier-muted {
+    color: rgba(255,255,255,.48);
+    font: 400 12px/1.65 Arial, sans-serif;
+}
+
+.clan-tier-contribution {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .10em;
+}
+
+.clan-tier-contribution.active {
+    color: #b7ffd3;
+    background: rgba(70,220,130,.08);
+    border: 1px solid rgba(70,220,130,.24);
+}
+
+.clan-tier-contribution.expired {
+    color: rgba(255,255,255,.38);
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.clan-tier-record-meta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+.clan-tier-evidence-grid {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.clan-tier-evidence-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 12px;
+    background: rgba(181,104,243,.045);
+    border: 1px solid rgba(181,104,243,.13);
+}
+
+.clan-tier-evidence-item a {
+    color: #d9bcff;
+    text-decoration: none;
+    font: 600 9px/1 Arial, sans-serif;
+    letter-spacing: .12em;
+}
+
+.clan-tier-evidence-item code {
+    max-width: 70%;
+    color: rgba(255,255,255,.55);
+    overflow-wrap: anywhere;
+}
+
+.clan-tier-listed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+    gap: 10px;
+}
+
+.clan-tier-policy > span {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.clan-tier-policy p {
+    max-width: 950px;
+    margin: 0 0 16px;
+}
+
+.clan-tier-policy > div {
+    display: grid;
+    grid-template-columns: repeat(6,minmax(0,1fr));
+    gap: 8px;
+}
+
+.clan-tier-policy > div > strong,
+.clan-tier-policy > div > small {
+    padding: 9px;
+    text-align: center;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.clan-tier-policy > div > strong {
+    color: #d9bcff;
+}
+
+.clan-tier-policy > div > small {
+    color: rgba(255,255,255,.44);
+}
+
+.clan-tier-directory {
+    padding-top: 25px;
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.clan-tier-directory-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.clan-tier-directory-heading h2 {
+    margin: 7px 0 0;
+    font: 500 22px/1 Arial, sans-serif;
+}
+
+.clan-tier-directory-heading input {
+    width: min(420px,100%);
+    padding: 12px 14px;
+    box-sizing: border-box;
+    color: white;
+    background: rgba(0,0,0,.30);
+    border: 1px solid rgba(255,255,255,.10);
+    outline: none;
+}
+
+.clan-tier-directory-heading input:focus {
+    border-color: rgba(181,104,243,.55);
+}
+
+.clan-tier-directory-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+    gap: 10px;
+}
+
+.clan-tier-directory-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+    padding: 15px;
+    text-align: left;
+    color: white;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.clan-tier-directory-card:hover,
+.clan-tier-directory-card.selected {
+    border-color: rgba(181,104,243,.45);
+    background: rgba(181,104,243,.06);
+}
+
+.clan-tier-directory-card span,
+.clan-tier-directory-card strong {
+    display: block;
+}
+
+.clan-tier-directory-card > div:first-child > strong {
+    margin-top: 7px;
+    font: 500 14px/1.2 Arial, sans-serif;
+}
+
+.clan-tier-directory-score {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.clan-tier-directory-score small {
+    color: rgba(255,255,255,.34);
+    font: 600 8px/1 Arial, sans-serif;
+    letter-spacing: .10em;
+}
+
+.clan-tier-directory-score strong {
+    color: #d9bcff;
+    font: 500 25px/1 Arial, sans-serif;
+}
+
+.clan-tier-empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: rgba(255,255,255,.35);
+}
+
+@media (max-width: 900px) {
+    .clan-tier-score-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
     }
 
+    .clan-tier-policy > div {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+    }
+}
 
-    // =========================
-    // BACKGROUND
-    // =========================
-
-    ctx.fillStyle =
-        "#09090f";
-
-    ctx.fillRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    // =========================
-    // LEFT ACCENT BAR
-    // =========================
-
-    ctx.fillStyle =
-        "#A855F7";
-
-    ctx.fillRect(
-        0,
-        0,
-        8,
-        height
-    );
-
-
-    // =========================
-    // HEADER
-    // =========================
-
-    const headerX =
-        180;
-
-    ctx.fillStyle =
-        "#A97DC2";
-
-    ctx.font =
-        "bold 22px Segoe UI";
-
-    ctx.fillText(
-        "GROUP CHECK",
-        headerX,
-        65
-    );
-
-    ctx.fillStyle =
-        "#ffffff";
-
-    let groupFontSize =
-        48;
-
-    const maxGroupWidth =
-        500;
-
-    let displayGroupName =
-        groupName;
-
-    while (
-        groupFontSize >
-        24
-    ) {
-        ctx.font =
-            `bold ${groupFontSize}px Segoe UI`;
-
-        if (
-            ctx.measureText(
-                displayGroupName
-            ).width <=
-            maxGroupWidth
-        ) {
-            break;
-        }
-
-        groupFontSize -=
-            2;
+@media (max-width: 700px) {
+    .clan-tier-page {
+        padding: 28px 16px 55px;
     }
 
-    ctx.font =
-        `bold ${groupFontSize}px Segoe UI`;
-
-    while (
-        ctx.measureText(
-            displayGroupName +
-            "..."
-        ).width >
-            maxGroupWidth &&
-        displayGroupName.length >
-            5
-    ) {
-        displayGroupName =
-            displayGroupName.substring(
-                0,
-                displayGroupName.length -
-                1
-            );
+    .clan-tier-header,
+    .clan-tier-profile-heading,
+    .clan-tier-directory-heading,
+    .clan-tier-section-heading,
+    .clan-tier-record-card-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    if (
-        displayGroupName !==
-        groupName
-    ) {
-        displayGroupName +=
-            "...";
+    .clan-tier-header h1 {
+        font-size: 34px;
     }
 
-    ctx.fillText(
-        displayGroupName,
-        headerX,
-        125
-    );
-
-    ctx.font =
-        "22px Segoe UI";
-
-    ctx.fillStyle =
-        "#c5c5d8";
-
-    ctx.fillText(
-        "Found",
-        headerX,
-        165
-    );
-
-    ctx.fillStyle =
-        "#A97DC2";
-
-    ctx.font =
-        "bold 24px Segoe UI";
-
-    const flaggedText =
-        String(
-            flagged
-        );
-
-    const flaggedX =
-        headerX +
-        75;
-
-    ctx.fillText(
-        flaggedText,
-        flaggedX,
-        165
-    );
-
-    ctx.fillStyle =
-        "#c5c5d8";
-
-    ctx.font =
-        "22px Segoe UI";
-
-    const flaggedWidth =
-        ctx.measureText(
-            flaggedText
-        ).width;
-
-    ctx.fillText(
-        "flagged users",
-        flaggedX +
-        flaggedWidth +
-        10,
-        165
-    );
-
-
-    // =========================
-    // CASE PERCENTAGE SUMMARY
-    // =========================
-
-    ctx.fillStyle =
-        "#A97DC2";
-
-    ctx.font =
-        "bold 22px Segoe UI";
-
-    const activeRiskText =
-        `${activePercent || 0}%`;
-
-    ctx.fillText(
-        activeRiskText,
-        headerX,
-        195
-    );
-
-    const activeRiskWidth =
-        ctx.measureText(
-            activeRiskText
-        ).width;
-
-    ctx.fillStyle =
-        "#c5c5d8";
-
-    ctx.font =
-        "22px Segoe UI";
-
-    ctx.fillText(
-        "of this group contains active cases",
-        headerX +
-        activeRiskWidth +
-        8,
-        195
-    );
-
-    ctx.fillStyle =
-        "#A97DC2";
-
-    ctx.font =
-        "bold 22px Segoe UI";
-
-    const inactiveRiskText =
-        `${inactivePercent || 0}%`;
-
-    ctx.fillText(
-        inactiveRiskText,
-        headerX,
-        225
-    );
-
-    const inactiveRiskWidth =
-        ctx.measureText(
-            inactiveRiskText
-        ).width;
-
-    ctx.fillStyle =
-        "#c5c5d8";
-
-    ctx.font =
-        "22px Segoe UI";
-
-    ctx.fillText(
-        "of this group contains inactive cases",
-        headerX +
-        inactiveRiskWidth +
-        8,
-        225
-    );
-
-
-    // =========================
-    // GROUP ICON
-    // =========================
-
-    if (groupIcon) {
-        try {
-            const img =
-                await loadImage(
-                    groupIcon
-                );
-
-            ctx.save();
-
-            ctx.beginPath();
-
-            ctx.arc(
-                90,
-                120,
-                75,
-                0,
-                Math.PI *
-                2
-            );
-
-            ctx.clip();
-
-            ctx.drawImage(
-                img,
-                15,
-                45,
-                150,
-                150
-            );
-
-            ctx.restore();
-        } catch {}
+    .clan-tier-header-actions {
+        justify-content: flex-start;
     }
 
-
-    // =========================
-    // RISK CIRCLE
-    // =========================
-
-    const centerX =
-        785;
-
-    const centerY =
-        125;
-
-    ctx.lineWidth =
-        14;
-
-    ctx.strokeStyle =
-        "#262633";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        centerX,
-        centerY,
-        70,
-        0,
-        Math.PI *
-        2
-    );
-
-    ctx.stroke();
-
-    ctx.strokeStyle =
-        "#A97DC2";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        centerX,
-        centerY,
-        70,
-        -Math.PI /
-            2,
-        (
-            -Math.PI /
-            2
-        ) +
-        (
-            (
-                Math.PI *
-                2
-            ) *
-            (
-                risk /
-                100
-            )
-        )
-    );
-
-    ctx.stroke();
-
-    ctx.fillStyle =
-        "#A97DC2";
-
-    ctx.font =
-        "bold 32px Segoe UI";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.fillText(
-        `${risk}%`,
-        centerX,
-        centerY +
-        10
-    );
-
-    ctx.textAlign =
-        "left";
-
-
-    // =========================
-    // RIGHT INFO
-    // =========================
-
-    ctx.fillStyle =
-        "#A97DC2";
-
-    ctx.font =
-        "bold 24px Segoe UI";
-
-    /*
-     * Renamed from GROUP TIER to CLAN TIER.
-     */
-    ctx.fillText(
-        "CLAN TIER",
-        950,
-        70
-    );
-
-    ctx.font =
-        "bold 70px Segoe UI";
-
-    ctx.fillText(
-        tier,
-        1000,
-        140
-    );
-
-    ctx.fillStyle =
-        "#ffffff";
-
-    ctx.font =
-        "24px Segoe UI";
-
-    ctx.fillText(
-        `MEMBERS: ${members}`,
-        950,
-        180
-    );
-
-    ctx.fillText(
-        `EST. ${created}`,
-        950,
-        215
-    );
-
-
-    // =========================
-    // LOWER CARDS
-    // =========================
-
-    const cards = [
-        {
-            icon:
-                "[!]",
-
-            title:
-                "ACTIVE EXPLOITERS",
-
-            users:
-                activeExploiters
-        },
-        {
-            icon:
-                "[?]",
-
-            title:
-                "ACTIVE DEGENS",
-
-            users:
-                activeDegens
-        },
-        {
-            icon:
-                "[-]",
-
-            title:
-                "INACTIVE EXPLOITERS",
-
-            users:
-                inactiveExploiters
-        },
-        {
-            icon:
-                "[×]",
-
-            title:
-                "INACTIVE DEGENS",
-
-            users:
-                inactiveDegens
-        }
-    ];
-
-    const cardTop =
-        260;
-
-    const cardWidth =
-        250;
-
-    let x =
-        50;
-
-    for (
-        const card
-        of cards
-    ) {
-        ctx.fillStyle =
-            "#151520";
-
-        roundedRect(
-            ctx,
-            x,
-            cardTop,
-            cardWidth,
-            cardHeight,
-            16
-        );
-
-        ctx.fill();
-
-        ctx.strokeStyle =
-            "#30303f";
-
-        ctx.lineWidth =
-            1;
-
-        roundedRect(
-            ctx,
-            x,
-            cardTop,
-            cardWidth,
-            cardHeight,
-            16
-        );
-
-        ctx.stroke();
-
-        ctx.strokeStyle =
-            "#30303f";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x +
-            10,
-            cardTop +
-            55
-        );
-
-        ctx.lineTo(
-            x +
-            cardWidth -
-            10,
-            cardTop +
-            55
-        );
-
-        ctx.stroke();
-
-        const headerY =
-            cardTop +
-            34;
-
-        const iconX =
-            x +
-            15;
-
-        ctx.fillStyle =
-            "#A97DC2";
-
-        ctx.font =
-            "bold 18px Segoe UI";
-
-        ctx.fillText(
-            card.icon,
-            iconX,
-            headerY
-        );
-
-        const titleAreaX =
-            x +
-            45;
-
-        const titleAreaWidth =
-            145;
-
-        let titleFontSize =
-            15;
-
-        while (
-            titleFontSize >
-            9
-        ) {
-            ctx.font =
-                `bold ${titleFontSize}px Segoe UI`;
-
-            if (
-                ctx.measureText(
-                    card.title
-                ).width <=
-                titleAreaWidth
-            ) {
-                break;
-            }
-
-            titleFontSize--;
-        }
-
-        ctx.font =
-            `bold ${titleFontSize}px Segoe UI`;
-
-        const titleWidth =
-            ctx.measureText(
-                card.title
-            ).width;
-
-        const centeredTitleX =
-            titleAreaX +
-            (
-                (
-                    titleAreaWidth -
-                    titleWidth
-                ) /
-                2
-            );
-
-        ctx.fillStyle =
-            "#ffffff";
-
-        ctx.fillText(
-            card.title,
-            centeredTitleX,
-            headerY
-        );
-
-        ctx.fillStyle =
-            "#A97DC2";
-
-        ctx.font =
-            "bold 18px Segoe UI";
-
-        ctx.textAlign =
-            "right";
-
-        ctx.fillText(
-            `${card.users.length}`,
-            x +
-            cardWidth -
-            15,
-            headerY
-        );
-
-        ctx.textAlign =
-            "left";
-
-        ctx.fillStyle =
-            "#c5c5d8";
-
-        ctx.font =
-            "15px Segoe UI";
-
-        let y =
-            cardTop +
-            85;
-
-        for (
-            const name
-            of card.users
-        ) {
-            if (
-                y >
-                cardTop +
-                cardHeight -
-                15
-            ) {
-                break;
-            }
-
-            let display =
-                name;
-
-            if (
-                display.length >
-                20
-            ) {
-                display =
-                    display.substring(
-                        0,
-                        17
-                    ) +
-                    "...";
-            }
-
-            ctx.fillText(
-                `• ${display}`,
-                x +
-                15,
-                y
-            );
-
-            y +=
-                18;
-        }
-
-        x +=
-            280;
+    .clan-tier-score-grid,
+    .clan-tier-policy > div {
+        grid-template-columns: 1fr;
     }
 
+    .clan-tier-directory-heading input {
+        width: 100%;
+    }
 
-    // =========================
-    // FOOTER
-    // =========================
-
-    ctx.fillStyle =
-        "#A97DC2";
-
-    ctx.font =
-        "18px Segoe UI";
-
-    ctx.fillText(
-        `✓ Scanned ${members} members in ${duration}ms • Group: ${groupId}`,
-        50,
-        height -
-        40
-    );
-
-    return canvas.toBuffer();
+    .clan-tier-snapshot-frame img {
+        min-width: 660px;
+    }
 }
