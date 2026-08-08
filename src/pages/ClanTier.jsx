@@ -426,8 +426,6 @@ function ClanTier() {
                     </div>
                 </header>
 
-                <div className="clan-tier-divider" />
-
                 {
                     error && (
                         <div className="clan-tier-error">
