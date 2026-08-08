@@ -493,4 +493,42 @@
     .clan-tier-snapshot-frame img {
         min-width: 660px;
     }
+   .clan-tier-group-info {
+       display: flex;
+       align-items: center;
+       flex-wrap: wrap;
+       gap: 12px;
+       margin-top: 8px;
+   }
+
+   .clan-tier-group-info p {
+       margin: 0;
+   }
+
+   .clan-tier-group-link {
+       display: inline-flex;
+       align-items: center;
+       padding: 7px 11px;
+
+       color: #d9bcff;
+       background: rgba(181, 104, 243, .10);
+
+       border: 1px solid rgba(181, 104, 243, .30);
+       border-radius: 6px;
+
+       font: 600 9px/1 Arial, sans-serif;
+       letter-spacing: .12em;
+       text-decoration: none;
+
+       transition:
+          background .15s ease,
+          border-color .15s ease,
+          color .15s ease;
+   }
+
+   .clan-tier-group-link:hover {
+       color: white;
+       background: rgba(181, 104, 243, .20);
+       border-color: rgba(181, 104, 243, .60);
+   }
 }
