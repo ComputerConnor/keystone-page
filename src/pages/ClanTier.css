@@ -1,316 +1,789 @@
-/* ============================================================
-   CLAN TIER
-   ============================================================ */
+import {
+    createCanvas,
+    loadImage
+} from "canvas";
 
-.clan-tier-page {
-    min-height: 100vh;
-    padding: 60px 40px 80px;
-    box-sizing: border-box;
-    color: white;
-}
 
-.clan-tier-shell {
-    width: min(1500px, 95%);
-    margin: 0 auto;
-    padding: 40px;
-    box-sizing: border-box;
-    background: rgba(10,10,15,.82);
-    border: 1px solid rgba(255,255,255,.08);
-    backdrop-filter: blur(16px);
-}
+export async function createGroupDashboard({
+    groupName,
+    groupIcon,
+    flagged,
+    risk,
+    activePercent,
+    inactivePercent,
+    tier,
+    members,
+    created,
+    activeExploiters,
+    activeDegens,
+    inactiveExploiters,
+    inactiveDegens,
+    scanTime: duration = 0,
+    groupId = "Unknown"
+}) {
+    activeExploiters =
+        activeExploiters ||
+        [];
 
-.clan-tier-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 28px;
-}
+    activeDegens =
+        activeDegens ||
+        [];
 
-.clan-tier-header > div:first-child > span,
-.clan-tier-id,
-.clan-tier-grid span,
-.clan-tier-justification > span,
-.clan-tier-evidence-header > span,
-.clan-tier-evidence-list span,
-.clan-tier-stats span {
-    color: rgba(181,104,243,.72);
-    font: 600 9px/1 Arial, sans-serif;
-    letter-spacing: .16em;
-}
+    inactiveExploiters =
+        inactiveExploiters ||
+        [];
 
-.clan-tier-header h1 {
-    margin: 9px 0;
-    font: 400 40px/1 Arial, sans-serif;
-    letter-spacing: -.035em;
-}
+    inactiveDegens =
+        inactiveDegens ||
+        [];
 
-.clan-tier-header p {
-    margin: 0;
-    color: rgba(255,255,255,.42);
-    font: 400 12px/1.6 Arial, sans-serif;
-}
+    const width =
+        1200;
 
-.clan-tier-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: flex-end;
-}
+    const maxUsers =
+        Math.max(
+            activeExploiters.length,
+            activeDegens.length,
+            inactiveExploiters.length,
+            inactiveDegens.length
+        );
 
-.clan-tier-actions button,
-.clan-tier-evidence-header button {
-    padding: 11px 16px;
-    cursor: pointer;
-    color: rgba(255,255,255,.70);
-    background: transparent;
-    border: 1px solid rgba(255,255,255,.12);
-    font: 600 8px/1 Arial, sans-serif;
-    letter-spacing: .13em;
-}
+    const cardHeight =
+        Math.max(
+            190,
+            120 +
+            (
+                maxUsers *
+                18
+            )
+        );
 
-.clan-tier-actions button:hover,
-.clan-tier-evidence-header button:hover:not(:disabled) {
-    color: white;
-    border-color: rgba(181,104,243,.55);
-}
+    const height =
+        Math.max(
+            540,
+            260 +
+            cardHeight +
+            120
+        );
 
-.clan-tier-evidence-header button:disabled {
-    opacity: .35;
-    cursor: default;
-}
+    const canvas =
+        createCanvas(
+            width,
+            height
+        );
 
-.clan-tier-divider {
-    height: 1px;
-    margin: 30px 0;
-    background: linear-gradient(
-        90deg,
-        rgba(181,104,243,.70),
-        rgba(255,255,255,.08),
-        transparent
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    function roundedRect(
+        context,
+        x,
+        y,
+        boxWidth,
+        boxHeight,
+        radius
+    ) {
+        context.beginPath();
+
+        context.roundRect(
+            x,
+            y,
+            boxWidth,
+            boxHeight,
+            radius
+        );
+
+        context.closePath();
+    }
+
+
+    // =========================
+    // BACKGROUND
+    // =========================
+
+    ctx.fillStyle =
+        "#09090f";
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
     );
-}
 
-.clan-tier-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 12px;
-    margin-bottom: 18px;
-}
 
-.clan-tier-stats > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 16px;
-    border: 1px solid rgba(255,255,255,.07);
-    background: rgba(255,255,255,.025);
-}
+    // =========================
+    // LEFT ACCENT BAR
+    // =========================
 
-.clan-tier-stats strong {
-    color: #d9bcff;
-    font: 500 20px/1 Arial, sans-serif;
-}
+    ctx.fillStyle =
+        "#A855F7";
 
-.clan-tier-toolbar {
-    display: grid;
-    grid-template-columns: 1fr 190px;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.clan-tier-toolbar input,
-.clan-tier-toolbar select {
-    min-width: 0;
-    padding: 12px 14px;
-    color: white;
-    background: rgba(0,0,0,.30);
-    border: 1px solid rgba(255,255,255,.10);
-    outline: none;
-}
-
-.clan-tier-toolbar input:focus,
-.clan-tier-toolbar select:focus {
-    border-color: rgba(181,104,243,.55);
-}
-
-.clan-tier-toolbar option {
-    color: white;
-    background: #111116;
-}
-
-.clan-tier-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px,1fr));
-    gap: 22px;
-    align-items: start;
-}
-
-.clan-tier-card {
-    min-width: 0;
-    padding: 24px;
-    box-sizing: border-box;
-    background: linear-gradient(
-        145deg,
-        rgba(24,24,28,.94),
-        rgba(10,10,14,.98)
+    ctx.fillRect(
+        0,
+        0,
+        8,
+        height
     );
-    border: 1px solid rgba(255,255,255,.08);
-    box-shadow: 0 20px 45px rgba(0,0,0,.24);
-}
 
-.clan-tier-card-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: flex-start;
-}
 
-.clan-tier-card h2 {
-    margin: 10px 0 18px;
-    font: 500 21px/1.2 Arial, sans-serif;
-}
+    // =========================
+    // HEADER
+    // =========================
 
-.clan-tier-rank {
-    min-width: 72px;
-    padding: 10px;
-    text-align: center;
-    background: rgba(181,104,243,.10);
-    border: 1px solid rgba(181,104,243,.26);
-}
+    const headerX =
+        180;
 
-.clan-tier-rank span {
-    display: block;
-    margin-bottom: 7px;
-    color: rgba(181,104,243,.70);
-    font: 600 8px/1 Arial, sans-serif;
-    letter-spacing: .15em;
-}
+    ctx.fillStyle =
+        "#A97DC2";
 
-.clan-tier-rank strong {
-    color: #d9bcff;
-    font: 500 24px/1 Arial, sans-serif;
-}
+    ctx.font =
+        "bold 22px Segoe UI";
 
-.clan-tier-grid {
-    display: grid;
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 10px;
-}
+    ctx.fillText(
+        "GROUP CHECK",
+        headerX,
+        65
+    );
 
-.clan-tier-grid > div {
-    padding: 12px;
-    background: rgba(255,255,255,.025);
-    border: 1px solid rgba(255,255,255,.06);
-}
+    ctx.fillStyle =
+        "#ffffff";
 
-.clan-tier-grid p {
-    margin: 7px 0 0;
-    color: rgba(255,255,255,.65);
-    font: 400 12px/1.45 Arial, sans-serif;
-    overflow-wrap: anywhere;
-}
+    let groupFontSize =
+        48;
 
-.clan-tier-grid a,
-.clan-tier-evidence-list a {
-    color: #d9bcff;
-    text-decoration: none;
-}
+    const maxGroupWidth =
+        500;
 
-.clan-tier-grid a:hover,
-.clan-tier-evidence-list a:hover {
-    text-decoration: underline;
-}
+    let displayGroupName =
+        groupName;
 
-.clan-tier-wide {
-    grid-column: 1 / -1;
-}
+    while (
+        groupFontSize >
+        24
+    ) {
+        ctx.font =
+            `bold ${groupFontSize}px Segoe UI`;
 
-.clan-tier-justification {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,.07);
-}
+        if (
+            ctx.measureText(
+                displayGroupName
+            ).width <=
+            maxGroupWidth
+        ) {
+            break;
+        }
 
-.clan-tier-justification p {
-    margin: 8px 0 0;
-    color: rgba(255,255,255,.52);
-    font: 400 12px/1.65 Arial, sans-serif;
-    white-space: pre-wrap;
-}
-
-.clan-tier-evidence-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,.07);
-}
-
-.clan-tier-evidence-list {
-    display: grid;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.clan-tier-evidence-list > div {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: center;
-    padding: 11px 12px;
-    background: rgba(181,104,243,.04);
-    border: 1px solid rgba(181,104,243,.12);
-}
-
-.clan-tier-evidence-list code {
-    max-width: 70%;
-    overflow-wrap: anywhere;
-    color: rgba(255,255,255,.55);
-}
-
-.clan-tier-error,
-.clan-tier-empty {
-    padding: 50px 20px;
-    text-align: center;
-    color: rgba(255,255,255,.48);
-}
-
-.clan-tier-error {
-    margin-bottom: 18px;
-    padding: 14px;
-    color: #ffb1b1;
-    background: rgba(255,70,70,.08);
-    border: 1px solid rgba(255,80,80,.35);
-}
-
-@media (max-width: 760px) {
-    .clan-tier-page {
-        padding: 25px 14px 55px;
+        groupFontSize -=
+            2;
     }
 
-    .clan-tier-shell {
-        width: 100%;
-        padding: 24px 18px;
+    ctx.font =
+        `bold ${groupFontSize}px Segoe UI`;
+
+    while (
+        ctx.measureText(
+            displayGroupName +
+            "..."
+        ).width >
+            maxGroupWidth &&
+        displayGroupName.length >
+            5
+    ) {
+        displayGroupName =
+            displayGroupName.substring(
+                0,
+                displayGroupName.length -
+                1
+            );
     }
 
-    .clan-tier-header {
-        flex-direction: column;
+    if (
+        displayGroupName !==
+        groupName
+    ) {
+        displayGroupName +=
+            "...";
     }
 
-    .clan-tier-actions {
-        justify-content: flex-start;
+    ctx.fillText(
+        displayGroupName,
+        headerX,
+        125
+    );
+
+    ctx.font =
+        "22px Segoe UI";
+
+    ctx.fillStyle =
+        "#c5c5d8";
+
+    ctx.fillText(
+        "Found",
+        headerX,
+        165
+    );
+
+    ctx.fillStyle =
+        "#A97DC2";
+
+    ctx.font =
+        "bold 24px Segoe UI";
+
+    const flaggedText =
+        String(
+            flagged
+        );
+
+    const flaggedX =
+        headerX +
+        75;
+
+    ctx.fillText(
+        flaggedText,
+        flaggedX,
+        165
+    );
+
+    ctx.fillStyle =
+        "#c5c5d8";
+
+    ctx.font =
+        "22px Segoe UI";
+
+    const flaggedWidth =
+        ctx.measureText(
+            flaggedText
+        ).width;
+
+    ctx.fillText(
+        "flagged users",
+        flaggedX +
+        flaggedWidth +
+        10,
+        165
+    );
+
+
+    // =========================
+    // CASE PERCENTAGE SUMMARY
+    // =========================
+
+    ctx.fillStyle =
+        "#A97DC2";
+
+    ctx.font =
+        "bold 22px Segoe UI";
+
+    const activeRiskText =
+        `${activePercent || 0}%`;
+
+    ctx.fillText(
+        activeRiskText,
+        headerX,
+        195
+    );
+
+    const activeRiskWidth =
+        ctx.measureText(
+            activeRiskText
+        ).width;
+
+    ctx.fillStyle =
+        "#c5c5d8";
+
+    ctx.font =
+        "22px Segoe UI";
+
+    ctx.fillText(
+        "of this group contains active cases",
+        headerX +
+        activeRiskWidth +
+        8,
+        195
+    );
+
+    ctx.fillStyle =
+        "#A97DC2";
+
+    ctx.font =
+        "bold 22px Segoe UI";
+
+    const inactiveRiskText =
+        `${inactivePercent || 0}%`;
+
+    ctx.fillText(
+        inactiveRiskText,
+        headerX,
+        225
+    );
+
+    const inactiveRiskWidth =
+        ctx.measureText(
+            inactiveRiskText
+        ).width;
+
+    ctx.fillStyle =
+        "#c5c5d8";
+
+    ctx.font =
+        "22px Segoe UI";
+
+    ctx.fillText(
+        "of this group contains inactive cases",
+        headerX +
+        inactiveRiskWidth +
+        8,
+        225
+    );
+
+
+    // =========================
+    // GROUP ICON
+    // =========================
+
+    if (groupIcon) {
+        try {
+            const img =
+                await loadImage(
+                    groupIcon
+                );
+
+            ctx.save();
+
+            ctx.beginPath();
+
+            ctx.arc(
+                90,
+                120,
+                75,
+                0,
+                Math.PI *
+                2
+            );
+
+            ctx.clip();
+
+            ctx.drawImage(
+                img,
+                15,
+                45,
+                150,
+                150
+            );
+
+            ctx.restore();
+        } catch {}
     }
 
-    .clan-tier-stats,
-    .clan-tier-toolbar,
-    .clan-tier-list,
-    .clan-tier-grid {
-        grid-template-columns: 1fr;
+
+    // =========================
+    // RISK CIRCLE
+    // =========================
+
+    const centerX =
+        785;
+
+    const centerY =
+        125;
+
+    ctx.lineWidth =
+        14;
+
+    ctx.strokeStyle =
+        "#262633";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        centerX,
+        centerY,
+        70,
+        0,
+        Math.PI *
+        2
+    );
+
+    ctx.stroke();
+
+    ctx.strokeStyle =
+        "#A97DC2";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        centerX,
+        centerY,
+        70,
+        -Math.PI /
+            2,
+        (
+            -Math.PI /
+            2
+        ) +
+        (
+            (
+                Math.PI *
+                2
+            ) *
+            (
+                risk /
+                100
+            )
+        )
+    );
+
+    ctx.stroke();
+
+    ctx.fillStyle =
+        "#A97DC2";
+
+    ctx.font =
+        "bold 32px Segoe UI";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.fillText(
+        `${risk}%`,
+        centerX,
+        centerY +
+        10
+    );
+
+    ctx.textAlign =
+        "left";
+
+
+    // =========================
+    // RIGHT INFO
+    // =========================
+
+    ctx.fillStyle =
+        "#A97DC2";
+
+    ctx.font =
+        "bold 24px Segoe UI";
+
+    /*
+     * Renamed from GROUP TIER to CLAN TIER.
+     */
+    ctx.fillText(
+        "CLAN TIER",
+        950,
+        70
+    );
+
+    ctx.font =
+        "bold 70px Segoe UI";
+
+    ctx.fillText(
+        tier,
+        1000,
+        140
+    );
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.font =
+        "24px Segoe UI";
+
+    ctx.fillText(
+        `MEMBERS: ${members}`,
+        950,
+        180
+    );
+
+    ctx.fillText(
+        `EST. ${created}`,
+        950,
+        215
+    );
+
+
+    // =========================
+    // LOWER CARDS
+    // =========================
+
+    const cards = [
+        {
+            icon:
+                "[!]",
+
+            title:
+                "ACTIVE EXPLOITERS",
+
+            users:
+                activeExploiters
+        },
+        {
+            icon:
+                "[?]",
+
+            title:
+                "ACTIVE DEGENS",
+
+            users:
+                activeDegens
+        },
+        {
+            icon:
+                "[-]",
+
+            title:
+                "INACTIVE EXPLOITERS",
+
+            users:
+                inactiveExploiters
+        },
+        {
+            icon:
+                "[×]",
+
+            title:
+                "INACTIVE DEGENS",
+
+            users:
+                inactiveDegens
+        }
+    ];
+
+    const cardTop =
+        260;
+
+    const cardWidth =
+        250;
+
+    let x =
+        50;
+
+    for (
+        const card
+        of cards
+    ) {
+        ctx.fillStyle =
+            "#151520";
+
+        roundedRect(
+            ctx,
+            x,
+            cardTop,
+            cardWidth,
+            cardHeight,
+            16
+        );
+
+        ctx.fill();
+
+        ctx.strokeStyle =
+            "#30303f";
+
+        ctx.lineWidth =
+            1;
+
+        roundedRect(
+            ctx,
+            x,
+            cardTop,
+            cardWidth,
+            cardHeight,
+            16
+        );
+
+        ctx.stroke();
+
+        ctx.strokeStyle =
+            "#30303f";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x +
+            10,
+            cardTop +
+            55
+        );
+
+        ctx.lineTo(
+            x +
+            cardWidth -
+            10,
+            cardTop +
+            55
+        );
+
+        ctx.stroke();
+
+        const headerY =
+            cardTop +
+            34;
+
+        const iconX =
+            x +
+            15;
+
+        ctx.fillStyle =
+            "#A97DC2";
+
+        ctx.font =
+            "bold 18px Segoe UI";
+
+        ctx.fillText(
+            card.icon,
+            iconX,
+            headerY
+        );
+
+        const titleAreaX =
+            x +
+            45;
+
+        const titleAreaWidth =
+            145;
+
+        let titleFontSize =
+            15;
+
+        while (
+            titleFontSize >
+            9
+        ) {
+            ctx.font =
+                `bold ${titleFontSize}px Segoe UI`;
+
+            if (
+                ctx.measureText(
+                    card.title
+                ).width <=
+                titleAreaWidth
+            ) {
+                break;
+            }
+
+            titleFontSize--;
+        }
+
+        ctx.font =
+            `bold ${titleFontSize}px Segoe UI`;
+
+        const titleWidth =
+            ctx.measureText(
+                card.title
+            ).width;
+
+        const centeredTitleX =
+            titleAreaX +
+            (
+                (
+                    titleAreaWidth -
+                    titleWidth
+                ) /
+                2
+            );
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.fillText(
+            card.title,
+            centeredTitleX,
+            headerY
+        );
+
+        ctx.fillStyle =
+            "#A97DC2";
+
+        ctx.font =
+            "bold 18px Segoe UI";
+
+        ctx.textAlign =
+            "right";
+
+        ctx.fillText(
+            `${card.users.length}`,
+            x +
+            cardWidth -
+            15,
+            headerY
+        );
+
+        ctx.textAlign =
+            "left";
+
+        ctx.fillStyle =
+            "#c5c5d8";
+
+        ctx.font =
+            "15px Segoe UI";
+
+        let y =
+            cardTop +
+            85;
+
+        for (
+            const name
+            of card.users
+        ) {
+            if (
+                y >
+                cardTop +
+                cardHeight -
+                15
+            ) {
+                break;
+            }
+
+            let display =
+                name;
+
+            if (
+                display.length >
+                20
+            ) {
+                display =
+                    display.substring(
+                        0,
+                        17
+                    ) +
+                    "...";
+            }
+
+            ctx.fillText(
+                `• ${display}`,
+                x +
+                15,
+                y
+            );
+
+            y +=
+                18;
+        }
+
+        x +=
+            280;
     }
 
-    .clan-tier-wide {
-        grid-column: auto;
-    }
+
+    // =========================
+    // FOOTER
+    // =========================
+
+    ctx.fillStyle =
+        "#A97DC2";
+
+    ctx.font =
+        "18px Segoe UI";
+
+    ctx.fillText(
+        `✓ Scanned ${members} members in ${duration}ms • Group: ${groupId}`,
+        50,
+        height -
+        40
+    );
+
+    return canvas.toBuffer();
 }
