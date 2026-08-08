@@ -470,6 +470,7 @@ function ClanTier() {
                                         )
                                     }
                                 </div>
+                            </div>
 
                                 <div className="clan-tier-grade">
                                     <span>
